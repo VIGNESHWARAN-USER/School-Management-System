@@ -9,17 +9,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Student {
+public class Teacher {
 
     @Id
-    private Long studentId;
+    private Long teacherId;
 
-    private String studentName;
-    private int age;
+    private String teacherName;
+    private String subject;
     private String email;
     private String password;
-    private String classId;
-    private String section;
-    private Long parentId;
-    private String address;
+    private String phoneNumber;
 }
