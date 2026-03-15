@@ -1,5 +1,4 @@
 package com.sms.backend.Entities;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -9,17 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Student {
-
+public class Administrator {
     @Id
-    private Long studentId;
+    private Long adminId;
 
-    private String studentName;
-    private int age;
+    private String adminName;
     private String email;
     private String password;
-    private String classId;
-    private String section;
-    private Long parentId;
-    private String address;
 }

@@ -1,7 +1,7 @@
 package com.sms.backend.Services;
 
 import com.sms.backend.Entities.Student;
-import com.sms.backend.Repositories.StudentRepositories;
+import com.sms.backend.Repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class StudentServices {
 
     @Autowired
-    StudentRepositories studentRepositories;
+    StudentRepository studentRepositories;
 
     public void addStudent(Student student)
     {
