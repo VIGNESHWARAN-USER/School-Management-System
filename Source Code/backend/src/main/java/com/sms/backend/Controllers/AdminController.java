@@ -8,6 +8,7 @@ import com.sms.backend.Services.AdminServices;
 
 import com.sms.backend.Services.AdminServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,7 +34,6 @@ public class AdminController {
         return adminService.addTeacher(teacher);
     }
 
-
     // Add Parent
     @PostMapping("/addParent")
     public String addParent(@RequestBody Parent parent)
@@ -46,5 +46,51 @@ public class AdminController {
     {
         return adminService.addAdmin(admin);
     }
+
+    @DeleteMapping("/deleteStudent/{id}")
+    public String deleteStudent(@PathVariable Long id)
+    {
+        return adminService.deleteStudent(id);
+    }
+
+
+    // Add Teacher
+    @DeleteMapping("/deleteTeacher/{id}")
+    public String deleteTeacher(@PathVariable Long id)
+    {
+        return adminService.deleteTeacher(id);
+    }
+
+    // Add Parent
+    @DeleteMapping("/deleteParent/{id}")
+    public String deleteParent(@PathVariable Long id)
+    {
+        return adminService.deleteParent(id);
+    }
+
+    @GetMapping("/fetchAllStudents")
+    public ResponseEntity<?> fetchAllStudents()
+    {
+        return adminService.fetchAllStudents();
+    }
+
+    @GetMapping("/fetchAllStudents/{classId}")
+    public ResponseEntity<?> fetchAllStudents(@PathVariable String classId)
+    {
+        return adminService.fetchAllStudentsByClassId(classId);
+    }
+
+    @GetMapping("/fetchAllParents")
+    public ResponseEntity<?> fetchAllParents()
+    {
+        return adminService.fetchAllParents();
+    }
+
+    @GetMapping("/fetchAllTeachers")
+    public ResponseEntity<?> fetchAllTeachers()
+    {
+        return adminService.fetchAllTeachers();
+    }
+
 
 }

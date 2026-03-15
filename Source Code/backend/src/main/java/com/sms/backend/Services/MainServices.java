@@ -33,7 +33,7 @@ public class MainServices {
         switch (role) {
             case "Student" -> {
                 Student student = studentRepository.findByEmail(email);
-                if (student.getPassword().equals(password)) {
+                if (passwordEncoder.matches(password, student.getPassword())) {
                     return ResponseEntity.status(200).body(student);
                 } else {
                     return ResponseEntity.status(201).body("Invalid Password");
@@ -41,7 +41,7 @@ public class MainServices {
             }
             case "Parent" -> {
                 Parent parent = parentRepository.findByEmail(email);
-                if (parent.getPassword().equals(password)) {
+                if (passwordEncoder.matches(password, parent.getPassword())) {
                     return ResponseEntity.status(200).body(parent);
                 } else {
                     return ResponseEntity.status(201).body("Invalid Password");
@@ -49,7 +49,7 @@ public class MainServices {
             }
             case "Teacher" -> {
                 Teacher teacher = teacherRepository.findByEmail(email);
-                if (teacher.getPassword().equals(password)) {
+                if (passwordEncoder.matches(password, teacher.getPassword())){
                     return ResponseEntity.status(200).body(teacher);
                 } else {
                     return ResponseEntity.status(201).body("Invalid Password");
@@ -58,7 +58,7 @@ public class MainServices {
             case "Admin" -> {
                 System.out.println(email+" "+password+" "+role);
                 Administrator admin = administratorRepository.findByEmail(email);
-                if (admin.getPassword().equals(password)) {
+                if (passwordEncoder.matches(password, admin.getPassword())) {
                     return ResponseEntity.status(200).body(admin);
                 } else {
                     return ResponseEntity.status(201).body("Invalid Password");

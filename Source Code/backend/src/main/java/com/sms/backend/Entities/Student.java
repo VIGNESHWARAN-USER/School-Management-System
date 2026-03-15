@@ -15,14 +15,13 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long studentId;
+    private Long id;
 
-    private String studentName;
+    private String name;
     private int age;
     private String email;
     private String password;
     private String classId;
-    private String section;
     private Long parentId;
     private String address;
 }

@@ -1,11 +1,12 @@
 import {React, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
 
-import api from '../../api'
+
 import { Toaster, toast } from 'sonner'; 
 import { Mail, KeyRound, Eye, EyeOff, UserCog } from 'lucide-react'; 
 
 import loginimg from '../../assets/login.jpg'; 
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     
-    const loginPromise = api.post("/api/login", { email: email, password:password, role: role });
+    const loginPromise = axios.post("http://localhost:8085/api/login", { email: email, password:password, role: role });
 
     toast.promise(loginPromise, {
       loading: 'Logging in...',
@@ -31,15 +32,15 @@ const Login = () => {
         console.log(response.data);
         localStorage.setItem("token", response.data.token);
         const userData = response.data;
-        const role = role;
         localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("accessLevel", role);
         
-        if(role === "Admin") setTimeout(() => navigate('/admindashboard'), 1000); 
-        else if(role === "Manager") setTimeout(() => navigate('/managerdashboard'), 1000); 
-        else if(role === "HR") setTimeout(() => navigate('/hrdashboard'), 1000); 
-        else if(role === "Employee") setTimeout(() => navigate('/employeedashboard'), 1000); 
-        else throw new Error(`No role found for, ${userData.firstName || 'user'}!`)
-        return `Welcome back, ${userData.firstName || 'user'}!`;
+        if(role === "Admin") setTimeout(() => navigate('/add-members'), 1000); 
+        else if(role === "Teacher") setTimeout(() => navigate('/mark-attendance'), 1000); 
+        else if(role === "Parent") setTimeout(() => navigate('/hrdashboard'), 1000); 
+        else if(role === "Student") setTimeout(() => navigate('/employeedashboard'), 1000); 
+        else throw new Error(`No role found for, ${userData.name || 'user'}!`)
+        return `Welcome back, ${userData.name || 'user'}!`;
       },
       error: (error) => {
         setIsLoading(false); // Re-enable button on error
