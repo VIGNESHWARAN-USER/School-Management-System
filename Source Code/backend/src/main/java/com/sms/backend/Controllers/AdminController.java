@@ -1,5 +1,6 @@
 package com.sms.backend.Controllers;
 
+import com.sms.backend.Entities.Administrator;
 import com.sms.backend.Entities.Student;
 import com.sms.backend.Entities.Teacher;
 import com.sms.backend.Entities.Parent;
@@ -10,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api")
 public class AdminController {
 
     @Autowired
     AdminServices adminService;
 
 
-    // Add Student
+
     @PostMapping("/addStudent")
     public String addStudent(@RequestBody Student student)
     {
@@ -38,6 +39,12 @@ public class AdminController {
     public String addParent(@RequestBody Parent parent)
     {
         return adminService.addParent(parent);
+    }
+
+    @PostMapping("/addAdmin")
+    public String addParent(@RequestBody Administrator admin)
+    {
+        return adminService.addAdmin(admin);
     }
 
 }

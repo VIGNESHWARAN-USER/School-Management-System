@@ -18,7 +18,7 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     
-    const loginPromise = api.post("/auth/login", { username: email, password:password });
+    const loginPromise = api.post("/api/login", { email: email, password:password, role: role });
 
     toast.promise(loginPromise, {
       loading: 'Logging in...',
@@ -30,8 +30,8 @@ const Login = () => {
         }
         console.log(response.data);
         localStorage.setItem("token", response.data.token);
-        const userData = response.data.userDetails;
-        const role = response.data.userDetails.role;
+        const userData = response.data;
+        const role = role;
         localStorage.setItem("userData", JSON.stringify(userData));
         
         if(role === "Admin") setTimeout(() => navigate('/admindashboard'), 1000); 

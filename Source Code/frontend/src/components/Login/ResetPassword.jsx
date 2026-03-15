@@ -32,7 +32,7 @@ const ResetPassword = () => {
     setIsLoading(true);
 
     // --- Replace with your actual API endpoint ---
-    const resetPromise = api.post("/api/reset-password", { email, password });
+    const resetPromise = api.post("/api/reset-password", { email: email, password: password, role: role });
 
     toast.promise(resetPromise, {
       loading: 'Resetting password...',

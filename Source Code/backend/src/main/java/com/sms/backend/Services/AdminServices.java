@@ -1,8 +1,10 @@
 package com.sms.backend.Services;
 
+import com.sms.backend.Entities.Administrator;
 import com.sms.backend.Entities.Student;
 import com.sms.backend.Entities.Teacher;
 import com.sms.backend.Entities.Parent;
+import com.sms.backend.Repositories.AdministratorRepository;
 import com.sms.backend.Repositories.StudentRepository;
 import com.sms.backend.Repositories.TeacherRepository;
 import com.sms.backend.Repositories.ParentRepository;
@@ -21,6 +23,8 @@ public class AdminServices {
 
     @Autowired
     ParentRepository parentRepository;
+    @Autowired
+    private AdministratorRepository administratorRepository;
 
 
     // Add Student
@@ -44,5 +48,10 @@ public class AdminServices {
     {
         parentRepository.save(parent);
         return "Parent Added Successfully";
+    }
+
+    public String addAdmin(Administrator admin) {
+        administratorRepository.save(admin);
+        return "Admin addedd successfully";
     }
 }

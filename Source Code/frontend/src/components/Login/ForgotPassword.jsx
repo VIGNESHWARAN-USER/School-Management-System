@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     // --- Replace with your actual API endpoint ---
-    const sendOtpPromise = api.post("/api/forgot-password", { email });
+    const sendOtpPromise = api.post("/api/forgot-password", { email:email, role: role });
 
     toast.promise(sendOtpPromise, {
       loading: 'Sending OTP...',
