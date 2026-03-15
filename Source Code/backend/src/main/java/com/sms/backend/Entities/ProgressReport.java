@@ -1,8 +1,6 @@
 package com.sms.backend.Entities;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -15,6 +13,7 @@ import java.util.List;
 public class ProgressReport {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reportId;
 
     private Long studentId;

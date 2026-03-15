@@ -1,6 +1,8 @@
 package com.sms.backend.Entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
@@ -12,11 +14,13 @@ import lombok.*;
 public class Teacher {
 
     @Id
-    private Long teacherId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String teacherName;
+    private String name;
     private String subject;
     private String email;
+    private String classId;
     private String password;
     private String phoneNumber;
 }

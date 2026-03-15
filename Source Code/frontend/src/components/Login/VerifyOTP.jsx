@@ -50,7 +50,7 @@ console.log(correctOtp)
     }
   };
 
-  // --- THIS FUNCTION IS NOW SYNCHRONOUS (NO API CALL) ---
+
   const handleVerifyOTP = (event) => {
     event.preventDefault();
     setIsLoading(true);
