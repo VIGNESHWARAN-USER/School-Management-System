@@ -16,14 +16,8 @@ public class StudentAttendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long studentId;
-
-    private String className;
-
-    private String subject;
-
-    private LocalDate attendanceDate;
-
+    private LocalDate date;
+    private String remarks;
     private String status;
 
     private String markedBy; // teacher name
