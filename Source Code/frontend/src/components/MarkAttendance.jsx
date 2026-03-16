@@ -13,7 +13,7 @@ const MarkAttendance = () => {
 
     // Get user info from localStorage
     const user = JSON.parse(localStorage.getItem('userData')) || { role: 'Admin', id: '1' }; 
-    const accessLevel = user.role;
+    const accessLevel = localStorage.getItem('accessLevel');
 
     useEffect(() => {
         fetchMembers();
@@ -66,15 +66,15 @@ const MarkAttendance = () => {
 
     const submitAttendance = async () => {
         const payload = members.map(m => ({
-            memberId: m.id,
+            id: m.id,
             status: attendanceData[m.id].status,
             remarks: attendanceData[m.id].remarks,
             date: selectedDate,
-            markedBy: user.id,
-            type: accessLevel === 'Admin' ? 'Teacher' : 'Student'
+            markedBy: user.name,
+            
         }));
-
-        const promise = axios.post("http://localhost:8085/api/markAttendance", payload);
+console.log(payload)
+        const promise = axios.post("http://localhost:8085/api/markAttendance",{payload,type: accessLevel === 'Admin' ? 'Teacher' : 'Student'});
 
         toast.promise(promise, {
             loading: 'Saving attendance...',
