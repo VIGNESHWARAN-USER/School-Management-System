@@ -66,15 +66,19 @@ const MarkAttendance = () => {
 
     const submitAttendance = async () => {
         const payload = members.map(m => ({
-            id: m.id,
+            memberId: m.id,
             status: attendanceData[m.id].status,
             remarks: attendanceData[m.id].remarks,
             date: selectedDate,
             markedBy: user.name,
             
         }));
-console.log(payload)
-        const promise = axios.post("http://localhost:8085/api/markAttendance",{payload,type: accessLevel === 'Admin' ? 'Teacher' : 'Student'});
+
+        const endpoint = accessLevel === 'Admin'
+            ? 'http://localhost:8085/api/markTeacherAttendance'
+            : 'http://localhost:8085/api/markStudentAttendance';
+
+        const promise = axios.post(endpoint, payload);
 
         toast.promise(promise, {
             loading: 'Saving attendance...',

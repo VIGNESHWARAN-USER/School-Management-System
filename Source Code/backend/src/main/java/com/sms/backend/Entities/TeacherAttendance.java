@@ -17,15 +17,10 @@ public class TeacherAttendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long teacherId;
-
-    private LocalDate attendanceDate;
-
+    private Long memberId;
+    private LocalDate date;
+    private String remarks;
     private String status;
-
-    private LocalTime inTime;
-
-    private LocalTime outTime;
 
     private String markedBy;
 }
