@@ -13,7 +13,7 @@ const MarkAttendance = () => {
 
     // Get user info from localStorage
     const user = JSON.parse(localStorage.getItem('userData')) || { role: 'Admin', id: '1' }; 
-    const accessLevel = user.role;
+    const accessLevel = localStorage.getItem('accessLevel');
 
     useEffect(() => {
         fetchMembers();
@@ -70,11 +70,15 @@ const MarkAttendance = () => {
             status: attendanceData[m.id].status,
             remarks: attendanceData[m.id].remarks,
             date: selectedDate,
-            markedBy: user.id,
-            type: accessLevel === 'Admin' ? 'Teacher' : 'Student'
+            markedBy: user.name,
+            
         }));
 
-        const promise = axios.post("http://localhost:8085/api/markAttendance", payload);
+        const endpoint = accessLevel === 'Admin'
+            ? 'http://localhost:8085/api/markTeacherAttendance'
+            : 'http://localhost:8085/api/markStudentAttendance';
+
+        const promise = axios.post(endpoint, payload);
 
         toast.promise(promise, {
             loading: 'Saving attendance...',
