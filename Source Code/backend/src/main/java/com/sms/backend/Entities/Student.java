@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
+import java.util.List;
+import java.util.PriorityQueue;
 
 @Getter
 @Setter
@@ -24,4 +26,5 @@ public class Student {
     private String classId;
     private Long parentId;
     private String address;
+    private PriorityQueue<StudentAttendance> attendence;
 }
