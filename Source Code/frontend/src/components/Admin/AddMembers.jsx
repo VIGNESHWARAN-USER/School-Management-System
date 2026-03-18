@@ -4,9 +4,10 @@ import { HiOutlinePencilAlt, HiOutlineTrash, HiOutlineEye } from 'react-icons/hi
 import Modal from 'react-modal';
 import { toast } from 'sonner';
 import userimg from "../../assets/user.jpg";
-import axios from 'axios';
 import Sidebar from '../Sidebar';
 import Select from 'react-select';
+import api from '../../../../../../Employee-Management-Portal/frontend/src/api';
+import { useNavigate } from 'react-router-dom';
 
 Modal.setAppElement('#root');
 
@@ -31,6 +32,7 @@ const AddMembers = () => {
         studentIds: [], 
     });
 
+    const navigate = useNavigate();
     const [editingMember, setEditingMember] = useState(null);
     const [viewingMember, setViewingMember] = useState(null);
 
@@ -38,9 +40,9 @@ const AddMembers = () => {
     const fetchDetails = async () => {
         try {
             const [studRes, teachRes, parentRes] = await Promise.all([
-                axios.get("http://localhost:8085/api/fetchAllStudents"),
-                axios.get("http://localhost:8085/api/fetchAllTeachers"),
-                axios.get("http://localhost:8085/api/fetchAllParents")
+                api.get("http://localhost:8085/api/fetchAllStudents"),
+                api.get("http://localhost:8085/api/fetchAllTeachers"),
+                api.get("http://localhost:8085/api/fetchAllParents")
             ]);
             console.log("Students:", studRes.data);
             console.log("Teachers:", teachRes.data);
@@ -54,8 +56,12 @@ const AddMembers = () => {
             setUserData([...students, ...teachers, ...parentsData]);
             setParents(parentsData);
         } catch (error) {
-            console.error("Error fetching data:", error);
-            toast.error("Failed to fetch members.");
+            if(error.response && error.response.status === 404) {
+
+                localStorage.clear();
+                navigate('../login');
+                toast.error("Session Expired.");
+            }
         }
     };
 
@@ -95,7 +101,7 @@ const AddMembers = () => {
         else if (memberType === 'Teacher') endpoint = "addTeacher";
         else endpoint = "addParent";
 
-        const promise = axios.post(`http://localhost:8085/api/${endpoint}`, formData);
+        const promise = api.post(`http://localhost:8085/api/${endpoint}`, formData);
 
         toast.promise(promise, {
             loading: `Adding ${memberType}...`,
@@ -104,7 +110,14 @@ const AddMembers = () => {
                 setAddModalIsOpen(false);
                 return `${memberType} added successfully`;
             },
-            error: "Failed to add member."
+            error: (err) => {
+                if (err.response && err.response.status === 401) {
+                    localStorage.clear();
+                    navigate('../login');
+                    toast.error("Session Expired.");
+                }
+                return "Session Expired.";
+            }
         });
     };
 
@@ -124,7 +137,7 @@ const InfoBlock = ({ label, value }) => (
         action: {
             label: "Delete",
             onClick: () => {
-                const deletePromise = axios.delete(`http://localhost:8085/api/delete${type}/${id}`);
+                const deletePromise = api.delete(`http://localhost:8085/api/delete${type}/${id}`);
                 
                 toast.promise(deletePromise, {
                     loading: `Deleting ${type}...`,
@@ -132,7 +145,14 @@ const InfoBlock = ({ label, value }) => (
                         fetchDetails(); 
                         return `${type} deleted successfully`; 
                     },
-                    error: (err) => `Failed to delete: ${err.message}`,
+                    error: (err) => {
+                        if (err.response && err.response.status === 401) {
+                            localStorage.clear();
+                            navigate('../login');
+                            toast.error("Session Expired.");
+                        }
+                        return `Failed to delete: ${err.message}`;
+                    },
                 });
             },
         },

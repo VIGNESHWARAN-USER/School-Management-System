@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Sidebar from './Sidebar';
-import axios from 'axios';
 import { toast, Toaster } from 'sonner';
 import { HiOutlineSearch, HiCheckCircle, HiXCircle, HiClock } from 'react-icons/hi';
+import api from './api';
 
 const MarkAttendance = () => {
     const [members, setMembers] = useState([]);
@@ -27,7 +27,7 @@ const MarkAttendance = () => {
                 ? 'http://localhost:8085/api/fetchAllTeachers' 
                 : `http://localhost:8085/api/fetchAllStudents/${user.classId}`;
             
-            const response = await axios.get(endpoint);
+            const response = await api.get(endpoint);
             setMembers(response.data);
 
             // Initialize attendance states as 'Present' by default
@@ -37,6 +37,11 @@ const MarkAttendance = () => {
             });
             setAttendanceData(initialData);
         } catch (error) {
+            if(error.response && error.response.status === 401) {
+                localStorage.clear();
+                window.location.href = '../login';
+                toast.error("Session Expired.");
+            }
             toast.error("Failed to load members list");
         } finally {
             setLoading(false);
@@ -78,12 +83,18 @@ const MarkAttendance = () => {
             ? 'http://localhost:8085/api/markTeacherAttendance'
             : 'http://localhost:8085/api/markStudentAttendance';
 
-        const promise = axios.post(endpoint, payload);
+        const promise = api.post(endpoint, payload);
 
         toast.promise(promise, {
             loading: 'Saving attendance...',
             success: 'Attendance marked successfully!',
-            error: 'Failed to save attendance.'
+            error: (err) => {
+                if (err.response && err.response.status === 401) {
+                    localStorage.clear();
+                    window.location.href = '../login';
+                    toast.error("Session Expired.");
+                }                return "Failed to save attendance. Please try again.";
+            }
         });
     };
 
