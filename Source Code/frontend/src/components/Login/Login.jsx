@@ -6,7 +6,6 @@ import { Toaster, toast } from 'sonner';
 import { Mail, KeyRound, Eye, EyeOff, UserCog } from 'lucide-react'; 
 
 import loginimg from '../../assets/login.jpg'; 
-import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +18,7 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     
-    const loginPromise = axios.post("http://localhost:8085/api/login", { email: email, password:password, role: role });
+    const loginPromise = api.post("http://localhost:8085/auth/login", { email: email, password:password, role: role });
 
     toast.promise(loginPromise, {
       loading: 'Logging in...',
@@ -31,7 +30,7 @@ const Login = () => {
         }
         console.log(response.data);
         localStorage.setItem("token", response.data.token);
-        const userData = response.data;
+        const userData = response.data.userDetails;
         localStorage.setItem("userData", JSON.stringify(userData));
         localStorage.setItem("accessLevel", role);
         
@@ -39,12 +38,11 @@ const Login = () => {
         else if(role === "Teacher") setTimeout(() => navigate('/mark-attendance'), 1000); 
         else if(role === "Parent") setTimeout(() => navigate('/hrdashboard'), 1000); 
         else if(role === "Student") setTimeout(() => navigate('/employeedashboard'), 1000); 
-        else throw new Error(`No role found for, ${userData.name || 'user'}!`)
-        return `Welcome back, ${userData.name || 'user'}!`;
+        else throw new Error(`No role found for, ${userData.username || 'user'}!`)
+        return "Login successful!";
       },
       error: (error) => {
-        setIsLoading(false); // Re-enable button on error
-        // Handle axios errors
+        setIsLoading(false); 
         if (error.response) {
             if (error.response.status === 404) {
                 return "No account found with this email.";

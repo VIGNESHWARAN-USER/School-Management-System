@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
 import { Toaster, toast } from 'sonner';
 import { KeyRound, Eye, EyeOff, UserCog } from 'lucide-react';
 import loginimg from '../../assets/login.jpg';
+import api from '../api';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -31,7 +31,7 @@ const ResetPassword = () => {
     setIsLoading(true);
 
 
-    const resetPromise = axios.post("http://localhost:8085/api/reset-password", { email: email, password: password, role: role });
+    const resetPromise = api.post("http://localhost:8085/auth/reset-password", { email: email, password: password, role: role });
 
     toast.promise(resetPromise, {
       loading: 'Resetting password...',

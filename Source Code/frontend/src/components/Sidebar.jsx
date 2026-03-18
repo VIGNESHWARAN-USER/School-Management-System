@@ -28,7 +28,6 @@ const Sidebar = ({ redCount }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userName = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData")).name : "Unknown User";
   const accessLevel = localStorage.getItem("accessLevel") || "unknown";
   const [isOpen, setIsOpen] = useState(false);
 
@@ -132,9 +131,7 @@ const Sidebar = ({ redCount }) => {
         </nav>
 
 
-        <p className="flex justify-center font-bold tracking-wider text-lg px-4 py-2 text-center">
-          {userName.toUpperCase()}
-        </p>
+        
         <p className="flex justify-center font-bold tracking-wider text-sm px-4 py-2 text-center">
           Login as: {accessLevel.toUpperCase()}
         </p>

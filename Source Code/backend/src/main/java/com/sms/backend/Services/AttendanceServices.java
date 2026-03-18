@@ -22,16 +22,13 @@ public class AttendanceServices {
     public List<StudentAttendance> saveStudentAttendance(List<StudentAttendance> attendanceList){
         try
         {
-            for(StudentAttendance i: attendanceList)
-            {
-
-            }
             return studentAttendanceRepository.saveAll(attendanceList);
         }
         catch(Exception e)
         {
             System.out.println(e.getMessage());
         }
+        return null;
     }
 
     public List<TeacherAttendance> saveTeacherAttendance(List<TeacherAttendance> attendanceList){
