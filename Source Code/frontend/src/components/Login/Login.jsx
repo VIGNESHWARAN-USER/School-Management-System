@@ -6,6 +6,7 @@ import { Toaster, toast } from 'sonner';
 import { Mail, KeyRound, Eye, EyeOff, UserCog } from 'lucide-react'; 
 
 import loginimg from '../../assets/login.jpg'; 
+import api from '../api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -22,16 +23,20 @@ const Login = () => {
 
     toast.promise(loginPromise, {
       loading: 'Logging in...',
-      success: (response) => {
+      success: async (response) => {
         // Handle custom success case (201 for invalid password)
         if (response.status === 201) {
           // Manually throw to enter the catch block for custom error toasts
           throw new Error(response.data || "Invalid Password");
         }
-        console.log(response.data);
         localStorage.setItem("token", response.data.token);
+
+        const loginData = await api.post("http://localhost:8085/api/getDetails", { email: email, role: role });
+        
+        console.log(loginData.data);
+        
         const userData = response.data.userDetails;
-        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("userData", JSON.stringify(loginData.data));
         localStorage.setItem("accessLevel", role);
         
         if(role === "Admin") setTimeout(() => navigate('/add-members'), 1000); 

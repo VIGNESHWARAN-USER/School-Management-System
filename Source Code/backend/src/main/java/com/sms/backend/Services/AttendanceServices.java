@@ -2,12 +2,10 @@ package com.sms.backend.Services;
 
 import java.util.List;
 
-import com.sms.backend.Entities.StudentAttendance;
-import com.sms.backend.Entities.TeacherAttendance;
-import com.sms.backend.Repositories.AttendanceRepository;
-import com.sms.backend.Repositories.StudentAttendanceRepository;
-import com.sms.backend.Repositories.TeacherAttendanceRepository;
+import com.sms.backend.Entities.*;
+import com.sms.backend.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -18,24 +16,205 @@ public class AttendanceServices {
     private StudentAttendanceRepository studentAttendanceRepository;
     @Autowired
     private TeacherAttendanceRepository teacherAttendanceRepository;
+    @Autowired
+    private ParentRepository parentRepository;
+    @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
+    private EmailService emailService;
 
-    public List<StudentAttendance> saveStudentAttendance(List<StudentAttendance> attendanceList){
+    String htmlContent = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #d32f2f;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 6px 6px 0 0;
+        }
+        .content {
+            margin: 20px 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .details {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .footer {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .highlight {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="header">
+            Attendance Alert
+        </div>
+
+        <div class="content">
+            Dear Parent,<br><br>
+
+            This is to inform you that your child 
+            <span class="highlight">%s</span> 
+            was marked <span class="highlight">ABSENT</span> today.
+        </div>
+
+        <div class="details">
+            <strong>Student Name:</strong> %s <br>
+            <strong>Class:</strong> %s <br>
+            <strong>Date:</strong> %s <br>
+            <strong>Status:</strong> Absent
+            <strong>Remarks:</strong> %s <br>
+        </div>
+
+        <div class="content">
+            Kindly ensure your child attends school regularly.  
+            If this is due to any valid reason, please inform the school.
+        </div>
+
+        <div class="footer">
+            This is an automated message from School Management System.<br>
+            Please do not reply to this email.
+        </div>
+
+    </div>
+</body>
+</html>
+""";
+
+
+    public ResponseEntity<?> saveStudentAttendance(List<StudentAttendance> attendanceList) {
+        try {
+            for (StudentAttendance i : attendanceList) {
+
+                StudentAttendance existing =
+                        studentAttendanceRepository.findByDateAndMemberId(i.getDate(), i.getMemberId());
+
+                if (existing != null) {
+                    existing.setStatus(i.getStatus());
+                    existing.setRemarks(i.getRemarks());
+                    studentAttendanceRepository.save(existing);
+                } else {
+                    studentAttendanceRepository.save(i);
+                }
+
+                if ("Absent".equalsIgnoreCase(i.getStatus())) {
+
+                    Student student = studentRepository.findById(i.getMemberId()).orElse(null);
+                    if (student == null) continue;
+
+                    Parent parent = parentRepository.findById(student.getParentId()).orElse(null);
+                    if (parent == null) continue;
+
+                    String formattedHtml = String.format(
+                            htmlContent,
+                            student.getName(),
+                            student.getName(),
+                            student.getClass(),
+                            i.getDate(),
+                            i.getRemarks()
+                    );
+
+                    emailService.sendHtmlEmail(parent.getEmail(), "Attendance Alert", formattedHtml);
+                }
+            }
+
+            return ResponseEntity.ok(studentAttendanceRepository.findAll());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Something went wrong");
+        }
+    }
+
+
+    public ResponseEntity<?> saveTeacherAttendance(List<TeacherAttendance> attendanceList) {
+        try {
+            for (TeacherAttendance i : attendanceList) {
+
+                TeacherAttendance existing =
+                        teacherAttendanceRepository.findByDateAndMemberId(i.getDate(), i.getMemberId());
+
+                if (existing != null) {
+                    existing.setStatus(i.getStatus());
+                    existing.setRemarks(i.getRemarks());
+                    teacherAttendanceRepository.save(existing);
+                } else {
+                    teacherAttendanceRepository.save(i);
+                }
+
+//                if ("Absent".equalsIgnoreCase(i.getStatus())) {
+//
+//                    Teacher teacher = teacherAttendanceRepository.findById(i.getMemberId()).orElse(null);
+//                    if (teacher == null) continue;
+//
+//
+//
+//                    String formattedHtml = String.format(
+//                            htmlContent,
+//                            teacher.getName(),
+//                            teacher.getName(),
+//                            teacher.getClass(),
+//                            i.getDate(),
+//                            i.getRemarks()
+//                    );
+//
+//                    emailService.sendHtmlEmail(teacher.getEmail(), "Attendance Alert", formattedHtml);
+//                }
+            }
+
+            return ResponseEntity.ok(studentAttendanceRepository.findAll());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Something went wrong");
+        }
+    }
+
+    public ResponseEntity<?> getAllStudentAttendance(Long classId){
         try
         {
-            return studentAttendanceRepository.saveAll(attendanceList);
+            System.out.println(classId);
+            System.out.println();
+            List<StudentAttendance> studentAttendanceList = studentAttendanceRepository.findAllByClassId(classId);
+
+            return ResponseEntity.status(200).body(studentAttendanceList);
         }
         catch(Exception e)
         {
             System.out.println(e.getMessage());
         }
         return null;
-    }
-
-    public List<TeacherAttendance> saveTeacherAttendance(List<TeacherAttendance> attendanceList){
-        return teacherAttendanceRepository.saveAll(attendanceList);
-    }
-
-    public List<StudentAttendance> getAllStudentAttendance(){
-        return studentAttendanceRepository.findAll();
     }
 }

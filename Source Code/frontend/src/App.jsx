@@ -7,6 +7,7 @@ import ResetPassword from './components/Login/ResetPassword';
 import AddMembers from './components/Admin/AddMembers';
 import { Toaster } from 'sonner';
 import MarkAttendance from './components/MarkAttendance';
+import ViewAttendance from './components/ViewAttendance';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/add-members" element={<AddMembers />} />
         <Route path="/mark-attendance" element={<MarkAttendance />} />
+        <Route path="/view-attendance" element={<ViewAttendance />} />
       </Routes>
     </>
   );

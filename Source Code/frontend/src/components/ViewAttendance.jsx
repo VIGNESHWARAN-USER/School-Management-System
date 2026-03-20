@@ -4,7 +4,7 @@ import { toast, Toaster } from 'sonner';
 import { HiOutlineSearch, HiCheckCircle, HiXCircle, HiClock } from 'react-icons/hi';
 import api from './api';
 
-const MarkAttendance = () => {
+const ViewAttendance = () => {
     const [members, setMembers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [attendanceData, setAttendanceData] = useState({}); 
@@ -27,8 +27,8 @@ const MarkAttendance = () => {
         try {
             // Logic: Admin marks Teachers | Teacher marks Students
             const endpoint = accessLevel === 'Admin' 
-                ? 'http://localhost:8085/api/fetchAllTeachers' 
-                : `http://localhost:8085/api/fetchAllStudents/${user.classId}`;
+                ? 'http://localhost:8085/api/fetchAllTeachersAttendannce' 
+                : `http://localhost:8085/api/fetchAllStudentsAttendance/${user.classId}`;
             
             const response = await api.get(endpoint);
             setMembers(response.data);
@@ -67,30 +67,7 @@ const MarkAttendance = () => {
         }));
     };
 
-    const submitAttendance = async () => {
-        const payload = members.map(m => ({
-            memberId: m.id,
-            status: attendanceData[m.id].status,
-            remarks: attendanceData[m.id].remarks,
-            date: selectedDate,
-            markedBy: user.name,
-            
-        }));
-
-        const endpoint = accessLevel === 'Admin'
-            ? 'http://localhost:8085/api/markTeacherAttendance'
-            : 'http://localhost:8085/api/markStudentAttendance';
-
-        const promise = api.post(endpoint, payload);
-
-        toast.promise(promise, {
-            loading: 'Saving attendance...',
-            success: 'Attendance marked successfully!',
-            error:  "Failed to save attendance. Please try again."
-         
-        });
-    };
-
+    
     return (
         <div className="flex h-screen bg-gray-50">
             <Sidebar />
@@ -99,9 +76,9 @@ const MarkAttendance = () => {
             <div className="flex-1 p-8 overflow-y-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-800">Mark Attendance</h1>
+                        <h1 className="text-2xl font-bold text-gray-800">View Attendance</h1>
                         <p className="text-gray-500">
-                            {accessLevel === 'Admin' ? 'Marking Teachers' : 'Marking Students'}
+                            {accessLevel === 'Admin' ? 'Viewing Teachers' : 'Viewing Students'}
                         </p>
                     </div>
 
@@ -122,12 +99,6 @@ const MarkAttendance = () => {
                                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-64"
                             />
                         </div>
-                        <button 
-                            onClick={submitAttendance}
-                            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-md"
-                        >
-                            Save Attendance
-                        </button>
                     </div>
                 </div>
 
@@ -204,4 +175,4 @@ const MarkAttendance = () => {
     );
 };
 
-export default MarkAttendance;
+export default ViewAttendance;

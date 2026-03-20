@@ -17,6 +17,7 @@ public class StudentAttendance implements Comparable<StudentAttendance> {
     private Long id;
 
     private Long memberId;
+    private Long classId;
     private LocalDate date;
     private String remarks;
     private String status;

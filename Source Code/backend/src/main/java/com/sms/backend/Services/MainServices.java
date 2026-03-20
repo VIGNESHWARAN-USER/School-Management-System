@@ -97,6 +97,7 @@ public class MainServices {
                 if(user  == null) return ResponseEntity.notFound().build();
             }
             int otp = (int) (Math.random() * 10000);
+
             String htmlContent = "<!DOCTYPE html>\n" +
                     "<html>\n" +
                     "<head>\n" +
@@ -231,4 +232,31 @@ public class MainServices {
         }
     }
 
+    public ResponseEntity<?> getDetails(String email, String role) {
+        try{
+            switch (role) {
+                case "Admin" -> {
+                    Administrator admin = administratorRepository.findByEmail(email);
+                    return ResponseEntity.status(200).body(admin);
+                }
+                case "Parent" -> {
+                    Parent parent = parentRepository.findByEmail(email);
+                    return ResponseEntity.status(200).body(parent);
+                }
+                case "Teacher" -> {
+                    Teacher teacher = teacherRepository.findByEmail(email);
+                    return ResponseEntity.status(200).body(teacher);
+                }
+                case "Student" -> {
+                    Student student = studentRepository.findByEmail(email);
+                    return ResponseEntity.status(200).body(student);
+                }
+                default -> {
+                    return ResponseEntity.notFound().build();
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

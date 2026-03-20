@@ -56,12 +56,7 @@ const AddMembers = () => {
             setUserData([...students, ...teachers, ...parentsData]);
             setParents(parentsData);
         } catch (error) {
-            if(error.response && error.response.status === 404) {
-
-                localStorage.clear();
-                navigate('../login');
-                toast.error("Session Expired.");
-            }
+            console.error("Error fetching member details:", error);
         }
     };
 
@@ -111,11 +106,6 @@ const AddMembers = () => {
                 return `${memberType} added successfully`;
             },
             error: (err) => {
-                if (err.response && err.response.status === 401) {
-                    localStorage.clear();
-                    navigate('../login');
-                    toast.error("Session Expired.");
-                }
                 return "Session Expired.";
             }
         });
@@ -146,11 +136,6 @@ const InfoBlock = ({ label, value }) => (
                         return `${type} deleted successfully`; 
                     },
                     error: (err) => {
-                        if (err.response && err.response.status === 401) {
-                            localStorage.clear();
-                            navigate('../login');
-                            toast.error("Session Expired.");
-                        }
                         return `Failed to delete: ${err.message}`;
                     },
                 });
