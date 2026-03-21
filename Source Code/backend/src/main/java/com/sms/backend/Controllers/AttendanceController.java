@@ -1,7 +1,9 @@
 package com.sms.backend.Controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import com.sms.backend.DTO.AttendanceDTO;
 import com.sms.backend.Entities.StudentAttendance;
 import com.sms.backend.Entities.TeacherAttendance;
 import com.sms.backend.Services.AttendanceServices;
@@ -20,17 +22,17 @@ public class AttendanceController {
     private AttendanceServices attendanceService;
 
     @PostMapping("/markStudentAttendance")
-    public ResponseEntity<?> saveStudentAttendance(@RequestBody List<StudentAttendance> attendanceList){
+    public ResponseEntity<?> saveStudentAttendance(@RequestBody List<AttendanceDTO> attendanceList){
             return attendanceService.saveStudentAttendance(attendanceList);
     }
 
     @PostMapping("/markTeacherAttendance")
-    public ResponseEntity<?> saveTeacherAttendance(@RequestBody List<TeacherAttendance> attendanceList){
+    public ResponseEntity<?> saveTeacherAttendance(@RequestBody List<AttendanceDTO> attendanceList){
         return attendanceService.saveTeacherAttendance(attendanceList);
     }
 
-    @GetMapping("/fetchAllStudentsAttendannce/{classId}")
-    public ResponseEntity<?> getAllAttendance(@PathVariable Long classId){
-        return attendanceService.getAllStudentAttendance(classId);
+    @GetMapping("/attendance/class/{classId}/date/{selected_date}")
+    public ResponseEntity<?> getAllAttendance(@PathVariable int classId, @PathVariable LocalDate selected_date){
+        return attendanceService.getAllStudentAttendance(classId, selected_date);
     }
 }

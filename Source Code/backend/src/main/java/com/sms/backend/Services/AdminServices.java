@@ -1,5 +1,6 @@
 package com.sms.backend.Services;
 
+import com.sms.backend.DTO.*;
 import com.sms.backend.Entities.Administrator;
 import com.sms.backend.Entities.Student;
 import com.sms.backend.Entities.Teacher;
@@ -14,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.sound.midi.SysexMessage;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,29 +35,66 @@ public class AdminServices {
     private PasswordEncoder passwordEncoder;
 
 
-    public String addStudent(Student student)
+    public String addStudent(StudentDTO studentdto)
     {
+        Student student = new Student();
+
+        student.setAge(studentdto.getAge());
+        student.setAddress(studentdto.getAddress());
+        student.setEmail(studentdto.getEmail());
+        student.setClassId(studentdto.getClassId());
+        student.setName(studentdto.getName());
+
         student.setPassword(passwordEncoder.encode("1234"));
         studentRepository.save(student);
         return "Student Added Successfully";
     }
 
-    public String addTeacher(Teacher teacher)
+    public String addTeacher(TeacherDTO teacherdto)
     {
+        Teacher teacher = new Teacher();
+
+        teacher.setName(teacherdto.getName());
+        teacher.setEmail(teacherdto.getEmail());
+        teacher.setSubject(teacherdto.getSubject());
+        teacher.setClassId(teacherdto.getClassId());
+        teacher.setPhoneNumber(teacherdto.getPhoneNumber());
+
         teacher.setPassword(passwordEncoder.encode("1234"));
         teacherRepository.save(teacher);
         return "Teacher Added Successfully";
     }
 
-    public String addParent(Parent parent)
-    {
+    public String addParent(CreateParentDTO parentdto) {
+
+        Parent parent = new Parent();
+
+        parent.setAddress(parentdto.getAddress());
+        parent.setName(parentdto.getName());
+        parent.setAge(parentdto.getAge());
+        parent.setMobileNumber(parentdto.getMobileNumber());
+        parent.setEmail(parentdto.getEmail());
         parent.setPassword(passwordEncoder.encode("1234"));
-        parentRepository.save(parent);
-        Parent temp = parentRepository.findByEmail(parent.getEmail());
-        for(Long id: temp.getStudentIds())
-        {
-            studentRepository.findById(id).ifPresent(student -> {student.setParentId(temp.getId()); studentRepository.save(student);});
+
+
+        parent = parentRepository.save(parent);
+
+        List<Student> studentList = new ArrayList<>();
+
+        for (Long id : parentdto.getStudentIds()) {
+
+            Student student = studentRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+
+            student.setParent(parent);
+
+            studentList.add(student);
         }
+
+
+        studentRepository.saveAll(studentList);
+        parent.setStudentList(studentList);
+
         return "Parent Added Successfully";
     }
 
@@ -109,22 +147,111 @@ public class AdminServices {
     }
 
     public ResponseEntity<?> fetchAllStudents() {
-        try
-        {
-            List<Student> studentList = studentRepository.findAll();
-            return ResponseEntity.status(200).body(studentList);
+
+        try {
+            List<Student> students = studentRepository.findAll();
+
+            List<StudentDTO> studentList = students.stream()
+                    .map(student -> {
+
+                        StudentDTO dto = new StudentDTO();
+
+                        dto.setId(student.getId());
+                        dto.setName(student.getName());
+                        dto.setAge(student.getAge());
+                        dto.setEmail(student.getEmail());
+                        dto.setClassId(student.getClassId());
+                        dto.setAddress(student.getAddress());
+
+                        // 🔹 Parent mapping
+                        if (student.getParent() != null) {
+                            ParentDTO parentDTO = new ParentDTO();
+                            parentDTO.setId(student.getParent().getId());
+                            parentDTO.setName(student.getParent().getName());
+                            parentDTO.setMobileNumber(student.getParent().getMobileNumber());
+
+                            dto.setParentDTO(parentDTO);
+                        }
+
+                        // 🔹 Attendance mapping
+                        if (student.getAttendenceList() != null) {
+                            List<AttendanceDTO> attendanceList =
+                                    student.getAttendenceList().stream()
+                                            .map(att -> {
+                                                AttendanceDTO a = new AttendanceDTO();
+                                                a.setDate(att.getDate());
+                                                a.setStatus(att.getStatus());
+                                                a.setRemarks(att.getRemarks());
+                                                return a;
+                                            })
+                                            .toList();
+
+                            dto.setAttendanceDTOList(attendanceList);
+                        }
+
+                        return dto;
+
+                    }).toList();
+
+            return ResponseEntity.ok(studentList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error fetching students");
         }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
-        return null;
     }
 
     public ResponseEntity<?> fetchAllParents() {
         try
         {
-            List<Parent> parentList = parentRepository.findAll();
+            List<Parent> parents = parentRepository.findAll();
+
+            List<ParentDTO> parentList = parents.stream().map(parent->{
+                ParentDTO parentDTO = new ParentDTO();
+
+                parentDTO.setName(parent.getName());
+                parentDTO.setMobileNumber(parent.getMobileNumber());
+                parentDTO.setAge(parent.getAge());
+                parentDTO.setId(parent.getId());
+                parentDTO.setEmail(parent.getEmail());
+                parentDTO.setAddress(parent.getAddress());
+
+               if(parent.getStudentList() != null)
+               {
+                   List<Student> students = parent.getStudentList();
+
+                   List<StudentDTO> studentDTOList = students.stream().map(student->{
+                       StudentDTO dto = new StudentDTO();
+                       dto.setId(student.getId());
+                       dto.setName(student.getName());
+                       dto.setAge(student.getAge());
+                       dto.setEmail(student.getEmail());
+                       dto.setClassId(student.getClassId());
+                       dto.setAddress(student.getAddress());
+
+                       if (student.getAttendenceList() != null) {
+                           List<AttendanceDTO> attendanceList =
+                                   student.getAttendenceList().stream()
+                                           .map(att -> {
+                                               AttendanceDTO a = new AttendanceDTO();
+                                               a.setDate(att.getDate());
+                                               a.setStatus(att.getStatus());
+                                               a.setRemarks(att.getRemarks());
+                                               return a;
+                                           })
+                                           .toList();
+
+                           dto.setAttendanceDTOList(attendanceList);
+                       }
+
+                       return dto;
+                   }).toList();
+
+
+               }
+                return parentDTO;
+            }).toList();
+
             return ResponseEntity.status(200).body(parentList);
         }
         catch (Exception e)
@@ -135,28 +262,100 @@ public class AdminServices {
     }
 
     public ResponseEntity<?> fetchAllTeachers() {
-        try
-        {
-            List<Teacher> teacherList = teacherRepository.findAll();
-            return ResponseEntity.status(200).body(teacherList);
+        try {
+            List<Teacher> teachers = teacherRepository.findAll();
+
+            List<TeacherDTO> teacherDTOList = teachers.stream()
+                    .map(teacher -> {
+
+                        TeacherDTO dto = new TeacherDTO();
+
+                        dto.setId(teacher.getId());
+                        dto.setName(teacher.getName());
+                        dto.setEmail(teacher.getEmail());
+                        dto.setClassId(teacher.getClassId());
+                        dto.setPhoneNumber(teacher.getPhoneNumber());
+                        dto.setSubject(teacher.getSubject());
+
+
+                        if (teacher.getAttendenceList() != null) {
+                            List<AttendanceDTO> attendanceList =
+                                    teacher.getAttendenceList().stream()
+                                            .map(att -> {
+                                                AttendanceDTO a = new AttendanceDTO();
+                                                a.setDate(att.getDate());
+                                                a.setStatus(att.getStatus());
+                                                a.setRemarks(att.getRemarks());
+                                                return a;
+                                            })
+                                            .toList();
+
+                            dto.setAttendanceList(attendanceList);
+                        }
+
+                        return dto;
+
+                    }).toList();
+
+            return ResponseEntity.ok(teacherDTOList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error fetching students");
         }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
-        return null;
     }
 
     public ResponseEntity<?> fetchAllStudentsByClassId(String classId) {
-        try
-        {
-            List<Student> studentList = studentRepository.findAllByClassId(classId);
-            return ResponseEntity.status(200).body(studentList);
+        try {
+            List<Student> students = studentRepository.findAllByClassId(classId);
+
+            List<StudentDTO> studentList = students.stream()
+                    .map(student -> {
+
+                        StudentDTO dto = new StudentDTO();
+
+                        dto.setId(student.getId());
+                        dto.setName(student.getName());
+                        dto.setAge(student.getAge());
+                        dto.setEmail(student.getEmail());
+                        dto.setClassId(student.getClassId());
+                        dto.setAddress(student.getAddress());
+
+                        // 🔹 Parent mapping
+                        if (student.getParent() != null) {
+                            ParentDTO parentDTO = new ParentDTO();
+                            parentDTO.setId(student.getParent().getId());
+                            parentDTO.setName(student.getParent().getName());
+                            parentDTO.setMobileNumber(student.getParent().getMobileNumber());
+
+                            dto.setParentDTO(parentDTO);
+                        }
+
+                        // 🔹 Attendance mapping
+                        if (student.getAttendenceList() != null) {
+                            List<AttendanceDTO> attendanceList =
+                                    student.getAttendenceList().stream()
+                                            .map(att -> {
+                                                AttendanceDTO a = new AttendanceDTO();
+                                                a.setDate(att.getDate());
+                                                a.setStatus(att.getStatus());
+                                                a.setRemarks(att.getRemarks());
+                                                return a;
+                                            })
+                                            .toList();
+
+                            dto.setAttendanceDTOList(attendanceList);
+                        }
+
+                        return dto;
+
+                    }).toList();
+
+            return ResponseEntity.ok(studentList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error fetching students");
         }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
-        return null;
     }
 }

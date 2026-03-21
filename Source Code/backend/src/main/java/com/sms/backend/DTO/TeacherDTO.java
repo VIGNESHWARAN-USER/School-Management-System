@@ -1,31 +1,21 @@
-package com.sms.backend.Entities;
+package com.sms.backend.DTO;
 
+import com.sms.backend.Entities.Attendance;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Collection;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Teacher {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class TeacherDTO {
     private Long id;
-
     private String name;
     private String subject;
     private String email;
     private String classId;
-    private String password;
     private String phoneNumber;
-
-    @OneToMany(mappedBy = "teacher")
-    private List<TeacherAttendance> attendenceList;
-
-
+    private List<AttendanceDTO> attendanceList;
 }

@@ -390,7 +390,7 @@ const InfoBlock = ({ label, value }) => (
         isMulti
         name="children"
         options={userData
-            .filter(m => m.type === 'Student' && m.parentId === null)
+            .filter(m => m.type === 'Student' && m.parentDTO === null)
             .map(student => ({ 
                 value: student.id, 
                 label: `${student.name} (Class: ${student.classId})` 

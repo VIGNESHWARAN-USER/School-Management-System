@@ -20,12 +20,5 @@ public class ProgressReport {
     private int totalMarks;
     private double averageMarks;
     private String grade;
-
-    @ElementCollection
-    private List<String> gradeList;
-
-    @ElementCollection
-    private List<Integer> marksList;
-
     private String remarks;
 }

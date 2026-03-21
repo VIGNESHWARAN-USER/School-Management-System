@@ -1,7 +1,9 @@
 package com.sms.backend.Services;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import com.sms.backend.DTO.AttendanceDTO;
 import com.sms.backend.Entities.*;
 import com.sms.backend.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +96,7 @@ public class AttendanceServices {
             <strong>Student Name:</strong> %s <br>
             <strong>Class:</strong> %s <br>
             <strong>Date:</strong> %s <br>
-            <strong>Status:</strong> Absent
+            <strong>Status:</strong> Absent <br>
             <strong>Remarks:</strong> %s <br>
         </div>
 
@@ -113,35 +115,136 @@ public class AttendanceServices {
 </html>
 """;
 
+    String htmlContentForTeacher = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #d32f2f;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 6px 6px 0 0;
+        }
+        .content {
+            margin: 20px 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .details {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .footer {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .highlight {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+    </style>
+</head>
 
-    public ResponseEntity<?> saveStudentAttendance(List<StudentAttendance> attendanceList) {
+<body>
+    <div class="container">
+
+        <div class="header">
+            Attendance Alert
+        </div>
+
+        <div class="content">
+            Dear Parent,<br><br>
+
+            This is to inform you that your attendance is marked
+            <span class="highlight">%s</span> 
+            was marked <span class="highlight">ABSENT</span> today.
+        </div>
+
+        <div class="details">
+            <strong>Name:</strong> %s <br>
+            <strong>Class:</strong> %s <br>
+            <strong>Date:</strong> %s <br>
+            <strong>Status:</strong> Absent
+            <strong>Remarks:</strong> %s <br>
+        </div>
+
+        <div class="footer">
+            This is an automated message from School Management System.<br>
+            Please do not reply to this email.
+        </div>
+
+    </div>
+</body>
+</html>
+""";
+
+    @Autowired
+    private TeacherRepository teacherRepository;
+
+
+    public ResponseEntity<?> saveStudentAttendance(List<AttendanceDTO> attendanceList) {
         try {
-            for (StudentAttendance i : attendanceList) {
+            for (AttendanceDTO i : attendanceList) {
 
                 StudentAttendance existing =
-                        studentAttendanceRepository.findByDateAndMemberId(i.getDate(), i.getMemberId());
+                        studentAttendanceRepository.findByDateAndStudent(i.getDate(), studentRepository.findById(i.getId()).orElse(null));
 
                 if (existing != null) {
                     existing.setStatus(i.getStatus());
                     existing.setRemarks(i.getRemarks());
+                    System.out.println(i.getClassId());
+                    existing.setClassId(i.getClassId());
+
                     studentAttendanceRepository.save(existing);
                 } else {
-                    studentAttendanceRepository.save(i);
+
+                    StudentAttendance studentAttendance = new StudentAttendance();
+
+                    studentAttendance.setStudent(studentRepository.findById(i.getId()).orElse(null));
+                    studentAttendance.setRemarks(i.getRemarks());
+                    studentAttendance.setStatus(i.getStatus());
+                    studentAttendance.setDate(i.getDate());
+                    studentAttendance.setClassId(i.getClassId());
+
+
+                    studentAttendanceRepository.save(studentAttendance);
                 }
 
                 if ("Absent".equalsIgnoreCase(i.getStatus())) {
 
-                    Student student = studentRepository.findById(i.getMemberId()).orElse(null);
+                    Student student = studentRepository.findById(i.getId()).orElse(null);
                     if (student == null) continue;
 
-                    Parent parent = parentRepository.findById(student.getParentId()).orElse(null);
+                    Parent parent = student.getParent();
                     if (parent == null) continue;
 
                     String formattedHtml = String.format(
                             htmlContent,
                             student.getName(),
                             student.getName(),
-                            student.getClass(),
+                            student.getClassId(),
                             i.getDate(),
                             i.getRemarks()
                     );
@@ -159,39 +262,49 @@ public class AttendanceServices {
     }
 
 
-    public ResponseEntity<?> saveTeacherAttendance(List<TeacherAttendance> attendanceList) {
+    public ResponseEntity<?> saveTeacherAttendance(List<AttendanceDTO> attendanceList) {
         try {
-            for (TeacherAttendance i : attendanceList) {
+            for (AttendanceDTO i : attendanceList) {
 
                 TeacherAttendance existing =
-                        teacherAttendanceRepository.findByDateAndMemberId(i.getDate(), i.getMemberId());
+                        teacherAttendanceRepository.findByDateAndTeacher(i.getDate(), teacherRepository.findById(i.getId()).orElse(null));
 
                 if (existing != null) {
                     existing.setStatus(i.getStatus());
                     existing.setRemarks(i.getRemarks());
+                    existing.setClassId(i.getClassId());
                     teacherAttendanceRepository.save(existing);
                 } else {
-                    teacherAttendanceRepository.save(i);
+                    TeacherAttendance teacherAttendance = new TeacherAttendance();
+                    teacherAttendance.setTeacher(teacherRepository.findById(i.getId()).orElse(null));
+                    teacherAttendance.setRemarks(i.getRemarks());
+                    teacherAttendance.setStatus(i.getStatus());
+                    teacherAttendance.setDate(i.getDate());
+                    teacherAttendance.setClassId(i.getClassId());
+
+                   teacherAttendanceRepository.save(teacherAttendance);
+
+
                 }
 
-//                if ("Absent".equalsIgnoreCase(i.getStatus())) {
-//
-//                    Teacher teacher = teacherAttendanceRepository.findById(i.getMemberId()).orElse(null);
-//                    if (teacher == null) continue;
-//
-//
-//
-//                    String formattedHtml = String.format(
-//                            htmlContent,
-//                            teacher.getName(),
-//                            teacher.getName(),
-//                            teacher.getClass(),
-//                            i.getDate(),
-//                            i.getRemarks()
-//                    );
-//
-//                    emailService.sendHtmlEmail(teacher.getEmail(), "Attendance Alert", formattedHtml);
-//                }
+                if ("Absent".equalsIgnoreCase(i.getStatus())) {
+
+                    Teacher teacher = teacherRepository.findById(i.getId()).orElse(null);
+                    if (teacher == null) continue;
+
+
+
+                    String formattedHtml = String.format(
+                            htmlContentForTeacher,
+                            teacher.getName(),
+                            teacher.getName(),
+                            teacher.getClass(),
+                            i.getDate(),
+                            i.getRemarks()
+                    );
+
+                    emailService.sendHtmlEmail(teacher.getEmail(), "Attendance Alert", formattedHtml);
+                }
             }
 
             return ResponseEntity.ok(studentAttendanceRepository.findAll());
@@ -202,14 +315,26 @@ public class AttendanceServices {
         }
     }
 
-    public ResponseEntity<?> getAllStudentAttendance(Long classId){
+    public ResponseEntity<?> getAllStudentAttendance(int classId, LocalDate date){
         try
         {
-            System.out.println(classId);
-            System.out.println();
-            List<StudentAttendance> studentAttendanceList = studentAttendanceRepository.findAllByClassId(classId);
+            List<StudentAttendance> studentAttendanceList = studentAttendanceRepository.findAllByClassIdAndDate(classId, date);
 
-            return ResponseEntity.status(200).body(studentAttendanceList);
+            List<AttendanceDTO> attendanceDTOS = studentAttendanceList.stream().map(studentAttendance ->
+            {
+                AttendanceDTO attendanceDTO = new AttendanceDTO();
+
+                attendanceDTO.setId(studentAttendance.getId());
+                attendanceDTO.setStatus(studentAttendance.getStatus());
+                attendanceDTO.setRemarks(studentAttendance.getRemarks());
+                attendanceDTO.setDate(studentAttendance.getDate());
+                attendanceDTO.setName(studentAttendance.getStudent().getName());
+                attendanceDTO.setClassId(studentAttendance.getClassId());
+
+                return attendanceDTO;
+            }).toList();
+
+            return ResponseEntity.status(200).body(attendanceDTOS);
         }
         catch(Exception e)
         {

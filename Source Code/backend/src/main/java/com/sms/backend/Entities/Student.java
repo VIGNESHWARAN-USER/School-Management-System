@@ -1,12 +1,10 @@
 package com.sms.backend.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
-import java.util.PriorityQueue;
 
 @Getter
 @Setter
@@ -24,7 +22,15 @@ public class Student {
     private String email;
     private String password;
     private String classId;
-    private Long parentId;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    @JsonBackReference
+    private Parent parent;
+
     private String address;
-    private PriorityQueue<StudentAttendance> attendence;
+
+    @OneToMany(mappedBy = "student")
+    @JsonManagedReference
+    private List<StudentAttendance> attendenceList;
 }

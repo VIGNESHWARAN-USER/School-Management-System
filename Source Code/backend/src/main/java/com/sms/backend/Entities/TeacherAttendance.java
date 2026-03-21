@@ -17,10 +17,12 @@ public class TeacherAttendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long memberId;
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
+
+    private int classId;
     private LocalDate date;
     private String remarks;
     private String status;
-
-    private String markedBy;
 }
