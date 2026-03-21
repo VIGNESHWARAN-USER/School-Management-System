@@ -16,9 +16,11 @@ const MarkAttendance = () => {
     const accessLevel = localStorage.getItem('accessLevel');
 
     useEffect(() => {
+
+        
+
         fetchMembers();
     }, [accessLevel]);
-    console.log(user);
     const fetchMembers = async () => {
         setLoading(true);
         try {
@@ -29,7 +31,7 @@ const MarkAttendance = () => {
             
             const response = await api.get(endpoint);
             setMembers(response.data);
-
+            console.log("Fetched members for attendance:", response.data);
             // Initialize attendance states as 'Present' by default
             const initialData = {};
             response.data.forEach(m => {
@@ -37,11 +39,6 @@ const MarkAttendance = () => {
             });
             setAttendanceData(initialData);
         } catch (error) {
-            if(error.response && error.response.status === 401) {
-                localStorage.clear();
-                window.location.href = '../login';
-                toast.error("Session Expired.");
-            }
             toast.error("Failed to load members list");
         } finally {
             setLoading(false);
@@ -71,30 +68,26 @@ const MarkAttendance = () => {
 
     const submitAttendance = async () => {
         const payload = members.map(m => ({
-            memberId: m.id,
+            id: m.id,
             status: attendanceData[m.id].status,
             remarks: attendanceData[m.id].remarks,
             date: selectedDate,
-            markedBy: user.name,
-            
+            markedBy: user.id,
+            classId: user.classId || null
         }));
 
         const endpoint = accessLevel === 'Admin'
             ? 'http://localhost:8085/api/markTeacherAttendance'
             : 'http://localhost:8085/api/markStudentAttendance';
 
+        console.log("Submitting attendance with payload:", payload);
         const promise = api.post(endpoint, payload);
 
         toast.promise(promise, {
             loading: 'Saving attendance...',
             success: 'Attendance marked successfully!',
-            error: (err) => {
-                if (err.response && err.response.status === 401) {
-                    localStorage.clear();
-                    window.location.href = '../login';
-                    toast.error("Session Expired.");
-                }                return "Failed to save attendance. Please try again.";
-            }
+            error:  "Failed to save attendance. Please try again."
+         
         });
     };
 
@@ -142,6 +135,7 @@ const MarkAttendance = () => {
                     <table className="w-full text-left">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
+                                <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Member ID</th>
                                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Member Name</th>
                                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase text-center">Status</th>
                                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Remarks (Optional)</th>
@@ -152,6 +146,11 @@ const MarkAttendance = () => {
                                 <tr><td colSpan="3" className="text-center py-10">Loading list...</td></tr>
                             ) : filteredMembers.map((m) => (
                                 <tr key={m.id} className="hover:bg-gray-50 transition">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center space-x-3">
+                                            <span className="font-medium text-gray-900">{m.id}</span>
+                                        </div>
+                                    </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center space-x-3">
                                             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">

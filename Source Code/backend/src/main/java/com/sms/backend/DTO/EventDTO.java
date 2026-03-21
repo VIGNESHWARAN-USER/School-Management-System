@@ -1,4 +1,4 @@
-package com.sms.backend.Entities;
+package com.sms.backend.DTO;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -10,13 +10,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Event {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class EventDTO {
     private Long id;
-
     private String eventName;
     private String eventDescription;
     private String eventDate;
@@ -24,10 +19,7 @@ public class Event {
     private String eventLocation;
     private String organizer;
     private int maxParticipants;
-    private int currentParticipants;
     private String eventStatus;
 
-    @OneToMany(mappedBy = "event")
-    @JsonManagedReference
-    private List<Registration> registrationList;
+    private List<RegistrationDTO> registrationDTOS;
 }

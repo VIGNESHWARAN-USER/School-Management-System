@@ -1,12 +1,11 @@
 package com.sms.backend.Controllers;
 
+import com.sms.backend.DTO.CreateParentDTO;
+import com.sms.backend.DTO.StudentDTO;
+import com.sms.backend.DTO.TeacherDTO;
 import com.sms.backend.Entities.Administrator;
-import com.sms.backend.Entities.Student;
-import com.sms.backend.Entities.Teacher;
-import com.sms.backend.Entities.Parent;
 import com.sms.backend.Services.AdminServices;
 
-import com.sms.backend.Services.AdminServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,7 @@ public class AdminController {
 
 
     @PostMapping("/addStudent")
-    public String addStudent(@RequestBody Student student)
+    public String addStudent(@RequestBody StudentDTO student)
     {
         return adminService.addStudent(student);
     }
@@ -29,14 +28,14 @@ public class AdminController {
 
     // Add Teacher
     @PostMapping("/addTeacher")
-    public String addTeacher(@RequestBody Teacher teacher)
+    public String addTeacher(@RequestBody TeacherDTO teacher)
     {
         return adminService.addTeacher(teacher);
     }
 
     // Add Parent
     @PostMapping("/addParent")
-    public String addParent(@RequestBody Parent parent)
+    public String addParent(@RequestBody CreateParentDTO parent)
     {
         return adminService.addParent(parent);
     }

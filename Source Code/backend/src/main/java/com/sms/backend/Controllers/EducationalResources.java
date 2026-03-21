@@ -3,14 +3,14 @@ package com.sms.backend.Controllers;
 import com.sms.backend.Entities.Resource;
 import com.sms.backend.Entities.Assignment;
 import com.sms.backend.Entities.Submission;
-import com.sms.backend.Services.ResourceAssignmentService;
+import com.sms.backend.Services.EducationalResourcesServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/resource")
 public class EducationalResources {
     @Autowired
-    ResourceAssignmentService resourceAssignmentService;
+    EducationalResourcesServices resourceAssignmentService;
     // 1️⃣ Add Resource
     @PostMapping("/addResource")
     public String addResource(@RequestBody Resource resource) {

@@ -52,11 +52,15 @@ const Sidebar = ({ redCount }) => {
     Teacher: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
       { name: "Mark Attendance", to: "../mark-attendance", icon: <MdEvent /> },
+      { name: "View Attendance", to: "../view-attendance", icon: <MdEvent /> },
     ],
     Admin: [
       { name: "Admin Dashboard", to: "../admindashboard", icon: <FaUsers /> },
       { name: "Add Members", to: "../add-members", icon: <FaUsers /> },
       { name: "Mark Attendance", to: "../mark-attendance", icon: <MdEvent /> },
+      { name: "View Attendance", to: "../view-attendance", icon: <MdEvent /> },
+      { name: "Add Event", to: "../add-event", icon: <MdEvent /> },
+      { name: "Manage Events", to: "../manage-events", icon: <MdEvent /> },
     ],
   };
 
@@ -90,8 +94,7 @@ const Sidebar = ({ redCount }) => {
         id="sidebar"
         className={`
           fixed inset-y-0 left-0 z-40
-          w-64 h-screen overflow-y-auto bg-gradient-to-b from-blue-600 to-blue-400
-          text-white flex flex-col shadow-lg
+          w-64 h-screen overflow-y-auto bg-blue-600 text-white flex flex-col shadow-lg
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           md:relative md:translate-x-0 md:w-1/5 md:h-full md:flex md:shrink-0

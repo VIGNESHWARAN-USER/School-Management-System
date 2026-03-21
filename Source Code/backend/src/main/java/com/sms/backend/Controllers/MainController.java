@@ -25,6 +25,14 @@ public class MainController {
            return mainServices.login(email,password,role);
     }
 
+    @RequestMapping("getDetails")
+    public ResponseEntity<?> getDetails(@RequestBody Map<String, String> data)
+    {
+        String email = data.get("email");
+        String role = data.get("role");
+        return mainServices.getDetails(email, role);
+    }
+
     @RequestMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> data)
     {
