@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import userimg from "../../assets/user.jpg";
 import Sidebar from '../Sidebar';
 import Select from 'react-select';
-import api from '../../../../../../Employee-Management-Portal/frontend/src/api';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
 Modal.setAppElement('#root');
