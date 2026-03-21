@@ -26,8 +26,10 @@ const ViewAttendance = () => {
             // Teacher views their Class attendance
             const endpoint = accessLevel === 'Admin' 
                 ? `/api/attendance/date/${selectedDate}` 
-                : `/api/attendance/class/${user.classId}/date/${selectedDate}`;
-            
+                : accessLevel === 'Teacher' 
+                ? `/api/attendance/class/${user.classId}/date/${selectedDate}`
+                : `/api/attendance/member/${user.id}/date/${selectedDate}`;
+
             const response = await api.get(endpoint);
             setRecords(response.data);
         } catch (error) {

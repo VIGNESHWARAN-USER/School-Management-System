@@ -29,19 +29,13 @@ const Sidebar = ({ redCount }) => {
   const location = useLocation();
 
   const accessLevel = localStorage.getItem("accessLevel") || "unknown";
+  console.log("Access Level in Sidebar:", accessLevel);
   const [isOpen, setIsOpen] = useState(false);
 
   const menus = {
-    student: [
+    Student: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
-      { name: "Worker Profile", to: "../searchemployee", icon: <FaUsers /> },
-      { name: "New Visit", to: "../newvisit", icon: <FaUserMd /> },
-      { name: "Events & Camps", to: "../eventsandcamps", icon: <MdEvent /> },
-      { name: "Records & Filters", to: "../recordsfilters", icon: <MdFilterList /> },
-      { name: "Mock Drills", to: "../mockdrills", icon: <MdLibraryAdd /> },
-      { name: "Pendings & Reviews", to: "../appointments", icon: <FaRegCalendarAlt /> },
-      { name: "Data Upload", to: "../dataupload", icon: <FaUpload /> },
-      { name: "Instrument Calibration", to: "../instrumentcalibration", icon: <FaRegCalendarAlt />, badgeName: 'pending' },
+      { name: "Participate Events", to: "../participate-events", icon: <MdEvent /> },
     ],
     parent: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },

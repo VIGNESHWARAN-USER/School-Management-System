@@ -42,17 +42,15 @@ const Login = () => {
         if(role === "Admin") setTimeout(() => navigate('/add-members'), 1000); 
         else if(role === "Teacher") setTimeout(() => navigate('/mark-attendance'), 1000); 
         else if(role === "Parent") setTimeout(() => navigate('/hrdashboard'), 1000); 
-        else if(role === "Student") setTimeout(() => navigate('/employeedashboard'), 1000); 
+        else if(role === "Student") setTimeout(() => navigate('/participate-events'), 1000); 
         else throw new Error(`No role found for, ${userData.username || 'user'}!`)
         return "Login successful!";
       },
       error: (error) => {
         setIsLoading(false); 
         if (error.response) {
-            if (error.response.status === 404) {
-                return "No account found with this email.";
-            }
-            return error.response.data.message || "An unexpected error occurred.";
+            console.log(error)
+            return error.response.data || "An unexpected error occurred.";
         }
         // Handle custom thrown errors (like our 201 status)
         return error.message || "An error occurred.";

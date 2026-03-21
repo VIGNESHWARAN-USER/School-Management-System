@@ -1,4 +1,5 @@
 package com.sms.backend.Config;
+import com.sms.backend.Services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,34 +16,21 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 public class ApplicationConfig {
 
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public ApplicationConfig(UserDetailsService userDetailsService) {
+    public ApplicationConfig(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
-                .username("user")
-                .password(passwordEncoder().encode("password"))
-                .roles("USER")
-                .build();
-
-        // Add more users as needed
-        // UserDetails admin = ...
-
-        return new InMemoryUserDetailsManager(user);
-    }
-
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+    public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authProvider =
+                new DaoAuthenticationProvider(userDetailsService);
+
         authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

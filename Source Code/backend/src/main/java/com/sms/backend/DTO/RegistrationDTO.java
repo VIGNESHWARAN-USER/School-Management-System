@@ -18,5 +18,5 @@ public class RegistrationDTO {
     private String classId;
     private int age;
     private String email;
-
+    
 }
