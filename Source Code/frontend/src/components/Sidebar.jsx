@@ -59,6 +59,8 @@ const Sidebar = ({ redCount }) => {
       { name: "Add Members", to: "../add-members", icon: <FaUsers /> },
       { name: "Mark Attendance", to: "../mark-attendance", icon: <MdEvent /> },
       { name: "View Attendance", to: "../view-attendance", icon: <MdEvent /> },
+      { name: "Add Event", to: "../add-event", icon: <MdEvent /> },
+      { name: "Manage Events", to: "../manage-events", icon: <MdEvent /> },
     ],
   };
 

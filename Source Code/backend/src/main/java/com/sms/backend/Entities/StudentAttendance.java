@@ -21,7 +21,7 @@ public class StudentAttendance{
     @JoinColumn(name = "student_id")
     @JsonBackReference
     private Student student;
-    private int classId;
+    private String classId;
     private LocalDate date;
     private String remarks;
     private String status;

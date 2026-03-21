@@ -85,11 +85,11 @@ public class AttendanceServices {
         </div>
 
         <div class="content">
-            Dear Parent,<br><br>
+            Dear %s,<br><br>
 
             This is to inform you that your child 
             <span class="highlight">%s</span> 
-            was marked <span class="highlight">ABSENT</span> today.
+            was marked <span class="highlight">%s</span> today.
         </div>
 
         <div class="details">
@@ -175,18 +175,17 @@ public class AttendanceServices {
         </div>
 
         <div class="content">
-            Dear Parent,<br><br>
+            Dear %s,<br><br>
 
-            This is to inform you that your attendance is marked
-            <span class="highlight">%s</span> 
-            was marked <span class="highlight">ABSENT</span> today.
+            This is to inform you that your attendance
+            was marked <span class="highlight">%s</span> today.
         </div>
 
         <div class="details">
             <strong>Name:</strong> %s <br>
             <strong>Class:</strong> %s <br>
             <strong>Date:</strong> %s <br>
-            <strong>Status:</strong> Absent
+            <strong>Status:</strong> Absent <br>
             <strong>Remarks:</strong> %s <br>
         </div>
 
@@ -232,7 +231,7 @@ public class AttendanceServices {
                     studentAttendanceRepository.save(studentAttendance);
                 }
 
-                if ("Absent".equalsIgnoreCase(i.getStatus())) {
+                if ("Absent".equalsIgnoreCase(i.getStatus()) || "Late".equalsIgnoreCase(i.getStatus())) {
 
                     Student student = studentRepository.findById(i.getId()).orElse(null);
                     if (student == null) continue;
@@ -242,7 +241,9 @@ public class AttendanceServices {
 
                     String formattedHtml = String.format(
                             htmlContent,
+                            parent.getName(),
                             student.getName(),
+                            i.getStatus(),
                             student.getName(),
                             student.getClassId(),
                             i.getDate(),
@@ -265,7 +266,7 @@ public class AttendanceServices {
     public ResponseEntity<?> saveTeacherAttendance(List<AttendanceDTO> attendanceList) {
         try {
             for (AttendanceDTO i : attendanceList) {
-
+                System.out.println("Hello");
                 TeacherAttendance existing =
                         teacherAttendanceRepository.findByDateAndTeacher(i.getDate(), teacherRepository.findById(i.getId()).orElse(null));
 
@@ -287,7 +288,7 @@ public class AttendanceServices {
 
                 }
 
-                if ("Absent".equalsIgnoreCase(i.getStatus())) {
+                if ("Absent".equalsIgnoreCase(i.getStatus()) || "Late".equalsIgnoreCase(i.getStatus())) {
 
                     Teacher teacher = teacherRepository.findById(i.getId()).orElse(null);
                     if (teacher == null) continue;
@@ -297,8 +298,9 @@ public class AttendanceServices {
                     String formattedHtml = String.format(
                             htmlContentForTeacher,
                             teacher.getName(),
+                            i.getStatus(),
                             teacher.getName(),
-                            teacher.getClass(),
+                            teacher.getClassId(),
                             i.getDate(),
                             i.getRemarks()
                     );
@@ -329,6 +331,34 @@ public class AttendanceServices {
                 attendanceDTO.setRemarks(studentAttendance.getRemarks());
                 attendanceDTO.setDate(studentAttendance.getDate());
                 attendanceDTO.setName(studentAttendance.getStudent().getName());
+                attendanceDTO.setClassId(studentAttendance.getClassId());
+
+                return attendanceDTO;
+            }).toList();
+
+            return ResponseEntity.status(200).body(attendanceDTOS);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public ResponseEntity<?> getAllTeacherAttendance(LocalDate date) {
+        try
+        {
+            List<TeacherAttendance> teacherAttendanceList = teacherAttendanceRepository.findAllByDate(date);
+
+            List<AttendanceDTO> attendanceDTOS = teacherAttendanceList.stream().map(studentAttendance ->
+            {
+                AttendanceDTO attendanceDTO = new AttendanceDTO();
+
+                attendanceDTO.setId(studentAttendance.getId());
+                attendanceDTO.setStatus(studentAttendance.getStatus());
+                attendanceDTO.setRemarks(studentAttendance.getRemarks());
+                attendanceDTO.setDate(studentAttendance.getDate());
+                attendanceDTO.setName(studentAttendance.getTeacher().getName());
                 attendanceDTO.setClassId(studentAttendance.getClassId());
 
                 return attendanceDTO;

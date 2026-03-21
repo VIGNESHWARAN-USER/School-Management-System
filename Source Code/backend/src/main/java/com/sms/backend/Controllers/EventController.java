@@ -1,10 +1,11 @@
 package com.sms.backend.Controllers;
 
-import com.sms.backend.Entities.Event;
-import com.sms.backend.Entities.Registration;
+import com.sms.backend.DTO.EventDTO;
+import com.sms.backend.DTO.RegistrationDTO;
 import com.sms.backend.Services.EventServices;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,38 +18,31 @@ public class EventController {
 
     //  Add Event
     @PostMapping("/add")
-    public String addEvent(@RequestBody Event event) {
+    public ResponseEntity<?> addEvent(@RequestBody EventDTO event) {
         return eventServices.addEvent(event);
     }
 
     //  Update Event
-    @PutMapping("/update")
-    public String updateEvent(@RequestParam Long eventId,
-                              @RequestBody Event event) {
-        return eventServices.updateEvent(eventId, event);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateEvent(@PathVariable Long id, @RequestBody EventDTO event) {
+        return eventServices.updateEvent(id, event);
     }
 
     //  Delete Event
-    @DeleteMapping("/delete")
-    public String deleteEvent(@RequestParam Long eventId) {
+    @DeleteMapping("/delete/{eventId}")
+    public String deleteEvent(@PathVariable Long eventId) {
         return eventServices.deleteEvent(eventId);
     }
 
     //  Participate
     @PostMapping("/participate")
-    public String participate(@RequestBody Registration registration) {
+    public ResponseEntity<?> participate(@RequestBody RegistrationDTO registration) {
         return eventServices.participateEvent(registration);
     }
 
     // Get All Events
     @GetMapping("/all")
-    public List<Event> getAllEvents() {
+    public ResponseEntity<?> getAllEvents() {
         return eventServices.getAllEvents();
-    }
-
-    // Get Participation (Student/Teacher specific)
-    @GetMapping("/participation")
-    public List<Registration> getParticipation(@RequestParam Long participantId) {
-        return eventServices.getParticipation(participantId);
     }
 }

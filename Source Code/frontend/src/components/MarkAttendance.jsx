@@ -21,7 +21,6 @@ const MarkAttendance = () => {
 
         fetchMembers();
     }, [accessLevel]);
-    console.log(user);
     const fetchMembers = async () => {
         setLoading(true);
         try {
@@ -32,7 +31,7 @@ const MarkAttendance = () => {
             
             const response = await api.get(endpoint);
             setMembers(response.data);
-
+            console.log("Fetched members for attendance:", response.data);
             // Initialize attendance states as 'Present' by default
             const initialData = {};
             response.data.forEach(m => {

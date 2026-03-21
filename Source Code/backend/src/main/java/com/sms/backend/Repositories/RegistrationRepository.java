@@ -7,11 +7,10 @@ import java.util.List;
 
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
 
-    // 1️⃣ Fetch participation of specific student/teacher
-    List<Registration> findByParticipantId(Long participantId);
-    List<Registration> findByEventId(Long eventId);
+//    List<Registration> findByParticipantId(Long participantId);
+//    List<Registration> findByEventId(Long eventId);
 
 
     // 2️⃣ Prevent duplicate registration
-    boolean existsByEventIdAndParticipantId(Long eventId, Long participantId);
+    //boolean existsByEventIdAndParticipantId(Long eventId, Long participantId);
 }

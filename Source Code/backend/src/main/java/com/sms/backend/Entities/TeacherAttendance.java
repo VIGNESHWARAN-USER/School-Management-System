@@ -21,7 +21,7 @@ public class TeacherAttendance {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    private int classId;
+    private String classId;
     private LocalDate date;
     private String remarks;
     private String status;

@@ -1,9 +1,8 @@
 package com.sms.backend.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -15,11 +14,17 @@ public class Registration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long registrationId;
+    private Long id;
 
-    private Long eventId;
-    private Long participantId;
-    private String participantType;
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    @JsonBackReference
+    private Event event;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    @JsonBackReference
+    private Student student;
+
     private String registrationDate;
-    private String status;
 }

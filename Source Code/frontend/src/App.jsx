@@ -8,6 +8,8 @@ import AddMembers from './components/Admin/AddMembers';
 import { Toaster } from 'sonner';
 import MarkAttendance from './components/MarkAttendance';
 import ViewAttendance from './components/ViewAttendance';
+import AddEvent from './components/Admin/AddEvent';
+import ManageEvents from './components/Admin/ManageEvents';
 
 function App() {
 
@@ -23,6 +25,8 @@ function App() {
         <Route path="/add-members" element={<AddMembers />} />
         <Route path="/mark-attendance" element={<MarkAttendance />} />
         <Route path="/view-attendance" element={<ViewAttendance />} />
+        <Route path="/add-event" element={<AddEvent />} />
+        <Route path="/manage-events" element={<ManageEvents />} />
       </Routes>
     </>
   );

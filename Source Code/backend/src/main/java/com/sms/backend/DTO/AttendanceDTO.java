@@ -18,5 +18,5 @@ public class AttendanceDTO {
     private LocalDate date;
     private String remarks;
     private String status;
-    private int classId;
+    private String classId;
 }
