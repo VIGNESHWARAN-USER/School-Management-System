@@ -20,7 +20,12 @@ public class Notification {
     private String title;
     private String message;
     private String date;
+
     private Long senderId;
     private Long receiverId;
-    private String status; // Sent / Read
+
+    private String senderEmail;
+    private String receiverEmail;
+
+    private String status;
 }
