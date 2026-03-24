@@ -28,6 +28,7 @@ const Sidebar = ({ redCount }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isAddEventPage = false;
   const accessLevel = localStorage.getItem("accessLevel") || "unknown";
   console.log("Access Level in Sidebar:", accessLevel);
   const [isOpen, setIsOpen] = useState(false);
@@ -36,12 +37,12 @@ const Sidebar = ({ redCount }) => {
     Student: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
       { name: "Participate Events", to: "../participate-events", icon: <MdEvent /> },
+      { name: "Fees Details", to: "../fees-details", icon: <MdReceipt /> },
     ],
-    parent: [
+    Parent: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
-      { name: "Worker Profile", to: "../searchemployee", icon: <FaUsers /> },
-      { name: "New Visit", to: "../newvisit", icon: <FaUserMd /> },
-      { name: "Pendings & Reviews", to: "../appointments", icon: <FaRegCalendarAlt /> },
+      { name: "View Fee Details", to: "../parent-fee", icon: <MdReceipt /> },
+      { name: "Transaction History", to: "../transaction-history", icon: <MdReceipt /> },
     ],
     Teacher: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
@@ -53,8 +54,9 @@ const Sidebar = ({ redCount }) => {
       { name: "Add Members", to: "../add-members", icon: <FaUsers /> },
       { name: "Mark Attendance", to: "../mark-attendance", icon: <MdEvent /> },
       { name: "View Attendance", to: "../view-attendance", icon: <MdEvent /> },
-      { name: "Add Event", to: "../add-event", icon: <MdEvent /> },
       { name: "Manage Events", to: "../manage-events", icon: <MdEvent /> },
+      { name: "Create Fee Structure", to: "../create-fee-structure", icon: <MdReceipt /> },
+      { name: "Plan Installments", to: "../plan-installments", icon: <MdReceipt /> }
     ],
   };
 
@@ -63,7 +65,6 @@ const Sidebar = ({ redCount }) => {
 
   return (
     <>
-      
       <button
         className="md:hidden fixed top-4 left-4 z-50 p-2 bg-blue-600 text-white rounded-md shadow-md"
         onClick={() => setIsOpen(!isOpen)}

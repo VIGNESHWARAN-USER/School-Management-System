@@ -11,6 +11,11 @@ import ViewAttendance from './components/ViewAttendance';
 import AddEvent from './components/Admin/AddEvent';
 import ManageEvents from './components/Admin/ManageEvents';
 import ParticipateEvents from './components/Student/ParticipateEvents';
+import CreateFeeStructure from './components/Admin/CreateFeeStructure';
+import PlanInstallments from './components/Admin/PlanInstallments';
+import ParentFeeDashboard from './components/Parent/ParentFeeDashboard';
+import FeeDashboard from './components/Student/FeeDashboard';
+import TransactionHistory from './components/Parent/TransactionHistory';
 
 function App() {
 
@@ -29,6 +34,11 @@ function App() {
         <Route path="/add-event" element={<AddEvent />} />
         <Route path="/manage-events" element={<ManageEvents />} />
         <Route path='/participate-events' element={<ParticipateEvents/>} />
+        <Route path="/create-fee-structure" element={<CreateFeeStructure />} />
+        <Route path="/plan-installments" element={<PlanInstallments/>} />
+        <Route path="/parent-fee" element={<ParentFeeDashboard />} />
+        <Route path="/fees-details" element={<FeeDashboard />} />
+        <Route path="/transaction-history" element={<TransactionHistory />} />
       </Routes>
     </>
   );

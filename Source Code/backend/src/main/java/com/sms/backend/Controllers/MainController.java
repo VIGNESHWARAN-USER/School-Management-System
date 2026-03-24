@@ -30,7 +30,8 @@ public class MainController {
     {
         String email = data.get("email");
         String role = data.get("role");
-        return mainServices.getDetails(email, role);
+        String studentId = data.get("studentId");
+        return mainServices.getDetails(email, role, studentId);
     }
 
     @RequestMapping("/forgot-password")

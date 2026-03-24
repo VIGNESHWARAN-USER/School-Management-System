@@ -232,23 +232,34 @@ public class MainServices {
         }
     }
 
-    public ResponseEntity<?> getDetails(String email, String role) {
+    public ResponseEntity<?> getDetails(String email, String role, String studentId) {
         try{
             switch (role) {
                 case "Admin" -> {
                     Administrator admin = administratorRepository.findByEmail(email);
+                    if(admin == null) return ResponseEntity.status(404).body("User Not Found");
                     return ResponseEntity.status(200).body(admin);
                 }
                 case "Parent" -> {
                     Parent parent = parentRepository.findByEmail(email);
-                    return ResponseEntity.status(200).body(parent);
+                    if(parent == null) return ResponseEntity.status(404).body("User Not Found");
+                    for(Student student: parent.getStudentList())
+                    {
+                        if(student.getId() == Integer.parseInt(studentId))
+                        {
+                            return ResponseEntity.status(200).body(parent);
+                        }
+                    }
+                    return ResponseEntity.status(404).body("Student ID Not Found");
                 }
                 case "Teacher" -> {
                     Teacher teacher = teacherRepository.findByEmail(email);
+                    if(teacher == null) return ResponseEntity.status(404).body("User Not Found");
                     return ResponseEntity.status(200).body(teacher);
                 }
                 case "Student" -> {
                     Student student = studentRepository.findByEmail(email);
+                    if(student == null) return ResponseEntity.status(404).body("User Not Found");
                     return ResponseEntity.status(200).body(student);
                 }
                 default -> {
@@ -256,7 +267,7 @@ public class MainServices {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 }
