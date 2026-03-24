@@ -59,12 +59,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // 3. Authenticate if not already authenticated
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             // 4. Validate token
             if (jwtUtils.isTokenValid(token, userDetails)) {
-
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,

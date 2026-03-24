@@ -7,19 +7,25 @@ import {
     HiOutlineDocumentText, HiOutlineClock
 } from 'react-icons/hi';
 import api from '../api';
+import { data } from 'react-router-dom';
 
-const ManageEvents = () => {
+const ParticipateEvents = () => {
     const [events, setEvents] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
+    const user = JSON.parse(localStorage.getItem('userData'));
     
     // States for Modals
     const [viewEvent, setViewEvent] = useState(null);
     const [editEvent, setEditEvent] = useState(null);
 
+    console.log(viewEvent);
+
     useEffect(() => {
         fetchEvents();
     }, []);
+
+    console.log(user);
 
     const fetchEvents = async () => {
         setLoading(true);
@@ -33,32 +39,23 @@ const ManageEvents = () => {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this event?")) return;
+    const handleParticipate = async () => {
+
+        const payload = {
+            studentId: user.id,
+            eventId: viewEvent.id,
+        };
+
         try {
-            await api.delete(`http://localhost:8085/api/events/delete/${id}`);
-            toast.success("Event deleted successfully");
-            setEvents(events.filter(e => e.id !== id));
+            await api.post(`http://localhost:8085/api/events/participate`, payload);
+            fetchEvents();
+            toast.success("Successfully registered the event!");
+            setViewEvent(null);
         } catch (error) {
-            toast.error("Failed to delete event");
+            toast.error("Failed to participate in the event");
         }
     };
 
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-        // Use a promise for the toast notification
-        const updatePromise = api.put(`http://localhost:8085/api/events/update/${editEvent.id}`, editEvent);
-
-        toast.promise(updatePromise, {
-            loading: 'Updating event...',
-            success: (res) => {
-                fetchEvents();
-                setEditEvent(null);
-                return 'Event updated successfully!';
-            },
-            error: 'Update failed. Please try again.'
-        });
-    };
 
     const filteredEvents = useMemo(() => {
         return events.filter(e => 
@@ -101,13 +98,6 @@ const ManageEvents = () => {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none w-64 shadow-sm"
                         />
-                        <button 
-                            type="button" 
-                            onClick={() => window.location.href = '/add-event'}
-                            className="ml-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-                        >
-                            Add Event
-                        </button>
                     </div>
                 </div>
 
@@ -145,9 +135,7 @@ const ManageEvents = () => {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-right space-x-2">
-                                        <button onClick={() => setViewEvent(event)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"><HiOutlineEye size={20} /></button>
-                                        <button onClick={() => setEditEvent(event)} className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition"><HiOutlinePencilAlt size={20} /></button>
-                                        <button onClick={() => handleDelete(event.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"><HiOutlineTrash size={20} /></button>
+                                        <button onClick={() => setViewEvent(event)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">Participate</button>
                                     </td>
                                 </tr>
                             ))}
@@ -187,21 +175,22 @@ const ManageEvents = () => {
                                             <th className="px-4 py-2">ID</th>
                                             <th className="px-4 py-2">Student Name</th>
                                             <th className="px-4 py-2">Email</th>
-                                            <th className="px-4 py-2">Reg. Date</th>
+                                            <th className="px-4 py-2">Class ID</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y">
                                         {viewEvent.registrationDTOS?.length > 0 ? viewEvent.registrationDTOS.map((reg, idx) => (
                                             <tr key={idx} className="hover:bg-gray-50">
                                                 <td className="px-4 py-2">{reg.studentId}</td>
-                                                <td className="px-4 py-2 font-medium">{reg.studentName}</td>
+                                                <td className="px-4 py-2 font-medium">{reg.name}</td>
                                                 <td className="px-4 py-2">{reg.email}</td>
-                                                <td className="px-4 py-2 text-gray-500">{reg.registrationDate}</td>
+                                                <td className="px-4 py-2 text-gray-500">{reg.classId}</td>
                                             </tr>
                                         )) : <tr><td colSpan="4" className="text-center py-4 text-gray-500">No participants yet.</td></tr>}
                                     </tbody>
                                 </table>
                             </div>
+                            <button onClick={()=>{handleParticipate()}} className='px-4 py-2 rounded-lg cursor-pointer bg-blue-600 mt-6 text-white hover:bg-blue-700'>Participate</button>
                         </div>
                     </div>
                 </div>
@@ -341,4 +330,4 @@ const ManageEvents = () => {
     );
 };
 
-export default ManageEvents;
+export default ParticipateEvents;

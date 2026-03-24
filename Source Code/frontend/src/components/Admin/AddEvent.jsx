@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from '../Sidebar';
 import { toast, Toaster } from 'sonner';
-import { HiOutlineCalendar, HiOutlineLocationMarker, HiOutlineUserGroup, HiOutlineClock, HiOutlineDocumentText } from 'react-icons/hi';
+import { HiOutlineCalendar, HiOutlineLocationMarker, HiOutlineUserGroup, HiOutlineClock, HiOutlineDocumentText, HiOutlineArrowLeft } from 'react-icons/hi';
 import api from "../api"; 
 
 const AddEvent = () => {
@@ -67,6 +67,13 @@ const AddEvent = () => {
                         <h1 className="text-2xl font-bold text-gray-800">Create New Event</h1>
                         <p className="text-gray-500">Schedule and manage upcoming school activities</p>
                     </div>
+                    <button 
+                        type="button" 
+                        onClick={() => window.history.back()}
+                        className="flex items-center space-x-1 text-sm bg-gray-600 text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 transition"
+                    >
+                        <HiOutlineArrowLeft /> <span>Back</span>
+                    </button>
                 </div>
 
                 {/* Form Section - White Card Layout */}

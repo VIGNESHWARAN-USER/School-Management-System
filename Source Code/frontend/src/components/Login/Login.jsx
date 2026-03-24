@@ -12,6 +12,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
+  const [studentId, setStudentId] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // For loading state
   const navigate = useNavigate();
@@ -24,35 +25,31 @@ const Login = () => {
     toast.promise(loginPromise, {
       loading: 'Logging in...',
       success: async (response) => {
-        // Handle custom success case (201 for invalid password)
         if (response.status === 201) {
-          // Manually throw to enter the catch block for custom error toasts
           throw new Error(response.data || "Invalid Password");
         }
         localStorage.setItem("token", response.data.token);
 
-        const loginData = await api.post("http://localhost:8085/api/getDetails", { email: email, role: role });
+        const loginData = await api.post("http://localhost:8085/api/getDetails", { email: email, role: role, studentId: role === "Parent" ? studentId : undefined });
         
         console.log(loginData.data);
         
         const userData = response.data.userDetails;
         localStorage.setItem("userData", JSON.stringify(loginData.data));
         localStorage.setItem("accessLevel", role);
-        
+        if(role === "Parent") localStorage.setItem("studentId", studentId);
         if(role === "Admin") setTimeout(() => navigate('/add-members'), 1000); 
         else if(role === "Teacher") setTimeout(() => navigate('/mark-attendance'), 1000); 
-        else if(role === "Parent") setTimeout(() => navigate('/hrdashboard'), 1000); 
-        else if(role === "Student") setTimeout(() => navigate('/employeedashboard'), 1000); 
+        else if(role === "Parent") setTimeout(() => navigate('/parent-fee'), 1000); 
+        else if(role === "Student") setTimeout(() => navigate('/participate-events'), 1000); 
         else throw new Error(`No role found for, ${userData.username || 'user'}!`)
         return "Login successful!";
       },
       error: (error) => {
         setIsLoading(false); 
         if (error.response) {
-            if (error.response.status === 404) {
-                return "No account found with this email.";
-            }
-            return error.response.data.message || "An unexpected error occurred.";
+            console.log(error)
+            return error.response.data || "An unexpected error occurred.";
         }
         // Handle custom thrown errors (like our 201 status)
         return error.message || "An error occurred.";
@@ -135,6 +132,20 @@ const Login = () => {
                 <option value="Student">Student</option>
                 </select>
               </div>
+
+              { role === "Parent" && (
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input 
+                    type="number" 
+                    id="studentId" 
+                    value={studentId}
+                    onChange={(e) => setStudentId(e.target.value)}
+                    placeholder="Student ID"
+                    required
+                    className="pl-10 pr-4 py-2 w-full border rounded-md focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors" 
+                  />
+                </div>)}
 
               {/* Forgot Password Link */}
               <div className="text-right">

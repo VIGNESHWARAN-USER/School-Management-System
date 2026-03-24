@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EventServices {
@@ -106,6 +107,14 @@ public class EventServices {
                 return ResponseEntity.status(403).body("Event Full - Cannot Register");
             }
 
+            for(Registration registration1: event.getRegistrationList())
+            {
+                if(registration1.getStudent().getId().equals(dto.getStudentId()))
+                {
+                    return ResponseEntity.status(403).body("Participation already added");
+                }
+            }
+
             // Increase count
             event.setCurrentParticipants(event.getCurrentParticipants() + 1);
 
@@ -154,6 +163,8 @@ public class EventServices {
                 }).toList();
                 eventDTO.setRegistrationDTOS(registrationDTOS);
             }
+
+
             return eventDTO;
         }).toList();
 

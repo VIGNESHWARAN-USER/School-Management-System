@@ -32,6 +32,8 @@ public class CustomUserDetailsService implements org.springframework.security.co
 
     private UserDetails buildUser(String email, String password, String role) {
 
+        System.out.println(role);
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(email)
                 .password(password)
@@ -41,7 +43,7 @@ public class CustomUserDetailsService implements org.springframework.security.co
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
+        System.out.println("Hi "+email);
 
 
         // 1. Check Admin
