@@ -1,6 +1,6 @@
 package com.sms.backend.Services;
 
-import com.sms.backend.Entities.Fee;
+import com.sms.backend.Entities.StudentFee;
 import com.sms.backend.Repositories.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class DashboardService {
     EventRepository eventRepository;
 
     @Autowired
-    FeeRepository feeRepository;
+    StudentFeeRepository feeRepository;
 
     @Autowired
     PaymentRepository paymentRepository;
@@ -40,6 +40,9 @@ public class DashboardService {
 
     @Autowired
     GradeRepository gradeRepository;
+
+    @Autowired
+    StudentFeeRepository studentFeeRepository;
 
 
     //  MAIN METHOD (ROLE BASED)
@@ -78,10 +81,10 @@ public class DashboardService {
         double collected = 0;
         double pending = 0;
 
-        for(Fee fee : feeRepository.findAll())
+        for(StudentFee fee : feeRepository.findAll())
         {
-            collected += fee.getPaidAmount();
-            pending += fee.getPendingAmount();
+            collected += Double.parseDouble(String.valueOf(fee.getAmountPaid()));
+            pending += Double.parseDouble(String.valueOf(fee.getRemainingBalance()));
         }
 
         data.put("totalFeeCollected", collected);
@@ -126,7 +129,7 @@ public class DashboardService {
         data.put("attendance", attendanceRepository.findAll());
         data.put("grades", gradeRepository.findAll());
         data.put("fee", feeRepository.findByStudentId(studentId));
-        data.put("payments", paymentRepository.findByStudentId(studentId));
+        data.put("payments", studentFeeRepository.findByStudentId(studentId));
 
         return data;
     }
