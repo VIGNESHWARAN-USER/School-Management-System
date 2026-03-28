@@ -4,9 +4,10 @@ import com.sms.backend.DTO.*;
 import com.sms.backend.Entities.*;
 import com.sms.backend.Enum.*;
 import com.sms.backend.Repositories.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,297 +15,304 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class FeeService {
 
-    @Autowired
-    private FeeStructureRepository feeStructureRepository;
-    @Autowired
-    private FeeComponentRepository feeComponentRepository;
-    @Autowired
-    private StudentRepository studentRepository;
-    @Autowired
-    private StudentFeeRepository studentFeeRepository;
-    @Autowired
-    private InstallmentRepository installmentRepository;
-    @Autowired
-    private TransactionRepository transactionRepository;
+    @Autowired private FeeStructureRepository feeStructureRepository;
+    @Autowired private FeeComponentRepository feeComponentRepository;
+    @Autowired private StudentRepository studentRepository;
+    @Autowired private StudentFeeRepository studentFeeRepository;
+    @Autowired private InstallmentRepository installmentRepository;
+    @Autowired private TransactionRepository transactionRepository;
+    @Autowired private EmailService emailService;
 
+    //  AUTO FEE DUE REMINDER
+
+    @Scheduled(cron = "0 0 9 * * ?")
+    public void sendDueReminder() {
+
+        List<Installment> installments = installmentRepository.findAll();
+
+        for (Installment inst : installments) {
+
+            if (inst.getStatus() == PaymentStatus.PENDING &&
+                    inst.getDueDate().minusDays(1).equals(LocalDate.now())) {
+
+                StudentFee fee = inst.getStudentFee();
+                if (fee == null) continue;
+
+                Student student = studentRepository.findById(fee.getStudentId()).orElse(null);
+                if (student == null) continue;
+
+                String parentEmail = student.getParentEmail();
+                if (parentEmail == null) continue;
+
+                String body = "<h3>Fee Reminder</h3>" +
+                        "<p><b>Student:</b> " + student.getName() + "</p>" +
+                        "<p><b>Installment:</b> " + inst.getInstallmentName() + "</p>" +
+                        "<p><b>Due Date:</b> " + inst.getDueDate() + "</p>" +
+                        "<p><b>Amount:</b> ₹" + inst.getAmount() + "</p>";
+
+                try {
+                    emailService.sendHtmlEmail(parentEmail, "Fee Due Reminder", body);
+                } catch (Exception e) {
+                    System.out.println("Reminder failed");
+                }
+            }
+        }
+    }
+
+    // CREATE / UPDATE FEE STRUCTURE
 
     @Transactional
     public ResponseEntity<?> createFeeStructure(FeeStructureDTO dto) {
-        try{
 
-            FeeStructure structure = feeStructureRepository.findByClassIdAndAcademicYear(dto.getClassId(), dto.getAcademicYear());
-            if(structure != null)
-            {
-                List<FeeComponent> components = new ArrayList<>();
-                double grandTotal = 0.0;
+        FeeStructure structure = feeStructureRepository
+                .findByClassIdAndAcademicYear(dto.getClassId(), dto.getAcademicYear());
 
-                for (FeeComponentDTO cDto : dto.getComponents()) {
-                    FeeComponent component = new FeeComponent();
-                    component.setComponentName(FeeComponentType.valueOf(cDto.getComponentName()));
-                    component.setDescription(cDto.getDescription());
-                    component.setAmount(cDto.getAmount());
-                    component.setTaxPercentage(cDto.getTaxPercentage());
-
-
-                    double taxAmount = (cDto.getAmount() * cDto.getTaxPercentage()) / 100;
-                    double totalForComponent = cDto.getAmount() + taxAmount;
-
-
-                    component.setFeeStructure(structure);
-                    components.add(component);
-                    grandTotal += totalForComponent;
-                }
-
-                structure.setComponents(components);
-                structure.setTotalAmount(BigDecimal.valueOf(grandTotal));
-                feeComponentRepository.saveAll(components);
-                feeStructureRepository.save(structure);
-            }
-            else {
-                structure = new FeeStructure();
-                structure.setClassId(dto.getClassId());
-                structure.setAcademicYear(dto.getAcademicYear());
-
-                List<FeeComponent> components = new ArrayList<>();
-                double grandTotal = 0.0;
-
-                for (FeeComponentDTO cDto : dto.getComponents()) {
-                    FeeComponent component = new FeeComponent();
-                    component.setComponentName(FeeComponentType.valueOf(cDto.getComponentName()));
-                    component.setDescription(cDto.getDescription());
-                    component.setAmount(cDto.getAmount());
-                    component.setTaxPercentage(cDto.getTaxPercentage());
-
-
-                    double taxAmount = (cDto.getAmount() * cDto.getTaxPercentage()) / 100;
-                    double totalForComponent = cDto.getAmount() + taxAmount;
-
-
-                    component.setFeeStructure(structure);
-                    components.add(component);
-                    grandTotal += totalForComponent;
-                }
-
-                structure.setComponents(components);
-                structure.setTotalAmount(BigDecimal.valueOf(grandTotal));
-                feeComponentRepository.saveAll(components);
-                feeStructureRepository.save(structure);
-            }
-            return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(structure);
+        if (structure == null) {
+            structure = new FeeStructure();
+            structure.setClassId(dto.getClassId());
+            structure.setAcademicYear(dto.getAcademicYear());
         }
-        catch(Exception e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.status(500).body(e.getMessage());
+
+        List<FeeComponent> components = new ArrayList<>();
+        double total = 0;
+
+        for (FeeComponentDTO c : dto.getComponents()) {
+
+            FeeComponent comp = new FeeComponent();
+            comp.setComponentName(FeeComponentType.valueOf(c.getComponentName()));
+            comp.setDescription(c.getDescription());
+            comp.setAmount(c.getAmount());
+            comp.setTaxPercentage(c.getTaxPercentage());
+
+            double tax = (c.getAmount() * c.getTaxPercentage()) / 100;
+            total += c.getAmount() + tax;
+
+            comp.setFeeStructure(structure);
+            components.add(comp);
         }
+
+        structure.setComponents(components);
+        structure.setTotalAmount(BigDecimal.valueOf(total));
+
+        feeComponentRepository.saveAll(components);
+        feeStructureRepository.save(structure);
+
+        return ResponseEntity.ok(structure);
     }
 
-    public ResponseEntity<?> getStructure(String classId, String academicYear) {
-        FeeStructure feeStructure = feeStructureRepository.findByClassIdAndAcademicYear(classId, academicYear);
+    // GET SINGLE STRUCTURE
 
-        FeeStructureDTO feeStructureDTO = new FeeStructureDTO();
+    public ResponseEntity<?> getStructure(String classId, String year) {
 
-        feeStructureDTO.setAcademicYear(feeStructure.getAcademicYear());
-        feeStructureDTO.setClassId(feeStructure.getClassId());
+        FeeStructure fs = feeStructureRepository.findByClassIdAndAcademicYear(classId, year);
 
-        List<FeeComponentDTO> feeComponentDTOS = feeStructure.getComponents().stream().map(dto ->{
-            FeeComponentDTO feeComponentDTO = new FeeComponentDTO();
+        FeeStructureDTO dto = new FeeStructureDTO();
+        dto.setClassId(fs.getClassId());
+        dto.setAcademicYear(fs.getAcademicYear());
 
-            feeComponentDTO.setComponentName(String.valueOf(dto.getComponentName()));
-            feeComponentDTO.setAmount(dto.getAmount());
-            feeComponentDTO.setDescription(dto.getDescription());
-            feeComponentDTO.setTaxPercentage(dto.getTaxPercentage());
-
-            return feeComponentDTO;
+        List<FeeComponentDTO> list = fs.getComponents().stream().map(c -> {
+            FeeComponentDTO d = new FeeComponentDTO();
+            d.setComponentName(c.getComponentName().toString());
+            d.setAmount(c.getAmount());
+            d.setDescription(c.getDescription());
+            d.setTaxPercentage(c.getTaxPercentage());
+            return d;
         }).toList();
 
-        feeStructureDTO.setComponents(feeComponentDTOS);
+        dto.setComponents(list);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(feeStructureDTO);
+        return ResponseEntity.ok(dto);
     }
+
+
+    // GET ALL STRUCTURES
 
     public ResponseEntity<?> getAllStructure() {
-        List<FeeStructure> feeStructures = feeStructureRepository.findAll();
-        List<FeeStructureDTO> feeStructureDTOS = feeStructures.stream().map(feeStructure ->
-        {
-            FeeStructureDTO feeStructureDTO = new FeeStructureDTO();
-            feeStructureDTO.setClassId(feeStructure.getClassId());
-            feeStructureDTO.setAcademicYear(feeStructure.getAcademicYear());
-            feeStructureDTO.setFeeStructureId(feeStructure.getId());
-            feeStructureDTO.setTotalAmount(feeStructure.getTotalAmount());
 
-            return feeStructureDTO;
+        List<FeeStructureDTO> list = feeStructureRepository.findAll().stream().map(fs -> {
+            FeeStructureDTO dto = new FeeStructureDTO();
+            dto.setClassId(fs.getClassId());
+            dto.setAcademicYear(fs.getAcademicYear());
+            dto.setFeeStructureId(fs.getId());
+            dto.setTotalAmount(fs.getTotalAmount());
+            return dto;
         }).toList();
-        return ResponseEntity.status(200).body(feeStructureDTOS);
+
+        return ResponseEntity.ok(list);
     }
+
+    // APPLY INSTALLMENTS
 
     @Transactional
     public void saveAndApplyInstallments(InstallmentPlanDTO dto) {
+
         FeeStructure structure = feeStructureRepository.findById(dto.getFeeStructureId())
                 .orElseThrow(() -> new RuntimeException("Structure not found"));
-
 
         List<Student> students = studentRepository.findAllByClassId(structure.getClassId());
 
         for (Student student : students) {
 
-            StudentFee studentFee = studentFeeRepository.findByStudentId(student.getId());
+            StudentFee fee = studentFeeRepository.findByStudentId(student.getId());
+            if (fee == null) fee = new StudentFee();
 
-            if(studentFee == null) studentFee = new StudentFee();
+            fee.setStudentId(student.getId());
+            fee.setFeeStructure(structure);
+            fee.setAmountPaid(BigDecimal.ZERO);
+            fee.setRemainingBalance(structure.getTotalAmount());
+            fee.setStatus(FeeStatus.PENDING);
 
-            studentFee.setStudentId(student.getId());
-            studentFee.setFeeStructure(structure);
-            studentFee.setAmountPaid(BigDecimal.ZERO);
-            studentFee.setRemainingBalance(structure.getTotalAmount());
-            studentFee.setStatus(FeeStatus.PENDING);
+            StudentFee saved = studentFeeRepository.save(fee);
 
-            final StudentFee savedFee = studentFeeRepository.save(studentFee);
-            installmentRepository.deleteByStudentFee(savedFee);
-            for (InstallmentItemDTO instDto : dto.getInstallments()) {
-                Installment installment = new Installment();
-                installment.setDueDate(LocalDate.parse(instDto.getDueDate()));
-                installment.setStatus(PaymentStatus.PENDING);
-                installment.setInstallmentName(instDto.getInstallmentName());
-                installment.setStudentFee(savedFee);
+            installmentRepository.deleteByStudentFee(saved);
 
-                // Calculate BigDecimal amount: (Total * Percentage) / 100
-                BigDecimal instAmount = structure.getTotalAmount()
-                        .multiply(BigDecimal.valueOf(instDto.getPercentage()))
+            for (InstallmentItemDTO i : dto.getInstallments()) {
+
+                Installment inst = new Installment();
+                inst.setInstallmentName(i.getInstallmentName());
+                inst.setDueDate(LocalDate.parse(i.getDueDate()));
+                inst.setStatus(PaymentStatus.PENDING);
+                inst.setStudentFee(saved);
+
+                BigDecimal amt = structure.getTotalAmount()
+                        .multiply(BigDecimal.valueOf(i.getPercentage()))
                         .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
-                installment.setAmount(instAmount);
-                installmentRepository.save(installment);
+                inst.setAmount(amt);
+
+                installmentRepository.save(inst);
             }
         }
     }
 
+    // GET INSTALLMENTS
     public ResponseEntity<?> getInstallments(Long id) {
-        StudentFee studentFee = studentFeeRepository.findAllByFeeStructure(feeStructureRepository.findById(id).orElse(null)).getFirst();
 
-        List<Installment> installments = studentFee.getInstallments();
-        List<InstallmentItemDTO> installmentItemDTOS = installments.stream().map(inst -> {
+        StudentFee fee = studentFeeRepository
+                .findAllByFeeStructure(feeStructureRepository.findById(id).orElse(null))
+                .getFirst();
+
+        List<InstallmentItemDTO> list = fee.getInstallments().stream().map(inst -> {
+
             InstallmentItemDTO dto = new InstallmentItemDTO();
             dto.setInstallmentName(inst.getInstallmentName());
             dto.setDueDate(inst.getDueDate().toString());
 
+            double percent = inst.getAmount()
+                    .divide(fee.getFeeStructure().getTotalAmount(), 4, RoundingMode.HALF_UP)
+                    .multiply(BigDecimal.valueOf(100)).doubleValue();
 
-            double percentage = inst.getAmount()
-                    .divide(studentFee.getFeeStructure().getTotalAmount(), 4, RoundingMode.HALF_UP)
-                    .multiply(BigDecimal.valueOf(100))
-                    .doubleValue();
+            dto.setPercentage(percent);
 
-            dto.setPercentage(percentage);
             return dto;
         }).toList();
-        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(installmentItemDTOS);
+
+        return ResponseEntity.ok(list);
     }
 
-    public FeeDashboardDTO getStudentFeeDashboard(Long studentId) {
-        // 1. Fetch Entity
-        StudentFee fee = studentFeeRepository.findByStudentId(studentId);
-        if(fee == null) throw new RuntimeException("Fee records not found for student: " + studentId);
 
-        // 2. Map to DTO
+    // DASHBOARD
+
+    public FeeDashboardDTO getStudentFeeDashboard(Long studentId) {
+
+        StudentFee fee = studentFeeRepository.findByStudentId(studentId);
+        if (fee == null) throw new RuntimeException("No record");
+
         FeeDashboardDTO dto = new FeeDashboardDTO();
-        dto.setStudentId(fee.getStudentId());
+        dto.setStudentId(studentId);
         dto.setAmountPaid(fee.getAmountPaid());
         dto.setRemainingBalance(fee.getRemainingBalance());
         dto.setOverallStatus(fee.getStatus().toString());
 
-        // Map Structure Info
-        if (fee.getFeeStructure() != null) {
-            dto.setClassId(fee.getFeeStructure().getClassId());
-            dto.setAcademicYear(fee.getFeeStructure().getAcademicYear());
-            dto.setTotalFeeWithTax(fee.getFeeStructure().getTotalAmount());
-
-            // Map Components (US_002 Breakdown)
-            dto.setBreakdown(fee.getFeeStructure().getComponents().stream().map(c -> {
-                ComponentDTO cDto = new ComponentDTO();
-                cDto.setName(c.getComponentName().toString().replace("_", " "));
-                cDto.setDescription(c.getDescription());
-                cDto.setAmount(c.getAmount());
-                cDto.setTaxPercentage(c.getTaxPercentage());
-                return cDto;
-            }).toList());
-        }
-
-        // Map Installments (US_012 Schedule)
         dto.setInstallments(fee.getInstallments().stream().map(i -> {
-            InstallmentDTO iDto = new InstallmentDTO();
-            iDto.setId(i.getId());
-            iDto.setName(i.getInstallmentName());
-            iDto.setAmount(i.getAmount());
-            iDto.setDueDate(i.getDueDate().toString());
-            iDto.setStatus(i.getStatus().toString());
-            return iDto;
+            InstallmentDTO d = new InstallmentDTO();
+            d.setId(i.getId());
+            d.setName(i.getInstallmentName());
+            d.setAmount(i.getAmount());
+            d.setDueDate(i.getDueDate().toString());
+            d.setStatus(i.getStatus().toString());
+            return d;
         }).toList());
 
         return dto;
     }
 
-
+    //  PAYMENT + EMAIL
     @Transactional
     public PaymentTransaction processPayment(PaymentRequestDTO request) {
 
         StudentFee fee = studentFeeRepository.findByStudentId(request.getStudentId());
-        if(fee == null) throw new RuntimeException("Fee record not found");
+        if (fee == null) throw new RuntimeException("Not found");
 
-        Installment installment = installmentRepository.findById(request.getInstallmentId())
+        Installment inst = installmentRepository.findById(request.getInstallmentId())
                 .orElseThrow(() -> new RuntimeException("Installment not found"));
 
-        if (installment.getStatus() == PaymentStatus.PAID) {
-            throw new RuntimeException("This installment is already paid.");
-        }
+        if (inst.getStatus() == PaymentStatus.PAID)
+            throw new RuntimeException("Already paid");
 
-        installment.setStatus(PaymentStatus.PAID);
-        installmentRepository.save(installment);
+        inst.setStatus(PaymentStatus.PAID);
+        installmentRepository.save(inst);
 
         fee.setAmountPaid(fee.getAmountPaid().add(request.getAmount()));
         fee.setRemainingBalance(fee.getRemainingBalance().subtract(request.getAmount()));
 
-        if (fee.getRemainingBalance().compareTo(BigDecimal.ZERO) <= 0) {
-            fee.setStatus(FeeStatus.PAID);
-        } else {
-            fee.setStatus(FeeStatus.PARTIALLY_PAID);
-        }
+        fee.setStatus(fee.getRemainingBalance().compareTo(BigDecimal.ZERO) <= 0
+                ? FeeStatus.PAID : FeeStatus.PARTIALLY_PAID);
+
         studentFeeRepository.save(fee);
 
-        PaymentTransaction transaction = new PaymentTransaction();
-        transaction.setTransactionId("TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        transaction.setAmountPaid(request.getAmount());
-        transaction.setPaymentDate(LocalDateTime.now());
-        transaction.setPaymentMethod(PaymentMethod.valueOf(request.getPaymentMethod().toUpperCase().replace(" ", "_")));
-        transaction.setPaymentType(PaymentType.ONLINE);
-        transaction.setStatus(TransactionStatus.SUCCESS);
-        transaction.setStudentFee(fee);
-        transaction.setInstallment(installment);
-        transaction.setRemarks("Paid online for installment #" + installment.getInstallmentNumber());
+        PaymentTransaction tx = new PaymentTransaction();
+        tx.setTransactionId("TXN-" + UUID.randomUUID().toString().substring(0, 8));
+        tx.setAmountPaid(request.getAmount());
+        tx.setPaymentDate(LocalDateTime.now());
+        tx.setPaymentMethod(PaymentMethod.valueOf(request.getPaymentMethod().toUpperCase()));
+        tx.setPaymentType(PaymentType.ONLINE);
+        tx.setStatus(TransactionStatus.SUCCESS);
+        tx.setStudentFee(fee);
+        tx.setInstallment(inst);
 
-        return transactionRepository.save(transaction);
+        transactionRepository.save(tx);
+
+        // EMAIL
+        Student student = studentRepository.findById(request.getStudentId()).orElse(null);
+
+        if (student != null && student.getParentEmail() != null) {
+            String body = "<h3>Payment Success</h3>" +
+                    "<p>Student: " + student.getName() + "</p>" +
+                    "<p>Amount: ₹" + request.getAmount() + "</p>";
+
+            try {
+                emailService.sendHtmlEmail(student.getParentEmail(), "Payment Done", body);
+            } catch (Exception ignored) {}
+        }
+
+        return tx;
     }
 
-    public Object getStudentTransactions(Long studentId) {
-        List<PaymentTransaction> txs = transactionRepository.findByStudentFee_StudentIdOrderByPaymentDateDesc(studentId);
+    // TRANSACTIONS
 
-        List<TransactionHistoryDTO> dtos = txs.stream().map(tx -> {
-            TransactionHistoryDTO dto = new TransactionHistoryDTO();
-            dto.setTransactionId(tx.getTransactionId());
-            dto.setAmountPaid(tx.getAmountPaid());
-            dto.setPaymentDate(tx.getPaymentDate().toString());
-            dto.setPaymentMethod(tx.getPaymentMethod().toString());
-            dto.setPaymentType(tx.getPaymentType().toString());
-            dto.setStatus(tx.getStatus().toString());
-            dto.setInstallmentLabel(tx.getInstallment().getInstallmentName());
-            dto.setRemarks(tx.getRemarks());
-            return dto;
-        }).toList();
+    public ResponseEntity<?> getStudentTransactions(Long studentId) {
 
-        return ResponseEntity.ok(dtos);
-}
+        List<TransactionHistoryDTO> list =
+                transactionRepository.findByStudentFee_StudentIdOrderByPaymentDateDesc(studentId)
+                        .stream().map(tx -> {
+
+                            TransactionHistoryDTO dto = new TransactionHistoryDTO();
+                            dto.setTransactionId(tx.getTransactionId());
+                            dto.setAmountPaid(tx.getAmountPaid());
+                            dto.setPaymentDate(tx.getPaymentDate().toString());
+                            dto.setPaymentMethod(tx.getPaymentMethod().toString());
+                            dto.setStatus(tx.getStatus().toString());
+                            dto.setInstallmentLabel(tx.getInstallment().getInstallmentName());
+
+                            return dto;
+                        }).toList();
+
+        return ResponseEntity.ok(list);
+    }
 }
