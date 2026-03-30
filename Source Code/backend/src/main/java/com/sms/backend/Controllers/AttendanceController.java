@@ -40,4 +40,10 @@ public class AttendanceController {
     public ResponseEntity<?> getAllTeacherAttendance(@PathVariable LocalDate selected_date){
         return attendanceService.getAllTeacherAttendance(selected_date);
     }
+
+
+    @GetMapping("/attendance/{role}/{id}")
+    public ResponseEntity<?> getAllTeacherAttendance(@PathVariable String role, @PathVariable Long id){
+        return attendanceService.getIndividualAttendance(role, id);
+    }
 }

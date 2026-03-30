@@ -21,9 +21,6 @@ const ViewAttendance = () => {
     const fetchAttendance = async () => {
         setLoading(true);
         try {
-            // Logic: 
-            // Admin views Teacher attendance or all Student attendance
-            // Teacher views their Class attendance
             const endpoint = accessLevel === 'Admin' 
                 ? `/api/attendance/date/${selectedDate}` 
                 : accessLevel === 'Teacher' 
@@ -47,7 +44,7 @@ const ViewAttendance = () => {
         );
     }, [records, searchTerm]);
 
-    // Calculate Stats
+    
     const stats = useMemo(() => {
         const total = filteredRecords.length;
         const present = filteredRecords.filter(r => r.status === 'Present').length;
@@ -82,7 +79,7 @@ const ViewAttendance = () => {
                             <HiOutlineCalendar className="text-blue-600" /> Attendance Records
                         </h1>
                         <p className="text-gray-500 text-sm">
-                            Showing {accessLevel === 'Admin' ? 'Staff & Teachers' : `Students of Class ${user.classId}`}
+                            Showing {accessLevel === 'Admin' ? 'Staff & Teachers' :  `Students of Class ${user.classId}`}
                         </p>
                     </div>
 

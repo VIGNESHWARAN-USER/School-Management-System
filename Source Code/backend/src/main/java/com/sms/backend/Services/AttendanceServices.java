@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sms.backend.DTO.AttendanceDTO;
+import com.sms.backend.DTO.StudentAttendanceDTO;
+import com.sms.backend.DTO.TeacherAttendanceDTO;
 import com.sms.backend.Entities.*;
 import com.sms.backend.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -217,6 +219,14 @@ public class AttendanceServices {
                     existing.setClassId(i.getClassId());
 
                     studentAttendanceRepository.save(existing);
+
+                    Student student = studentRepository.findById(i.getId()).orElse(null);
+                    if(student != null)
+                    {
+                        int index = student.getAttendenceList().indexOf(existing);
+
+                    }
+
                 } else {
 
                     StudentAttendance studentAttendance = new StudentAttendance();
@@ -226,8 +236,11 @@ public class AttendanceServices {
                     studentAttendance.setStatus(i.getStatus());
                     studentAttendance.setDate(i.getDate());
                     studentAttendance.setClassId(i.getClassId());
+                    studentAttendanceRepository.save(studentAttendance);
 
-
+                    Student student = studentRepository.findById(i.getId()).orElse(null);
+                    assert student != null;
+                    student.getAttendenceList().add(studentAttendance);
                     studentAttendanceRepository.save(studentAttendance);
                 }
 
@@ -266,7 +279,6 @@ public class AttendanceServices {
     public ResponseEntity<?> saveTeacherAttendance(List<AttendanceDTO> attendanceList) {
         try {
             for (AttendanceDTO i : attendanceList) {
-                System.out.println("Hello");
                 TeacherAttendance existing =
                         teacherAttendanceRepository.findByDateAndTeacher(i.getDate(), teacherRepository.findById(i.getId()).orElse(null));
 
@@ -285,6 +297,10 @@ public class AttendanceServices {
 
                    teacherAttendanceRepository.save(teacherAttendance);
 
+                    Teacher teacher = teacherRepository.findById(i.getId()).orElse(null);
+                    assert teacher != null;
+                    teacher.getAttendenceList().add(teacherAttendance);
+                    teacherAttendanceRepository.save(teacherAttendance);
 
                 }
 
@@ -371,5 +387,57 @@ public class AttendanceServices {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    public ResponseEntity<?> getIndividualAttendance(String role, Long id) {
+        if ("Teacher".equalsIgnoreCase(role)) {
+            return teacherRepository.findById(id).map(teacher -> {
+                List<TeacherAttendanceDTO> dtos = teacher.getAttendenceList().stream().map(attendance -> {
+                    TeacherAttendanceDTO dto = new TeacherAttendanceDTO();
+                    dto.setId(attendance.getId());
+
+                    // SAFE PARSING: Handle potential nulls for Class ID
+                    if (attendance.getClassId() != null) {
+                        try {
+                            // Only parse if it's a String. If it's already a Long, just set it.
+                            dto.setClassId(Long.valueOf(attendance.getClassId().toString()));
+                        } catch (NumberFormatException e) {
+                            dto.setClassId(null);
+                        }
+                    }
+
+                    dto.setRemarks(attendance.getRemarks());
+                    dto.setStatus(attendance.getStatus());
+                    dto.setDate(attendance.getDate());
+                    return dto;
+                }).toList();
+                return ResponseEntity.ok(dtos);
+            }).orElse(ResponseEntity.notFound().build());
+        }
+
+        else if ("Parent".equalsIgnoreCase(role) || "Student".equalsIgnoreCase(role)) {
+            return studentRepository.findById(id).map(student -> {
+                List<StudentAttendanceDTO> dtos = student.getAttendenceList().stream().map(attendance -> {
+                    StudentAttendanceDTO dto = new StudentAttendanceDTO();
+
+                    // SAFE PARSING: Handle potential nulls
+                    if (attendance.getClassId() != null) {
+                        try {
+                            dto.setClassId(String.valueOf(Long.valueOf(attendance.getClassId().toString())));
+                        } catch (NumberFormatException e) {
+                            dto.setClassId(null);
+                        }
+                    }
+
+                    dto.setRemarks(attendance.getRemarks());
+                    dto.setStatus(attendance.getStatus());
+                    dto.setDate(attendance.getDate());
+                    return dto;
+                }).toList();
+                return ResponseEntity.ok(dtos);
+            }).orElse(ResponseEntity.notFound().build());
+        }
+
+        return ResponseEntity.badRequest().body("Invalid Role");
     }
 }

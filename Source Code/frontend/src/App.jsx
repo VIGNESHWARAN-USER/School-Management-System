@@ -18,6 +18,7 @@ import FeeDashboard from './components/Student/FeeDashboard';
 import TransactionHistory from './components/Parent/TransactionHistory';
 import ClassroomSchedule from './components/Admin/ClassroomSchedule';
 import ManageResources from './components/Admin/ManageResources';
+import MyAttendance from './components/MyAttendance';
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
         <Route path="/transaction-history" element={<TransactionHistory />} />
         <Route path="/class-schedule" element={<ClassroomSchedule/>} />
         <Route path="/manage-resources" element={<ManageResources />} />
+        <Route path="/my-attendance" element={<MyAttendance />} />
       </Routes>
     </>
   );
