@@ -1,10 +1,9 @@
 package com.sms.backend.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,5 +17,13 @@ public class Subject {
     private Long subjectId;
 
     private String subjectName;
+
+    @Column(unique = true)
     private String subjectCode;
+
+    @OneToMany(mappedBy = "subject")
+    private List<Teacher> teachers;
+
+    @OneToMany(mappedBy = "subject")
+    private List<Schedule> schedules;
 }

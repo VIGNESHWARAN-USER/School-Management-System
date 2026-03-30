@@ -52,11 +52,13 @@ const Sidebar = ({ redCount }) => {
     Admin: [
       { name: "Admin Dashboard", to: "../admindashboard", icon: <FaUsers /> },
       { name: "Add Members", to: "../add-members", icon: <FaUsers /> },
+      { name: "Manage Resources", to: "../manage-resources", icon: <FaUsers /> },
       { name: "Mark Attendance", to: "../mark-attendance", icon: <MdEvent /> },
       { name: "View Attendance", to: "../view-attendance", icon: <MdEvent /> },
       { name: "Manage Events", to: "../manage-events", icon: <MdEvent /> },
       { name: "Create Fee Structure", to: "../create-fee-structure", icon: <MdReceipt /> },
-      { name: "Plan Installments", to: "../plan-installments", icon: <MdReceipt /> }
+      { name: "Plan Installments", to: "../plan-installments", icon: <MdReceipt /> },
+      { name: "Scedule Class", to: "../class-schedule", icon: <MdReceipt /> }
     ],
   };
 

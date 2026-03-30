@@ -300,7 +300,7 @@ public class AttendanceServices {
                             teacher.getName(),
                             i.getStatus(),
                             teacher.getName(),
-                            teacher.getClassId(),
+                            teacher.getClassRoom().getClassId(),
                             i.getDate(),
                             i.getRemarks()
                     );

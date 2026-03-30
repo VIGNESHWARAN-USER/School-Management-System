@@ -16,6 +16,9 @@ import PlanInstallments from './components/Admin/PlanInstallments';
 import ParentFeeDashboard from './components/Parent/ParentFeeDashboard';
 import FeeDashboard from './components/Student/FeeDashboard';
 import TransactionHistory from './components/Parent/TransactionHistory';
+import ClassroomSchedule from './components/Admin/ClassroomSchedule';
+import ManageResources from './components/Admin/ManageResources';
+
 
 function App() {
 
@@ -39,6 +42,8 @@ function App() {
         <Route path="/parent-fee" element={<ParentFeeDashboard />} />
         <Route path="/fees-details" element={<FeeDashboard />} />
         <Route path="/transaction-history" element={<TransactionHistory />} />
+        <Route path="/class-schedule" element={<ClassroomSchedule/>} />
+        <Route path="/manage-resources" element={<ManageResources />} />
       </Routes>
     </>
   );

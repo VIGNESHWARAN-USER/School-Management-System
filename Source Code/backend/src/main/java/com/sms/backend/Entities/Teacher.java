@@ -18,14 +18,24 @@ public class Teacher {
     private Long id;
 
     private String name;
-    private String subject;
+
+    @ManyToOne
+    @JoinColumn(name = "subjectId")
+    private Subject subject;
+
     private String email;
-    private String classId;
+
+    @ManyToOne
+    @JoinColumn(name = "classId")
+    private ClassRoom classRoom;
+
     private String password;
     private String phoneNumber;
 
     @OneToMany(mappedBy = "teacher")
     private List<TeacherAttendance> attendenceList;
 
+    @OneToMany(mappedBy = "teacher")
+    private List<Schedule> schedules;
 
 }
