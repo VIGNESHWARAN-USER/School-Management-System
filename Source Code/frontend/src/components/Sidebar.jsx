@@ -38,16 +38,23 @@ const Sidebar = ({ redCount }) => {
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
       { name: "Participate Events", to: "../participate-events", icon: <MdEvent /> },
       { name: "Fees Details", to: "../fees-details", icon: <MdReceipt /> },
+      { name: "View My Attendance", to: "../my-attendance", icon: <MdEvent /> },
+      { name: "View Academic Performance", to: "../academic-performance", icon: <MdEvent /> },
+      { name: "View Class Schedule", to: "../class-schedule", icon: <MdEvent /> }
     ],
     Parent: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
       { name: "View Fee Details", to: "../parent-fee", icon: <MdReceipt /> },
       { name: "Transaction History", to: "../transaction-history", icon: <MdReceipt /> },
+      { name: "View Child's Attendance", to: "../child-attendance", icon: <MdEvent /> },
+      { name: "View Child's Academic Performance", to: "../child-academic-performance", icon: <MdEvent /> },
+      { name: "View Child's Class Schedule", to: "../class-schedule", icon: <MdEvent /> }
     ],
     Teacher: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
       { name: "Mark Attendance", to: "../mark-attendance", icon: <MdEvent /> },
-      { name: "View Attendance", to: "../view-attendance", icon: <MdEvent /> },
+      { name: "View My Attendance", to: "../my-attendance", icon: <MdEvent /> },
+      { name: "View Class Schedule", to: "../class-schedule", icon: <MdEvent /> },
     ],
     Admin: [
       { name: "Admin Dashboard", to: "../admindashboard", icon: <FaUsers /> },

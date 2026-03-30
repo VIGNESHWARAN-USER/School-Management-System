@@ -4,15 +4,9 @@ import com.sms.backend.DTO.ClassRoomDTO;
 import com.sms.backend.DTO.ScheduleDTO;
 import com.sms.backend.DTO.SubjectDTO;
 import com.sms.backend.DTO.TeacherDTO;
-import com.sms.backend.Entities.ClassRoom;
-import com.sms.backend.Entities.Subject;
-import com.sms.backend.Entities.Schedule;
-import com.sms.backend.Entities.Teacher;
-import com.sms.backend.Repositories.ClassRoomRepository;
-import com.sms.backend.Repositories.SubjectRepository;
-import com.sms.backend.Repositories.ScheduleRepository;
+import com.sms.backend.Entities.*;
+import com.sms.backend.Repositories.*;
 
-import com.sms.backend.Repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,15 +19,14 @@ public class ClassScheduleService {
 
     @Autowired
     ClassRoomRepository classRoomRepository;
-
     @Autowired
     SubjectRepository subjectRepository;
-
     @Autowired
     ScheduleRepository scheduleRepository;
-
     @Autowired
     private TeacherRepository teacherRepository;
+    @Autowired
+    private StudentRepository studentRepository;
 
 
     public ResponseEntity<?> addClassRoom(ClassRoomDTO dto)
@@ -71,6 +64,21 @@ public class ClassScheduleService {
         schedule.setSubject(subjectRepository.findBySubjectId(dto.getSubjectId()));
 
         scheduleRepository.save(schedule);
+
+        Teacher teacher = teacherRepository.findById(dto.getTeacherId()).orElse(null);
+        if(teacher != null)
+        {
+            teacher.getSchedules().add(schedule);
+            teacherRepository.save(teacher);
+        }
+
+        ClassRoom classRoom = classRoomRepository.findById(dto.getClassId()).orElse(null);
+        if(classRoom != null)
+        {
+            classRoom.getSchedules().add(schedule);
+            classRoomRepository.save(classRoom);
+        }
+
         return "Schedule Added Successfully";
     }
 
@@ -139,7 +147,29 @@ public class ClassScheduleService {
     }
 
     public ResponseEntity<?> fetchTeacherSchedule(Long userId) {
+        Teacher teacher = teacherRepository.findById(userId).orElse(null);
+        if (teacher != null) {
+            List<Schedule> schedules = teacher.getSchedules();
+            return ResponseEntity.status(200).body(schedules);
+        }
+        else {
+            return ResponseEntity.status(404).body("Teacher id not found");
+        }
+    }
 
-
+    public ResponseEntity<?> fetchStudentSchedule(Long userId) {
+        Student student = studentRepository.findById(userId).orElse(null);
+        if (student != null) {
+            ClassRoom classRoom = classRoomRepository.findById(Long.valueOf(student.getClassId())).orElse(null);
+            assert classRoom != null;
+            List<Schedule> schedules = classRoom.getSchedules();
+            if(schedules != null)
+                return ResponseEntity.status(200).body(schedules);
+            else
+                return ResponseEntity.status(404).body("Schedules not found");
+        }
+        else {
+            return ResponseEntity.status(404).body("Teacher id not found");
+        }
     }
 }
