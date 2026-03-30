@@ -5,10 +5,7 @@ import com.sms.backend.Entities.Administrator;
 import com.sms.backend.Entities.Student;
 import com.sms.backend.Entities.Teacher;
 import com.sms.backend.Entities.Parent;
-import com.sms.backend.Repositories.AdministratorRepository;
-import com.sms.backend.Repositories.StudentRepository;
-import com.sms.backend.Repositories.TeacherRepository;
-import com.sms.backend.Repositories.ParentRepository;
+import com.sms.backend.Repositories.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +30,10 @@ public class AdminServices {
     private AdministratorRepository administratorRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private SubjectRepository subjectRepository;
+    @Autowired
+    private ClassRoomRepository classRoomRepository;
 
 
     public String addStudent(StudentDTO studentdto)
@@ -56,8 +57,8 @@ public class AdminServices {
 
         teacher.setName(teacherdto.getName());
         teacher.setEmail(teacherdto.getEmail());
-        teacher.setSubject(teacherdto.getSubject());
-        teacher.setClassId(teacherdto.getClassId());
+        teacher.setSubject(subjectRepository.findBySubjectCode(teacherdto.getSubject()));
+        teacher.setClassRoom(classRoomRepository.findById(Long.valueOf(teacherdto.getClassId())).orElse(null));
         teacher.setPhoneNumber(teacherdto.getPhoneNumber());
 
         teacher.setPassword(passwordEncoder.encode("1234"));
@@ -273,9 +274,9 @@ public class AdminServices {
                         dto.setId(teacher.getId());
                         dto.setName(teacher.getName());
                         dto.setEmail(teacher.getEmail());
-                        dto.setClassId(teacher.getClassId());
+                        dto.setClassId(String.valueOf(teacher.getClassRoom().getClassId()));
                         dto.setPhoneNumber(teacher.getPhoneNumber());
-                        dto.setSubject(teacher.getSubject());
+                        dto.setSubject(teacher.getSubject().getSubjectName());
 
 
                         if (teacher.getAttendenceList() != null) {

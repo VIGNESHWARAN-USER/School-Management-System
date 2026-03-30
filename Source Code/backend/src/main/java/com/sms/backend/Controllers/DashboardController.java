@@ -16,11 +16,12 @@ public class DashboardController {
 
 
     // ONE API FOR ALL ROLES
-    @GetMapping
+    @GetMapping("getData")
     public Map<String, Object> getDashboard(
-            @RequestParam String role,
+            @RequestParam String userRole,
             @RequestParam(required = false) Long userId)
     {
-        return dashboardService.getDashboard(role, userId);
+        System.out.println(userRole+" "+userId);
+        return dashboardService.getDashboard(userRole, userId);
     }
 }

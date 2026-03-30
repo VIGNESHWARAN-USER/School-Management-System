@@ -4,6 +4,7 @@ import com.sms.backend.DTO.CreateParentDTO;
 import com.sms.backend.DTO.StudentDTO;
 import com.sms.backend.DTO.TeacherDTO;
 import com.sms.backend.Entities.Administrator;
+import com.sms.backend.Entities.ClassRoom;
 import com.sms.backend.Services.AdminServices;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,12 @@ public class AdminController {
     {
         return adminService.fetchAllTeachers();
     }
+
+//    @GetMapping("/classrooms/add")
+//    public ResponseEntity<?> addClassRoom(@RequestBody ClassRoom classRoom)
+//    {
+//        return adminService.addClassRoom(classRoom);
+//    }
 
 
 }

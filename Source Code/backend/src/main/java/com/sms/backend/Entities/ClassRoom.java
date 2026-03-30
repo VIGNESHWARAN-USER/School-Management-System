@@ -1,10 +1,9 @@
 package com.sms.backend.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +19,12 @@ public class ClassRoom {
     private String className;
     private String section;
     private int capacity;
-    private Long teacherId;
+
+    @OneToMany(mappedBy = "classRoom")
+    private List<Teacher> teachers;
+
+    @OneToMany(mappedBy = "classRoom")
+    private List<Schedule> schedules;
+
     private String academicYear;
 }
