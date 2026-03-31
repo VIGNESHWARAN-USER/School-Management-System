@@ -27,6 +27,7 @@ const ParentFeeDashboard = () => {
         setLoading(true);
         try {
             const res = await api.get(`http://localhost:8085/api/fees/student/${studentId}`);
+            console.log("Fetched Fee Data:", res.data);
             setFeeData(res.data);
         } catch (err) {
             toast.error("Failed to load fee details");
@@ -117,7 +118,7 @@ const ParentFeeDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                    {feeData?.breakdown.map((comp, idx) => (
+                                    {feeData?.breakdown?.map((comp, idx) => (
                                         <tr key={idx} className="text-sm">
                                             <td className="px-6 py-4 font-bold text-gray-700">{comp.name}</td>
                                             <td className="px-6 py-4 text-gray-500">{comp.description}</td>
