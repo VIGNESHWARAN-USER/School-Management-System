@@ -26,4 +26,7 @@ public class Subject {
 
     @OneToMany(mappedBy = "subject")
     private List<Schedule> schedules;
+
+    @OneToMany(mappedBy = "subject")
+    private List<ExamSchedule> examSchedules;
 }

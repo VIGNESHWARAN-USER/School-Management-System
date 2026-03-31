@@ -20,6 +20,10 @@ import ClassroomSchedule from './components/Admin/ClassroomSchedule';
 import ManageResources from './components/Admin/ManageResources';
 import MyAttendance from './components/MyAttendance';
 import ViewChildAttendance from './components/Parent/ViewChildAttendance';
+import TeacherResources from './components/Teacher/TeacherResources';
+import StudentResources from './components/Student/StudentResources';
+import AdminExamSchedule from './components/Admin/AdminExamSchedule';
+import TeacherGrading from './components/Teacher/TeacherGrading';
 
 
 function App() {
@@ -48,6 +52,10 @@ function App() {
         <Route path="/manage-resources" element={<ManageResources />} />
         <Route path="/my-attendance" element={<MyAttendance />} />
         <Route path="/child-attendance" element={<ViewChildAttendance />} />
+        <Route path ="/teacher-resources" element={<TeacherResources />} />
+        <Route path = "/student-resources" element={<StudentResources/>}/>
+        <Route path="/schedule-exam" element={<AdminExamSchedule />} />
+        <Route path="/mark-grades" element={<TeacherGrading/>} />
       </Routes>
     </>
   );

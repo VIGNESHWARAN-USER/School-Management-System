@@ -40,7 +40,8 @@ const Sidebar = ({ redCount }) => {
       { name: "Fees Details", to: "../fees-details", icon: <MdReceipt /> },
       { name: "View My Attendance", to: "../my-attendance", icon: <MdEvent /> },
       { name: "View Academic Performance", to: "../academic-performance", icon: <MdEvent /> },
-      { name: "View Class Schedule", to: "../class-schedule", icon: <MdEvent /> }
+      { name: "View Class Schedule", to: "../class-schedule", icon: <MdEvent /> },
+      {name: "View Resources", to: "../student-resources", icon: <MdLibraryAdd />}
     ],
     Parent: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
@@ -55,6 +56,8 @@ const Sidebar = ({ redCount }) => {
       { name: "Mark Attendance", to: "../mark-attendance", icon: <MdEvent /> },
       { name: "View My Attendance", to: "../my-attendance", icon: <MdEvent /> },
       { name: "View Class Schedule", to: "../class-schedule", icon: <MdEvent /> },
+      { name: "Manage Resources", to: "../teacher-resources", icon: <MdLibraryAdd /> },
+      { name: "Mark Grades", to: "../mark-grades", icon: <MdLibraryAdd />}
     ],
     Admin: [
       { name: "Admin Dashboard", to: "../admindashboard", icon: <FaUsers /> },
@@ -65,7 +68,8 @@ const Sidebar = ({ redCount }) => {
       { name: "Manage Events", to: "../manage-events", icon: <MdEvent /> },
       { name: "Create Fee Structure", to: "../create-fee-structure", icon: <MdReceipt /> },
       { name: "Plan Installments", to: "../plan-installments", icon: <MdReceipt /> },
-      { name: "Scedule Class", to: "../class-schedule", icon: <MdReceipt /> }
+      { name: "Scedule Class", to: "../class-schedule", icon: <MdReceipt /> },
+      {name: "Schedule Exam", to: "../schedule-exam", icon: <MdReceipt /> }
     ],
   };
 
