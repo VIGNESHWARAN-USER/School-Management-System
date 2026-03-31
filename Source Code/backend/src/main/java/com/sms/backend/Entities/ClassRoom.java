@@ -26,5 +26,8 @@ public class ClassRoom {
     @OneToMany(mappedBy = "classRoom")
     private List<Schedule> schedules;
 
+    @OneToMany(mappedBy = "classRoom")
+    private List<ExamSchedule> examSchedules;
+
     private String academicYear;
 }

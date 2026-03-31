@@ -26,20 +26,20 @@ public class Student {
     private String classId;
     private String address;
 
-    // Parent Relation
     @ManyToOne
     @JoinColumn(name = "parent_id")
     @JsonBackReference
     private Parent parent;
 
-    //  Attendance
     @OneToMany(mappedBy = "student")
     @JsonManagedReference
     private List<StudentAttendance> attendenceList;
 
-    //  Registrations
     @OneToMany(mappedBy = "student")
     @JsonManagedReference
     private List<Registration> registrationList;
+
+    @OneToMany(mappedBy = "student")
+    private List<Grade> gradeList;
 
 }

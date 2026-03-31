@@ -1,26 +1,29 @@
 package com.sms.backend.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
+@Data
 public class Grade {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gradeId;
+    private Long id;
 
-    private Long studentId;
-    private Long examId;
-    private int marksObtained;
-    private String grade;
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    @ManyToOne
+    @JoinColumn(name = "exam_id")
+    private ExamSchedule examId;
+
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
+    private Double marksObtained;
+    private Double totalMarks;
+    private String letterGrade;
     private String remarks;
-
 }

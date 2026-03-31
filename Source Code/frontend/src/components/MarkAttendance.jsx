@@ -24,10 +24,11 @@ const MarkAttendance = () => {
     const fetchMembers = async () => {
         setLoading(true);
         try {
+            console.log(user);
             // Logic: Admin marks Teachers | Teacher marks Students
             const endpoint = accessLevel === 'Admin' 
-                ? 'http://localhost:8085/api/fetchAllTeachers' 
-                : `http://localhost:8085/api/fetchAllStudents/${user.classId}`;
+                ? '/api/fetchAllTeachers' 
+                : `/api/fetchAllStudents/${user.classId}`;
             
             const response = await api.get(endpoint);
             setMembers(response.data);
