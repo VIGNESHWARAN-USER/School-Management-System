@@ -1,5 +1,6 @@
 package com.sms.backend.Repositories;
 
+import com.sms.backend.Entities.ClassRoom;
 import com.sms.backend.Entities.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,5 +11,5 @@ import java.util.List;
 public interface StudentRepository extends JpaRepository<Student, Long> {
     Student findByEmail(String email);
 
-    List<Student> findAllByClassId(String id);
+    List<Student> findAllByClassRoom(ClassRoom id);
 }

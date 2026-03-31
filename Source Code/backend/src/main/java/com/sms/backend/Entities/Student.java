@@ -23,8 +23,11 @@ public class Student {
     private int age;
     private String email;
     private String password;
-    private String classId;
     private String address;
+
+    @ManyToOne
+    @JoinColumn(name = "classId")
+    private ClassRoom classRoom;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")

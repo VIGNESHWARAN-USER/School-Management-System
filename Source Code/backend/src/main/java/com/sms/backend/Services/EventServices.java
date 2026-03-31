@@ -206,7 +206,7 @@ public class EventServices {
                     registrationDTO.setAge(student.getAge());
                     registrationDTO.setStudentId(student.getId());
                     registrationDTO.setName(student.getName());
-                    registrationDTO.setClassId(student.getClassId());
+                    registrationDTO.setClassId(student.getClassRoom().getClassName());
                     registrationDTO.setEmail(student.getEmail());
                     registrationDTO.setId(registration.getId());
                     registrationDTO.setEventId(registration.getEvent().getId());
