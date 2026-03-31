@@ -129,22 +129,7 @@ const ManageResources = () => {
                                             <input type="text" placeholder="e.g. Grade 10" required value={classFormData.className} onChange={(e) => setClassFormData({...classFormData, className: e.target.value})} className="w-full pl-10 pr-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition" />
                                         </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Class Advisor</label>
-                                        <div className="relative">
-                                            <HiOutlineUsers className="absolute left-3 top-3 text-gray-400" />
-                                            <select value={classFormData.teacherId} onChange={(e) => setClassFormData({...classFormData, teacherId: e.target.value})} className="w-full pl-10 pr-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition">
-                                                <option value="">Select Teacher</option>
-                                                {teachers.map((teacher) => (
-                                                    console.log("Teacher option:", teacher.id),
-                                                    <option key={teacher.id} value={teacher.id}>
-                                                        {teacher.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                    </div>
+                                
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Section</label>

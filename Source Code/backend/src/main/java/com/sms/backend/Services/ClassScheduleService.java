@@ -35,9 +35,6 @@ public class ClassScheduleService {
 
         classRoom.setClassName(dto.getClassName());
         classRoom.setSection(dto.getSection());
-        List<Teacher> teachers = new ArrayList<>();
-        teachers.add(teacherRepository.findById(dto.getTeacherId()).orElse(null));
-        classRoom.setTeachers(teachers);
         classRoom.setAcademicYear(dto.getAcademicYear());
         classRoom.setCapacity(dto.getCapacity());
 

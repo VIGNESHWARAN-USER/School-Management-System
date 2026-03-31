@@ -57,7 +57,7 @@ public class AdminServices {
 
         teacher.setName(teacherdto.getName());
         teacher.setEmail(teacherdto.getEmail());
-        teacher.setSubject(subjectRepository.findBySubjectCode(teacherdto.getSubject()));
+        teacher.setSubject(subjectRepository.findById(Long.valueOf(teacherdto.getSubject())).orElse(null));
         teacher.setClassRoom(classRoomRepository.findById(Long.valueOf(teacherdto.getClassId())).orElse(null));
         teacher.setPhoneNumber(teacherdto.getPhoneNumber());
 
@@ -161,10 +161,10 @@ public class AdminServices {
                         dto.setName(student.getName());
                         dto.setAge(student.getAge());
                         dto.setEmail(student.getEmail());
-                        dto.setClassId(String.valueOf(student.getClassRoom().getClassId()));
+                        dto.setClassId(String.valueOf(student.getClassRoom().getClassName()));
                         dto.setAddress(student.getAddress());
 
-                        // 🔹 Parent mapping
+
                         if (student.getParent() != null) {
                             ParentDTO parentDTO = new ParentDTO();
                             parentDTO.setId(student.getParent().getId());
@@ -173,8 +173,7 @@ public class AdminServices {
 
                             dto.setParentDTO(parentDTO);
                         }
-
-                        // 🔹 Attendance mapping
+                        
                         if (student.getAttendenceList() != null) {
                             List<AttendanceDTO> attendanceList =
                                     student.getAttendenceList().stream()

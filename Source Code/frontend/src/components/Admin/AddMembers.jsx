@@ -14,6 +14,8 @@ Modal.setAppElement('#root');
 const AddMembers = () => {
     const [userData, setUserData] = useState([]); // Combined list of Students, Teachers, Parents
     const [parents, setParents] = useState([]); // For Student -> Parent assignment
+    const [classrooms, setClassrooms] = useState([]);
+    const [subjects, setSubjects] = useState([]);
     
     const [searchTerm, setSearchTerm] = useState('');
     const [roleFilter, setRoleFilter] = useState('All');
@@ -39,11 +41,15 @@ const AddMembers = () => {
     // --- Data Fetching ---
     const fetchDetails = async () => {
         try {
-            const [studRes, teachRes, parentRes] = await Promise.all([
+            const [classRoomRes, subjectsRes, studRes, teachRes, parentRes] = await Promise.all([
+                api.get('/api/classrooms'),
+                api.get('/api/subjects'),
                 api.get("http://localhost:8085/api/fetchAllStudents"),
                 api.get("http://localhost:8085/api/fetchAllTeachers"),
                 api.get("http://localhost:8085/api/fetchAllParents")
             ]);
+            console.log("Classrooms:", classRoomRes.data);
+            console.log("Subjects:", subjectsRes.data);
             console.log("Students:", studRes.data);
             console.log("Teachers:", teachRes.data);
             console.log("Parents:", parentRes.data);
@@ -52,6 +58,8 @@ const AddMembers = () => {
             const students = studRes.data.map(s => ({ ...s, type: 'Student' }));
             const teachers = teachRes.data.map(t => ({ ...t, type: 'Teacher' }));
             const parentsData = parentRes.data.map(p => ({ ...p, type: 'Parent' }));
+            setClassrooms(classRoomRes.data);
+            setSubjects(subjectsRes.data);
 
             setUserData([...students, ...teachers, ...parentsData]);
             setParents(parentsData);
@@ -75,6 +83,20 @@ const AddMembers = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubjectChange = (e) => {
+        const subjectName = e.target.value;
+        const subject = subjects.find(s => s.subjectName === subjectName);
+        const subjectId = subject ? subject.subjectId : '';
+        setFormData(prev => ({ ...prev, subject: subjectId }));
+    };
+
+    const handleClassChange = (e) => {
+        const className = e.target.value;
+        const classRoom = classrooms.find(c => c.className === className);
+        const classId = classRoom ? classRoom.classId : '';
+        setFormData(prev => ({ ...prev, classId }));
     };
 
     const handleMultiSelectChange = (selectedOptions) => {
@@ -210,7 +232,7 @@ const InfoBlock = ({ label, value }) => (
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
                                         {m.type === 'Teacher' && <p>{m.subject} | {m.phoneNumber}</p>}
-                                        {m.type === 'Student' && <p>Class: {m.classId} </p>}
+                                        {m.type === 'Student' && <p>{m.classId} </p>}
                                         {m.type === 'Parent' && <p>{m.mobileNumber}</p>}
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 text-sm">
@@ -274,7 +296,7 @@ const InfoBlock = ({ label, value }) => (
                         </>
                     )}
 
-                    {/* --- TEACHER SPECIFIC FIELDS --- */}
+                    
                     {viewingMember.type === 'Teacher' && (
                         <>
                             <InfoBlock label="Subject Expertise" value={viewingMember.subject} />
@@ -282,7 +304,7 @@ const InfoBlock = ({ label, value }) => (
                         </>
                     )}
 
-                    {/* --- PARENT SPECIFIC FIELDS --- */}
+                    
                     {viewingMember.type === 'Parent' && (
                         <>
                             <InfoBlock label="Age" value={viewingMember.age} />
@@ -337,20 +359,11 @@ const InfoBlock = ({ label, value }) => (
                             {/* Student Specific */}
                             {memberType === 'Student' && (
                                 <>
-                                    <select required name="classId" placeholder="Class ID" onChange={handleInputChange} className="p-2 border border-gray-300 rounded-lg" >
+                                    <select required name="classId" placeholder="Class ID" onChange={handleClassChange} className="p-2 border border-gray-300 rounded-lg" >
                                         <option value="">Select Class</option>
-                                        <option value="1">Class 1</option>
-                                        <option value="2">Class 2</option>
-                                        <option value="3">Class 3</option>
-                                        <option value="4">Class 4</option>
-                                        <option value="5">Class 5</option>
-                                        <option value="6">Class 6</option>
-                                        <option value="7">Class 7</option>
-                                        <option value="8">Class 8</option>
-                                        <option value="9">Class 9</option>
-                                        <option value="10">Class 10</option>
-                                        <option value="11">Class 11</option>
-                                        <option value="12">Class 12</option>
+                                        {classrooms.map(c => (
+                                            <option key={c.id} value={c.id}>{c.className}</option>
+                                        ))}
                                     </select>
                                 </>
                             )}
@@ -358,22 +371,19 @@ const InfoBlock = ({ label, value }) => (
                             {/* Teacher Specific */}
                             {memberType === 'Teacher' && (
                                 <>
-                                    <input required name="subject" placeholder="Subject" onChange={handleInputChange} className="p-2 border border-gray-300 rounded-lg" />
+                                    <select required name="subject" placeholder="Subject" onChange={handleSubjectChange} className="p-2 border border-gray-300 rounded-lg" 
+                                    >
+                                        <option value="">Select Subject</option>
+                                        {subjects.map(s => (
+                                            <option key={s.id} value={s.id}>{s.subjectName}</option>
+                                        ))}
+                                    </select>
                                     <input required name="phoneNumber" placeholder="Phone Number" onChange={handleInputChange} className="p-2 border border-gray-300 rounded-lg" />
-                                    <select required name="classId" placeholder="Class ID" onChange={handleInputChange} className="p-2 border border-gray-300 rounded-lg" >
+                                    <select required name="classId" placeholder="Class ID" onChange={handleClassChange} className="p-2 border border-gray-300 rounded-lg" >
                                         <option value="">Select Class</option>
-                                        <option value="1">Class 1</option>
-                                        <option value="2">Class 2</option>
-                                        <option value="3">Class 3</option>
-                                        <option value="4">Class 4</option>
-                                        <option value="5">Class 5</option>
-                                        <option value="6">Class 6</option>
-                                        <option value="7">Class 7</option>
-                                        <option value="8">Class 8</option>
-                                        <option value="9">Class 9</option>
-                                        <option value="10">Class 10</option>
-                                        <option value="11">Class 11</option>
-                                        <option value="12">Class 12</option>
+                                        {classrooms.map(c => (
+                                            <option key={c.id} value={c.id}>{c.className}</option>
+                                        ))}
                                     </select>
                                 </>
                             )}
