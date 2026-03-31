@@ -258,7 +258,7 @@ public class AttendanceServices {
                             student.getName(),
                             i.getStatus(),
                             student.getName(),
-                            student.getClassId(),
+                            student.getClassRoom().getClassId(),
                             i.getDate(),
                             i.getRemarks()
                     );

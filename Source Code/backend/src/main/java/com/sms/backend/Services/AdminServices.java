@@ -43,7 +43,7 @@ public class AdminServices {
         student.setAge(studentdto.getAge());
         student.setAddress(studentdto.getAddress());
         student.setEmail(studentdto.getEmail());
-        student.setClassId(studentdto.getClassId());
+        student.setClassRoom(classRoomRepository.findById(Long.valueOf(studentdto.getClassId())).orElse(null));
         student.setName(studentdto.getName());
 
         student.setPassword(passwordEncoder.encode("1234"));
@@ -57,7 +57,7 @@ public class AdminServices {
 
         teacher.setName(teacherdto.getName());
         teacher.setEmail(teacherdto.getEmail());
-        teacher.setSubject(subjectRepository.findBySubjectCode(teacherdto.getSubject()));
+        teacher.setSubject(subjectRepository.findById(Long.valueOf(teacherdto.getSubject())).orElse(null));
         teacher.setClassRoom(classRoomRepository.findById(Long.valueOf(teacherdto.getClassId())).orElse(null));
         teacher.setPhoneNumber(teacherdto.getPhoneNumber());
 
@@ -161,10 +161,10 @@ public class AdminServices {
                         dto.setName(student.getName());
                         dto.setAge(student.getAge());
                         dto.setEmail(student.getEmail());
-                        dto.setClassId(student.getClassId());
+                        dto.setClassId(String.valueOf(student.getClassRoom().getClassName()));
                         dto.setAddress(student.getAddress());
 
-                        // 🔹 Parent mapping
+
                         if (student.getParent() != null) {
                             ParentDTO parentDTO = new ParentDTO();
                             parentDTO.setId(student.getParent().getId());
@@ -173,8 +173,7 @@ public class AdminServices {
 
                             dto.setParentDTO(parentDTO);
                         }
-
-                        // 🔹 Attendance mapping
+                        
                         if (student.getAttendenceList() != null) {
                             List<AttendanceDTO> attendanceList =
                                     student.getAttendenceList().stream()
@@ -227,7 +226,7 @@ public class AdminServices {
                        dto.setName(student.getName());
                        dto.setAge(student.getAge());
                        dto.setEmail(student.getEmail());
-                       dto.setClassId(student.getClassId());
+                       dto.setClassId(String.valueOf(student.getClassRoom().getClassId()));
                        dto.setAddress(student.getAddress());
 
                        if (student.getAttendenceList() != null) {
@@ -308,7 +307,7 @@ public class AdminServices {
 
     public ResponseEntity<?> fetchAllStudentsByClassId(String classId) {
         try {
-            List<Student> students = studentRepository.findAllByClassId(classId);
+            List<Student> students = studentRepository.findAllByClassRoom(classRoomRepository.findById(Long.valueOf(classId)).orElse(null));
 
             List<StudentDTO> studentList = students.stream()
                     .map(student -> {
@@ -319,10 +318,9 @@ public class AdminServices {
                         dto.setName(student.getName());
                         dto.setAge(student.getAge());
                         dto.setEmail(student.getEmail());
-                        dto.setClassId(student.getClassId());
+                        dto.setClassId(String.valueOf(student.getClassRoom().getClassId()));
                         dto.setAddress(student.getAddress());
 
-                        // 🔹 Parent mapping
                         if (student.getParent() != null) {
                             ParentDTO parentDTO = new ParentDTO();
                             parentDTO.setId(student.getParent().getId());
@@ -332,7 +330,6 @@ public class AdminServices {
                             dto.setParentDTO(parentDTO);
                         }
 
-                        // 🔹 Attendance mapping
                         if (student.getAttendenceList() != null) {
                             List<AttendanceDTO> attendanceList =
                                     student.getAttendenceList().stream()

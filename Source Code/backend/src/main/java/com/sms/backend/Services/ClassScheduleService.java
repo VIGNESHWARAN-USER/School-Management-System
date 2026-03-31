@@ -35,9 +35,6 @@ public class ClassScheduleService {
 
         classRoom.setClassName(dto.getClassName());
         classRoom.setSection(dto.getSection());
-        List<Teacher> teachers = new ArrayList<>();
-        teachers.add(teacherRepository.findById(dto.getTeacherId()).orElse(null));
-        classRoom.setTeachers(teachers);
         classRoom.setAcademicYear(dto.getAcademicYear());
         classRoom.setCapacity(dto.getCapacity());
 
@@ -48,6 +45,7 @@ public class ClassScheduleService {
 
     public String addSubject(Subject subject)
     {
+        System.out.println("In services: "+subject.getSubjectName());
         subjectRepository.save(subject);
         return "Subject Added Successfully";
     }
@@ -125,8 +123,7 @@ public class ClassScheduleService {
 
             return teacherDTO;
         }).toList();
-        return ResponseEntity.status(200).body(teacherDTOList
-        );
+        return ResponseEntity.status(200).body(teacherDTOList);
     }
 
     public ResponseEntity<?> fetchClassSchedule(Long classId) {
@@ -160,7 +157,7 @@ public class ClassScheduleService {
     public ResponseEntity<?> fetchStudentSchedule(Long userId) {
         Student student = studentRepository.findById(userId).orElse(null);
         if (student != null) {
-            ClassRoom classRoom = classRoomRepository.findById(Long.valueOf(student.getClassId())).orElse(null);
+            ClassRoom classRoom = classRoomRepository.findById(Long.valueOf(student.getClassRoom().getClassId())).orElse(null);
             assert classRoom != null;
             List<Schedule> schedules = classRoom.getSchedules();
             if(schedules != null)

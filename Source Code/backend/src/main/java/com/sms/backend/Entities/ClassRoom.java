@@ -24,6 +24,9 @@ public class ClassRoom {
     private List<Teacher> teachers;
 
     @OneToMany(mappedBy = "classRoom")
+    private List<Student> students;
+
+    @OneToMany(mappedBy = "classRoom")
     private List<Schedule> schedules;
 
     @OneToMany(mappedBy = "classRoom")

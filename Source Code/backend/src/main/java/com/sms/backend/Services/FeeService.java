@@ -27,6 +27,8 @@ public class FeeService {
     @Autowired private InstallmentRepository installmentRepository;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private EmailService emailService;
+    @Autowired
+    private ClassRoomRepository classRoomRepository;
 
     //  AUTO FEE DUE REMINDER
 
@@ -154,7 +156,7 @@ public class FeeService {
         FeeStructure structure = feeStructureRepository.findById(dto.getFeeStructureId())
                 .orElseThrow(() -> new RuntimeException("Structure not found"));
 
-        List<Student> students = studentRepository.findAllByClassId(structure.getClassId());
+        List<Student> students = studentRepository.findAllByClassRoom(classRoomRepository.findById(Long.valueOf(structure.getClassId())).orElse(null));
 
         for (Student student : students) {
 
