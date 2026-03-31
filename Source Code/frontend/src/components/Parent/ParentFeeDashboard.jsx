@@ -69,7 +69,6 @@ const ParentFeeDashboard = () => {
         });
     };
 
-    if (loading) return <div className="flex h-screen items-center justify-center">Loading Financial Records...</div>;
 
     return (
         <div className="flex h-screen bg-gray-50">
@@ -149,7 +148,7 @@ const ParentFeeDashboard = () => {
                                     <div key={idx} className={`p-4 rounded-xl border transition ${inst.status === 'PAID' ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`}>
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
-                                                <p className="text-sm font-bold text-gray-700">Installment #{inst.number}</p>
+                                                <p className="text-sm font-bold text-gray-700">{inst.name}</p>
                                                 <p className="text-xs text-gray-500 flex items-center mt-1">
                                                     <HiOutlineClock className="mr-1" /> Due: {inst.dueDate}
                                                 </p>

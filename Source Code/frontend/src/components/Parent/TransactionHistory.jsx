@@ -3,9 +3,13 @@ import Sidebar from '../Sidebar';
 import { toast, Toaster } from 'sonner';
 import { 
     HiOutlineSearch, HiOutlineDocumentDownload, HiOutlineInformationCircle,
-    HiOutlineArrowLeft, HiOutlineShieldCheck, HiOutlinePrinter 
+    HiOutlineShieldCheck, HiOutlinePrinter 
 } from 'react-icons/hi';
 import api from '../api';
+
+// CORRECT IMPORTS FOR VITE/REACT
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable'; 
 
 const TransactionHistory = () => {
     const [transactions, setTransactions] = useState([]);
@@ -22,8 +26,7 @@ const TransactionHistory = () => {
         setLoading(true);
         try {
             const res = await api.get(`http://localhost:8085/api/fees/student/${studentId}/transactions`);
-            setTransactions(res.data.body);
-            console.log("Fetched Transactions:", res.data.body);
+            setTransactions(res.data.body || []);
         } catch (err) {
             toast.error("Failed to load payment history");
         } finally {
@@ -31,7 +34,6 @@ const TransactionHistory = () => {
         }
     };
 
-    // Filter by Transaction ID or Method
     const filteredTx = useMemo(() => {
         return transactions.filter(tx => 
             tx.transactionId.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -39,10 +41,82 @@ const TransactionHistory = () => {
         );
     }, [transactions, searchTerm]);
 
-    const downloadInvoice = (txId) => {
-        toast.info(`Generating Invoice for ${txId}...`);
-        // Logic for PDF generation would go here
-        // window.open(`http://localhost:8085/api/fees/invoice/${txId}`, '_blank');
+    // --- FIXED PDF GENERATION LOGIC ---
+    const downloadInvoice = (tx) => {
+        try {
+            const doc = new jsPDF();
+
+            // 1. Add Header / Branding
+            doc.setFontSize(22);
+            doc.setTextColor(37, 99, 235); // Blue-600
+            doc.text("ACADEMIA UNIVERSITY", 14, 22);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text("Official Payment Receipt", 14, 28);
+            doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 33);
+
+            // 2. Horizontal Line
+            doc.setDrawColor(200, 200, 200);
+            doc.line(14, 38, 196, 38);
+
+            // 3. Invoice Metadata
+            doc.setFontSize(11);
+            doc.setTextColor(0);
+            doc.setFont("helvetica", "bold");
+            doc.text("BILL TO:", 14, 48);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Student ID: ${studentId}`, 14, 54);
+            
+            doc.setFont("helvetica", "bold");
+            doc.text("INVOICE DETAILS:", 120, 48);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Tx ID: ${tx.transactionId}`, 120, 54);
+            doc.text(`Date: ${new Date(tx.paymentDate).toLocaleDateString()}`, 120, 60);
+
+            // 4. Transaction Table (Using the imported autoTable function)
+            const tableColumn = ["Description", "Method", "Type", "Status", "Amount"];
+            const tableRows = [
+                [
+                    tx.installmentLabel || "Tuition Fee Payment",
+                    tx.paymentMethod,
+                    tx.paymentType,
+                    tx.status,
+                    `$${tx.amountPaid.toFixed(2)}`
+                ]
+            ];
+
+            autoTable(doc, {
+                startY: 70,
+                head: [tableColumn],
+                body: tableRows,
+                theme: 'striped',
+                headStyles: { fillColor: [37, 99, 235], fontSize: 10, halign: 'center' },
+                columnStyles: {
+                    4: { halign: 'right', fontStyle: 'bold' }
+                }
+            });
+
+            // 5. Summary and Total
+            // Use doc.lastAutoTable.finalY to find where the table ended
+            const finalY = doc.lastAutoTable.finalY + 15;
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text(`Total Amount Paid: $${tx.amountPaid.toFixed(2)}`, 196, finalY, { align: 'right' });
+
+            // 6. Footer
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "italic");
+            doc.setTextColor(150);
+            doc.text("This is a computer-generated receipt. No signature required.", 105, finalY + 30, { align: 'center' });
+
+            // Save the PDF
+            doc.save(`Invoice_${tx.transactionId}.pdf`);
+            toast.success("Invoice downloaded!");
+        } catch (error) {
+            console.error("PDF Error:", error);
+            toast.error("Could not generate PDF");
+        }
     };
 
     const StatusBadge = ({ status }) => {
@@ -60,13 +134,11 @@ const TransactionHistory = () => {
             <Toaster richColors position="top-right" />
 
             <div className="flex-1 p-8 overflow-y-auto">
-                
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-800">Transaction History</h1>
-                            <p className="text-sm text-gray-500">Track all fee payments for Student ID: {studentId}</p>
-                        </div>
-                    
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-800">Transaction History</h1>
+                        <p className="text-sm text-gray-500">Track all fee payments for Student ID: {studentId}</p>
+                    </div>
 
                     <div className="relative">
                         <HiOutlineSearch className="absolute left-3 top-3 text-gray-400" size={20} />
@@ -80,7 +152,6 @@ const TransactionHistory = () => {
                     </div>
                 </div>
 
-                {/* Main Content */}
                 {loading ? (
                     <div className="text-center py-20 text-gray-400">Loading history...</div>
                 ) : filteredTx.length === 0 ? (
@@ -122,18 +193,19 @@ const TransactionHistory = () => {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center text-sm text-gray-600">
                                                 <HiOutlineShieldCheck className="mr-1.5 text-green-500" />
-                                                {tx.paymentMethod} ({tx.paymentType})
+                                                {tx.paymentMethod}
                                             </div>
+                                            <div className="text-[10px] text-gray-400 uppercase">{tx.paymentType}</div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="text-sm font-bold text-gray-900 font-mono">${tx.amountPaid}</div>
+                                            <div className="text-sm font-bold text-gray-900 font-mono">${tx.amountPaid.toFixed(2)}</div>
                                         </td>
                                         <td className="px-6 py-4 text-center">
                                             <StatusBadge status={tx.status} />
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <button 
-                                                onClick={() => downloadInvoice(tx.transactionId)}
+                                                onClick={() => downloadInvoice(tx)}
                                                 className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
                                                 title="Download PDF Invoice"
                                             >
@@ -145,10 +217,9 @@ const TransactionHistory = () => {
                             </tbody>
                         </table>
                         
-                        {/* Footer Info */}
                         <div className="p-4 bg-gray-50 border-t flex items-center justify-center text-xs text-gray-400">
                             <HiOutlinePrinter className="mr-1" />
-                            Showing {filteredTx.length} successful transactions. Contact support for disputes.
+                            Showing {filteredTx.length} transactions. Contact support for disputes.
                         </div>
                     </div>
                 )}
