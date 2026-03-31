@@ -229,6 +229,15 @@ public class FeeService {
         dto.setRemainingBalance(fee.getRemainingBalance());
         dto.setOverallStatus(fee.getStatus().toString());
 
+        dto.setBreakdown(fee.getFeeStructure().getComponents().stream().map(feeComponent -> {
+            ComponentDTO componentDTO = new ComponentDTO();
+            componentDTO.setAmount(feeComponent.getAmount());
+            componentDTO.setName(String.valueOf(feeComponent.getComponentName()));
+            componentDTO.setDescription(feeComponent.getDescription());
+            componentDTO.setTaxPercentage(feeComponent.getTaxPercentage());
+            return componentDTO;
+        }).toList());
+
         dto.setInstallments(fee.getInstallments().stream().map(i -> {
             InstallmentDTO d = new InstallmentDTO();
             d.setId(i.getId());
