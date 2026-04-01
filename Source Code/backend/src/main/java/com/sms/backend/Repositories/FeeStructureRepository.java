@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FeeStructureRepository extends JpaRepository<FeeStructure, Long> {
 
-    FeeStructure findByClassIdAndAcademicYear(String classId, String academicYear);
 }

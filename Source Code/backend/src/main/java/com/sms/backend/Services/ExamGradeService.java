@@ -2,13 +2,11 @@ package com.sms.backend.Services;
 
 
 import com.sms.backend.DTO.ExamScheduleDTO;
+import com.sms.backend.DTO.GradeDTO;
 import com.sms.backend.Entities.ClassRoom;
 import com.sms.backend.Entities.ExamSchedule;
 import com.sms.backend.Entities.Grade;
-import com.sms.backend.Repositories.ClassRoomRepository;
-import com.sms.backend.Repositories.ExamRepository;
-import com.sms.backend.Repositories.GradeRepository;
-import com.sms.backend.Repositories.SubjectRepository;
+import com.sms.backend.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -22,6 +20,8 @@ public class ExamGradeService {
     private ClassRoomRepository classRoomRepository;
     @Autowired
     private SubjectRepository subjectRepository;
+    @Autowired
+    private StudentRepository studentRepository;
 
     // US1: Admin schedules Exam
     public ExamSchedule scheduleExam(ExamScheduleDTO dto) {
@@ -49,22 +49,29 @@ public class ExamGradeService {
     }
 
     // US2: Teacher enters grades
-    public Grade saveGrade(Grade grade) {
-        // AC2: Validation
-        if (grade.getMarksObtained() == null) {
+    public Grade saveGrade(GradeDTO dto) {
+
+        if (dto.getMarksObtained() == null) {
             throw new RuntimeException("Marks are required!");
         }
 
-        // Calculate Letter Grade
-        double percentage = (grade.getMarksObtained() / grade.getTotalMarks()) * 100;
-        if (percentage >= 90) grade.setLetterGrade("A+");
-        else if (percentage >= 80) grade.setLetterGrade("A");
-        else if (percentage >= 70) grade.setLetterGrade("B");
-        else grade.setLetterGrade("C");
 
-        Grade savedGrade = gradeRepo.save(grade);
+        double percentage = (dto.getMarksObtained() / dto.getTotalMarks()) * 100;
+        if (percentage >= 90) dto.setLetterGrade("A+");
+        else if (percentage >= 80) dto.setLetterGrade("A");
+        else if (percentage >= 70) dto.setLetterGrade("B");
+        else dto.setLetterGrade("C");
 
-        return savedGrade;
+        Grade grade = new Grade();
+        grade.setLetterGrade(dto.getLetterGrade());
+        grade.setExam(examRepo.findById(dto.getExamId()).orElse(null));
+        grade.setSubject(grade.getExam().getSubject());
+        grade.setRemarks(dto.getRemarks());
+        grade.setMarksObtained(dto.getMarksObtained());
+        grade.setStudent(studentRepository.findById(dto.getStudentId()).orElse(null));
+        grade.setTotalMarks(dto.getTotalMarks());
+
+        return gradeRepo.save(grade);
     }
 
     // US3: View Results

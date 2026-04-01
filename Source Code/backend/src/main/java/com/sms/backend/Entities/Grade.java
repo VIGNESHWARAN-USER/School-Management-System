@@ -16,7 +16,7 @@ public class Grade {
 
     @ManyToOne
     @JoinColumn(name = "exam_id")
-    private ExamSchedule examId;
+    private ExamSchedule exam;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")

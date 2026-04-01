@@ -35,6 +35,7 @@ const TeacherGrading = () => {
             const res = await api.get('/api/exams-management/schedules');
             const students = await api.get(`/api/fetchAllStudents/${user.classId}`);
             setExams(res.data);
+            setStudents(students.data);
         } catch (err) {
             toast.error("Failed to load exams list");
         } finally {
@@ -71,7 +72,7 @@ const TeacherGrading = () => {
 
         setIsSaving(true);
         try {
-            // US2 AC1: Store marks and trigger backend grade calculation
+            
             await api.post('/api/exams-management/grades', {
                 ...formData,
                 marksObtained: parseFloat(formData.marksObtained),
@@ -143,32 +144,26 @@ const TeacherGrading = () => {
                                 {/* Student ID */}
                                 <div className="space-y-1">
                                     <label className="text-sm font-bold text-gray-600 flex items-center gap-2">
-                                        <HiOutlineUserGroup className="text-blue-500" /> Student ID
+                                        <HiOutlineUserGroup className="text-blue-500" /> Select Student
                                     </label>
-                                    <input 
-                                        type="text"
-                                        placeholder="e.g. STU1001"
+                                    <select 
                                         required
                                         className="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition"
                                         value={formData.studentId}
                                         onChange={(e) => setFormData({...formData, studentId: e.target.value})}
-                                    />
+                                    >
+                                        <option value="">-- Select Student --</option>
+                                        {students.map(student => (
+                                            <option key={student.id} value={student.id}>
+                                                {student.name} (ID: {student.id})
+                                            </option>
+                                        ))}
+                                    </select>
+                                
                                 </div>
 
-                                {/* Student Name */}
-                                <div className="space-y-1">
-                                    <label className="text-sm font-bold text-gray-600">Student Name</label>
-                                    <input 
-                                        type="text"
-                                        placeholder="Enter full name"
-                                        className="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition"
-                                        value={formData.studentName}
-                                        onChange={(e) => setFormData({...formData, studentName: e.target.value})}
-                                    />
-                                </div>
 
-                                {/* Marks Entry */}
-                                <div className="grid grid-cols-2 gap-4">
+                                
                                     <div className="space-y-1">
                                         <label className="text-sm font-bold text-gray-600 flex items-center gap-2">
                                             <HiOutlineCalculator className="text-blue-500" /> Marks Obtained
@@ -176,6 +171,8 @@ const TeacherGrading = () => {
                                         <input 
                                             type="number"
                                             placeholder="0"
+                                            min = "0"
+                                            max = "100"
                                             className="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition"
                                             value={formData.marksObtained}
                                             onChange={(e) => setFormData({...formData, marksObtained: e.target.value})}
@@ -190,7 +187,7 @@ const TeacherGrading = () => {
                                             readOnly
                                         />
                                     </div>
-                                </div>
+                                
                             </div>
 
                             <div className="mb-8">

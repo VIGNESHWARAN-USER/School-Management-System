@@ -6,10 +6,24 @@ import {
     HiOutlineInformationCircle, HiOutlineCalculator 
 } from 'react-icons/hi';
 import api from '../api';
+import { use } from 'react';
 
 const CreateFeeStructure = () => {
     const [loading, setLoading] = useState(false);
-    const classes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(num => ({ id: num, className: `Class ${num}` }));
+    const [classes, setClasses] = useState([]);
+    useEffect(() => {
+        const fetchClasses = async () => {
+            try {
+                const response = await api.get(`http://localhost:8085/api/classrooms`);
+                setClasses(response.data);
+            } catch (error) {
+                console.error('Error fetching classes:', error);
+                toast.error('Failed to fetch classes');
+            }
+        };
+        fetchClasses();
+    }, []);
+
 
     // Main Form State
     const [formData, setFormData] = useState({
@@ -25,13 +39,14 @@ const CreateFeeStructure = () => {
         if (formData.classId) {
             fetchExistingStructure(formData.classId);
         }
-    }, [formData.classId, formData.academicYear]);
+    }, [formData.classId]);
 
 
-    const fetchExistingStructure = async (classId) => {
+    const   fetchExistingStructure = async (classId) => {
         if (!classId) return;
         try {
-            const response = await api.get(`http://localhost:8085/api/fees/structure/${classId}/${formData.academicYear}`);
+            console.log(classId)
+            const response = await api.get(`http://localhost:8085/api/fees/structure/${classId}`);
             if (response.data) {
                 const { academicYear, components } = response.data;
                 setFormData({ classId, academicYear, components });
@@ -114,32 +129,52 @@ const CreateFeeStructure = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Header Card: Class and Year */}
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+                        {/* Select Class */}
                         <div>
-                            <label className="block text-sm font-semibold text-gray-600 mb-2 uppercase">Select Class</label>
+                            <label className="block text-sm font-semibold text-gray-600 mb-2 uppercase">
+                                Select Class
+                            </label>
+
                             <select 
                                 required
                                 value={formData.classId}
-                                onChange={(e) => setFormData({...formData, classId: e.target.value})}
+                                onChange={(e) => {
+                                    const selected = classes.find(
+                                        c => String(c.classId) === e.target.value
+                                    );
+
+                                    setFormData({
+                                        ...formData,
+                                        classId: selected?.classId || '',
+                                        academicYear: selected?.academicYear || ''
+                                    });
+                                }}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
                             >
                                 <option value="">Select a Class</option>
-                                {classes.map(c => <option key={c.id} value={c.id}>{c.className}</option>)}
+                                {classes.map(c => (
+                                    <option key={c.classId} value={c.classId}>
+                                        {c.className}
+                                    </option>
+                                ))}
                             </select>
                         </div>
+
+                        {/* Academic Year */}
                         <div>
-                            <label className="block text-sm font-semibold text-gray-600 mb-2 uppercase">Academic Year</label>
-                            <select 
+                            <label className="block text-sm font-semibold text-gray-600 mb-2 uppercase">
+                                Academic Year
+                            </label>
+
+                            <input 
                                 type="text"
-                                value={formData.academicYear}
-                                onChange={(e) => setFormData({...formData, academicYear: e.target.value})}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                                placeholder="e.g., 2025-2026"
-                            >
-                                <option value="2025-2026">2025-2026</option>
-                                <option value="2026-2027">2026-2027</option>
-                                <option value="2027-2028">2027-2028</option>
-                            </select>
+                                value={formData.academicYear || ''}
+                                readOnly
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                            />
                         </div>
+
                     </div>
 
                     {/* Breakdown Section (US_002) */}
