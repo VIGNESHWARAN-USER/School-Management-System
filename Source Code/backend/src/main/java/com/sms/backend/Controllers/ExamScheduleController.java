@@ -43,9 +43,7 @@ public class ExamScheduleController {
     }
 
     @GetMapping("/results/{studentId}")
-    public ResponseEntity<?> getResults(@PathVariable String studentId) {
-        // AC2 logic would usually be handled by Spring Security filters,
-        // but here is a manual check example:
+    public ResponseEntity<?> getResults(@PathVariable String studentId) {   
         if (studentId == null || studentId.equals("null")) {
             return ResponseEntity.status(403).body("Access Denied: Please login.");
         }

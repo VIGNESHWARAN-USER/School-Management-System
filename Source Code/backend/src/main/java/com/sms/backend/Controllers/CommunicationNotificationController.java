@@ -15,8 +15,6 @@ public class CommunicationNotificationController {
     @Autowired
     CommunicationNotificationService service;
 
-
-    // 🔥 SEND NOTIFICATION
     @PostMapping("/send")
     public String sendNotification(
             @RequestParam String type,
@@ -28,8 +26,6 @@ public class CommunicationNotificationController {
         return service.sendNotification(type, title, message, senderEmail, targetId);
     }
 
-
-    // 🔥 GET NOTIFICATIONS (EMAIL BASED)
     @GetMapping("/{email}")
     public List<Notification> getNotifications(@PathVariable String email)
     {

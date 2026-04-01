@@ -305,7 +305,7 @@ public class MainServices {
                         return dto;
                     }).toList();
                     studentDTO.setAttendanceDTOList(studentAttendanceDTOList);
-                    return ResponseEntity.status(200).body(student);
+                    return ResponseEntity.status(200).body(studentDTO);
                 }
                 default -> {
                     return ResponseEntity.notFound().build();

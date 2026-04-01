@@ -24,6 +24,7 @@ import TeacherResources from './components/Teacher/TeacherResources';
 import StudentResources from './components/Student/StudentResources';
 import AdminExamSchedule from './components/Admin/AdminExamSchedule';
 import TeacherGrading from './components/Teacher/TeacherGrading';
+import AcademicPerformance from './components/Student/AcademicPerfomance';
 
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
         <Route path = "/student-resources" element={<StudentResources/>}/>
         <Route path="/schedule-exam" element={<AdminExamSchedule />} />
         <Route path="/mark-grades" element={<TeacherGrading/>} />
+        <Route path="/academic-performance" element={<AcademicPerformance />} />
       </Routes>
     </>
   );
