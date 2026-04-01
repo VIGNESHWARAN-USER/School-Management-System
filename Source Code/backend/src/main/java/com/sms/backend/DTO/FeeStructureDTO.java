@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class FeeStructureDTO {
     private Long feeStructureId;
+    private String className;
     private String classId;
     private String academicYear;
     private List<FeeComponentDTO> components;

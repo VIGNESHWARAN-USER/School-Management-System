@@ -1,5 +1,6 @@
 package com.sms.backend.Services;
 
+import com.sms.backend.DTO.*;
 import com.sms.backend.Entities.Administrator;
 import com.sms.backend.Entities.Parent;
 import com.sms.backend.Entities.Student;
@@ -12,6 +13,8 @@ import com.sms.backend.Repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MainServices {
@@ -247,7 +250,14 @@ public class MainServices {
                     {
                         if(student.getId() == Integer.parseInt(studentId))
                         {
-                            return ResponseEntity.status(200).body(parent);
+                            ParentDTO parentDTO = new ParentDTO();
+                            parentDTO.setAddress(parent.getAddress());
+                            parentDTO.setId(parent.getId());
+                            parentDTO.setName(parent.getName());
+                            parentDTO.setEmail(parent.getEmail());
+                            parentDTO.setMobileNumber(parent.getMobileNumber());
+                            parentDTO.setAge(parent.getAge());
+                            return ResponseEntity.status(200).body(parentDTO);
                         }
                     }
                     return ResponseEntity.status(404).body("Student ID Not Found");
@@ -255,12 +265,47 @@ public class MainServices {
                 case "Teacher" -> {
                     Teacher teacher = teacherRepository.findByEmail(email);
                     if(teacher == null) return ResponseEntity.status(404).body("User Not Found");
-                    return ResponseEntity.status(200).body(teacher);
+                    TeacherDTO teacherDTO = new TeacherDTO();
+                    teacherDTO.setName(teacher.getName());
+                    teacherDTO.setPhoneNumber(teacher.getPhoneNumber());
+                    teacherDTO.setClassId(String.valueOf(teacher.getClassRoom().getClassId()));
+                    teacherDTO.setId(teacher.getId());
+                    List<AttendanceDTO> teacherAttendanceDTOList = teacher.getAttendenceList().stream().map(teacherAttendance -> {
+                        AttendanceDTO dto = new AttendanceDTO();
+
+                        dto.setId(teacherAttendance.getId());
+                        dto.setStatus(teacherAttendance.getStatus());
+                        dto.setRemarks(teacherAttendance.getRemarks());
+                        dto.setDate(teacherAttendance.getDate());
+                        dto.setClassId(teacherAttendance.getClassId());
+
+                        return dto;
+                    }).toList();
+                    teacherDTO.setAttendanceList(teacherAttendanceDTOList);
+                    return ResponseEntity.status(200).body(teacherDTO);
                 }
                 case "Student" -> {
                     Student student = studentRepository.findByEmail(email);
                     if(student == null) return ResponseEntity.status(404).body("User Not Found");
-                    return ResponseEntity.status(200).body(student);
+                    StudentDTO studentDTO = new StudentDTO();
+                    studentDTO.setName(student.getName());
+                    studentDTO.setEmail(student.getEmail());
+                    studentDTO.setId(student.getId());
+                    studentDTO.setClassId(String.valueOf(student.getClassRoom().getClassId()));
+                    studentDTO.setAddress(student.getAddress());
+                    List<AttendanceDTO> studentAttendanceDTOList = student.getAttendenceList().stream().map(teacherAttendance -> {
+                        AttendanceDTO dto = new AttendanceDTO();
+
+                        dto.setId(teacherAttendance.getId());
+                        dto.setStatus(teacherAttendance.getStatus());
+                        dto.setRemarks(teacherAttendance.getRemarks());
+                        dto.setDate(teacherAttendance.getDate());
+                        dto.setClassId(teacherAttendance.getClassId());
+
+                        return dto;
+                    }).toList();
+                    studentDTO.setAttendanceDTOList(studentAttendanceDTOList);
+                    return ResponseEntity.status(200).body(studentDTO);
                 }
                 default -> {
                     return ResponseEntity.notFound().build();

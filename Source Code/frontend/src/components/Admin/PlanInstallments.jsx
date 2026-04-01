@@ -41,7 +41,7 @@ const PlanInstallments = () => {
 
     const handleStructureChange = (id) => {
         console.log("Selected structure ID:", id);
-        const found = structures.find(s => `Class ${s.classId} - ${s.academicYear}` === id);
+        const found = structures.find(s => s.classId === id);
         setSelectedStructure(found);
     };
 
@@ -111,7 +111,7 @@ const PlanInstallments = () => {
                             >
                                 <option value="">Select Class</option>
                                 {structures.map(s => (
-                                    <option key={s.id} value={s.id}>Class {s.classId} - {s.academicYear}</option>
+                                    <option key={s.id} value={s.classId}>{s.className}</option>
                                 ))}
                             </select>
 

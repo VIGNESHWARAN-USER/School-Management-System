@@ -32,5 +32,9 @@ public class ClassRoom {
     @OneToMany(mappedBy = "classRoom")
     private List<ExamSchedule> examSchedules;
 
+    @OneToOne
+    @JoinColumn(name = "fee_structure_id")
+    private FeeStructure feeStructure;
+
     private String academicYear;
 }
