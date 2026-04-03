@@ -29,6 +29,7 @@ const MyPerformance = () => {
         try {
            
             const response = await api.get(`/api/exams-management/results/${user.id}`);
+            console.log(response.data);
             setGrades(response.data);
         } catch (error) {
             console.error("Error fetching grades:", error);
@@ -99,7 +100,7 @@ const MyPerformance = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
                         <h2 className="font-semibold text-gray-700">Subject-wise Result</h2>
-                        <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">Session 2023-24</span>
+                        <span className="text-xs text-gray-400 font-medium uppercase tracking-wider"></span>
                     </div>
                     <table className="w-full text-left">
                         <thead className="bg-gray-50 border-b border-gray-200">
@@ -108,7 +109,7 @@ const MyPerformance = () => {
                                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase text-center">Marks</th>
                                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase text-center">Percentage</th>
                                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Grade Status</th>
-                                <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Term</th>
+                                <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Remarks</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -120,7 +121,7 @@ const MyPerformance = () => {
                                 <tr key={index} className="hover:bg-gray-50 transition">
                                     <td className="px-6 py-4">
                                         <div className="text-sm font-bold text-gray-900">{record.subjectName}</div>
-                                        <div className="text-xs text-gray-400">Code: SUB-{record.id}</div>
+                                        <div className="text-xs text-gray-400">Code: SUB-{record.subjectId}</div>
                                     </td>
                                     <td className="px-6 py-4 text-sm font-medium text-gray-700 text-center">
                                         {record.marksObtained} <span className="text-gray-400 font-normal">/ {record.totalMarks}</span>
@@ -140,7 +141,7 @@ const MyPerformance = () => {
                                         {getGradeBadge(record.gradeLetter)}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-600 italic">
-                                        {record.term || "Regular"}
+                                        {record.remarks || 'N/A'}
                                     </td>
                                 </tr>
                             ))}
