@@ -3,11 +3,13 @@ package com.sms.backend.Services;
 
 import com.sms.backend.DTO.ExamScheduleDTO;
 import com.sms.backend.DTO.GradeDTO;
+import com.sms.backend.DTO.GradeResponseDTO;
 import com.sms.backend.Entities.ClassRoom;
 import com.sms.backend.Entities.ExamSchedule;
 import com.sms.backend.Entities.Grade;
 import com.sms.backend.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -75,14 +77,28 @@ public class ExamGradeService {
     }
 
     // US3: View Results
-    public List<Grade> getStudentResults(String studentId) {
-        return gradeRepo.findByStudentId(studentId);
+    public ResponseEntity<?> getStudentResults(String studentId) {
+        List<Grade> grades = gradeRepo.findByStudentId(studentId);
+        List<GradeResponseDTO> gradeResponseDTOS = grades.stream().map(grade -> {
+            GradeResponseDTO dto = new GradeResponseDTO();
+
+            dto.setGradeLetter(grade.getLetterGrade());
+            dto.setSubjectId(grade.getSubject().getSubjectCode());
+            dto.setTotalMarks(grade.getTotalMarks());
+            dto.setSubjectName(grade.getSubject().getSubjectName());
+            dto.setMarksObtained(grade.getMarksObtained());
+            dto.setRemarks(grade.getRemarks());
+            dto.setAcademicYear(grade.getExam().getClassRoom().getAcademicYear());
+            return dto;
+        }).toList();
+        return ResponseEntity.status(200).body(gradeResponseDTOS);
     }
 
 
     public List<ExamScheduleDTO> getAllExams() {
         List<ExamSchedule> examSchedules = examRepo.findAll();
-        List<ExamScheduleDTO> examScheduleDTOS = examSchedules.stream().map(examSchedule -> {
+
+        return examSchedules.stream().map(examSchedule -> {
             ExamScheduleDTO dto = new ExamScheduleDTO();
 
             dto.setSubject(examSchedule.getSubject().getSubjectName());
@@ -95,8 +111,5 @@ public class ExamGradeService {
 
             return dto;
         }).toList();
-
-        return examScheduleDTOS;
     }
-
 }

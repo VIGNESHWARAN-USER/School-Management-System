@@ -47,6 +47,6 @@ public class ExamScheduleController {
         if (studentId == null || studentId.equals("null")) {
             return ResponseEntity.status(403).body("Access Denied: Please login.");
         }
-        return ResponseEntity.ok(service.getStudentResults(studentId));
+        return service.getStudentResults(studentId);
     }
 }
