@@ -11,11 +11,12 @@ import {
 } from 'react-icons/hi';
 import api from '../api';
 
-const MyPerformance = () => {
+const ChildAcademicPerformance = () => {
     const [grades, setGrades] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const user = JSON.parse(localStorage.getItem('userData')) || { name: 'User', id: '1' };
+    const userId = localStorage.getItem('studentId');
     const accessLevel = localStorage.getItem('accessLevel');
 
     console.log(user);
@@ -28,7 +29,7 @@ const MyPerformance = () => {
         setLoading(true);
         try {
            
-            const response = await api.get(`/api/exams-management/results/${user.id}`);
+            const response = await api.get(`/api/exams-management/results/${userId}`);
             console.log(response.data);
             setGrades(response.data);
         } catch (error) {
@@ -181,4 +182,4 @@ const StatCard = ({ title, value, icon, color }) => {
     );
 };
 
-export default MyPerformance;
+export default ChildAcademicPerformance;
