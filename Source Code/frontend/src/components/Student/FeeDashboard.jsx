@@ -96,7 +96,7 @@ const FeeDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                    {feeData?.breakdown.map((comp, idx) => (
+                                    {feeData?.breakdown?.map((comp, idx) => (
                                         <tr key={idx} className="text-sm">
                                             <td className="px-6 py-4 font-bold text-gray-700">{comp.name.replace('_', ' ')}</td>
                                             <td className="px-6 py-4 text-gray-500">{comp.description}</td>
@@ -124,7 +124,7 @@ const FeeDashboard = () => {
                                 </h2>
                             </div>
                             <div className="p-4 space-y-4">
-                                {feeData?.installments.map((inst, idx) => (
+                                {feeData?.installments?.map((inst, idx) => (
                                     <div key={idx} className={`p-4 rounded-xl border transition ${inst.status === 'PAID' ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`}>
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
