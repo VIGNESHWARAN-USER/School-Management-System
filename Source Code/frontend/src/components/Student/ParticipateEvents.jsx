@@ -47,6 +47,7 @@ const ParticipateEvents = () => {
         };
 
         try {
+            console.log(payload);
             await api.post(`http://localhost:8085/api/events/participate`, payload);
             fetchEvents();
             toast.success("Successfully registered the event!");
@@ -86,8 +87,7 @@ const ParticipateEvents = () => {
             <div className="flex-1 p-8 overflow-y-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-800">Manage Events</h1>
-                        <p className="text-gray-500">View participation, edit details, or remove events</p>
+                        <h1 className="text-2xl font-bold text-gray-800">Participate Events</h1>
                     </div>
                     <div className="relative">
                         <HiOutlineSearch className="absolute left-3 top-3 text-gray-400" size={20} />
