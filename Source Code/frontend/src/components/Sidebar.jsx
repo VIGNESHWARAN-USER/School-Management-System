@@ -40,7 +40,7 @@ const Sidebar = ({ redCount }) => {
       { name: "Fees Details", to: "../fees-details", icon: <MdReceipt /> },
       { name: "View My Attendance", to: "../my-attendance", icon: <MdEvent /> },
       { name: "View Academic Performance", to: "../academic-performance", icon: <MdEvent /> },
-      { name: "View Class Schedule", to: "../class-schedule", icon: <MdEvent /> },
+      { name: "View Class Schedule", to: "../view-schedule", icon: <MdEvent /> },
       {name: "View Resources", to: "../student-resources", icon: <MdLibraryAdd />}
     ],
     Parent: [
@@ -49,7 +49,7 @@ const Sidebar = ({ redCount }) => {
       { name: "Transaction History", to: "../transaction-history", icon: <MdReceipt /> },
       { name: "View Child's Attendance", to: "../child-attendance", icon: <MdEvent /> },
       { name: "View Child's Academic Performance", to: "../child-academic-performance", icon: <MdEvent /> },
-      { name: "View Child's Class Schedule", to: "../class-schedule", icon: <MdEvent /> }
+      { name: "View Child's Class Schedule", to: "../view-schedule", icon: <MdEvent /> }
     ],
     Teacher: [
       { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
