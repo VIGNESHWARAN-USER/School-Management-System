@@ -15,12 +15,8 @@ public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long attendanceId;
-
     private Long studentId;
-
     private LocalDate date;
-
-    private String status; // Present / Absent / Leave
-
+    private String status;
     private String remarks;
 }

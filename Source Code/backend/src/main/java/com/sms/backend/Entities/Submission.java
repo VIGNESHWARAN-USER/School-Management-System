@@ -16,10 +16,8 @@ public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long submissionId;
-
     private Long assignmentId;
     private Long studentId;
-
     private String submissionDate;
     private String filePath;
     private String grade;

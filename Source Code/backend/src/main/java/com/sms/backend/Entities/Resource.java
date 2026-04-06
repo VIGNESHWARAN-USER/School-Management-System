@@ -19,7 +19,7 @@ public class Resource {
 
     private String title;
     private String description;
-    private String resourceType; // PDF / Video / Assignment
+    private String resourceType;
     private String uploadDate;
 
     private Long teacherId;
