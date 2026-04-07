@@ -14,7 +14,7 @@ const CreateFeeStructure = () => {
     useEffect(() => {
         const fetchClasses = async () => {
             try {
-                const response = await api.get(`http://localhost:8085/api/classrooms`);
+                const response = await api.get('/api/classrooms');
                 setClasses(response.data);
             } catch (error) {
                 console.error('Error fetching classes:', error);
@@ -46,7 +46,7 @@ const CreateFeeStructure = () => {
         if (!classId) return;
         try {
             console.log(classId)
-            const response = await api.get(`http://localhost:8085/api/fees/structure/${classId}`);
+            const response = await api.get(`/api/fees/structure/${classId}`);
             if (response.data) {
                 const { academicYear, components } = response.data;
                 setFormData({ classId, academicYear, components });
@@ -105,7 +105,7 @@ const CreateFeeStructure = () => {
         if (!formData.classId) return toast.error("Please select a class");
         
         setLoading(true);
-        const promise = await api.post('http://localhost:8085/api/fees/create-structure', formData);
+        const promise = await api.post('/api/fees/create-structure', formData);
         console.log('API Response:', promise.data);
         toast.promise(promise, {
             loading: 'Saving fee structure...',

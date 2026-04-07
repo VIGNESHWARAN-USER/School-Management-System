@@ -78,8 +78,8 @@ const MarkAttendance = () => {
         }));
 
         const endpoint = accessLevel === 'Admin'
-            ? 'http://localhost:8085/api/markTeacherAttendance'
-            : 'http://localhost:8085/api/markStudentAttendance';
+            ? '/api/markTeacherAttendance'
+            : '/api/markStudentAttendance';
 
         console.log("Submitting attendance with payload:", payload);
         const promise = api.post(endpoint, payload);

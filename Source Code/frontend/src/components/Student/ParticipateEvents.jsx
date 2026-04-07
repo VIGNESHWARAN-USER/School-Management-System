@@ -30,7 +30,7 @@ const ParticipateEvents = () => {
     const fetchEvents = async () => {
         setLoading(true);
         try {
-            const response = await api.get('http://localhost:8085/api/events/all');
+            const response = await api.get('/api/events/all');
             setEvents(response.data);
         } catch (error) {
             toast.error("Failed to load events");
@@ -48,7 +48,7 @@ const ParticipateEvents = () => {
 
         try {
             console.log(payload);
-            await api.post(`http://localhost:8085/api/events/participate`, payload);
+            await api.post(`/api/events/participate`, payload);
             fetchEvents();
             toast.success("Successfully registered the event!");
             setViewEvent(null);

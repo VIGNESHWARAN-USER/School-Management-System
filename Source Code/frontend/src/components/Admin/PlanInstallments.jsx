@@ -21,11 +21,11 @@ const PlanInstallments = () => {
     useEffect(() => {
         const fetchStructures = async () => {
             try {
-                const res = await api.get('http://localhost:8085/api/fees/all-structures');
+                const res = await api.get('/api/fees/all-structures');
                 console.log("Fetched fee structures:", res.data);
                 setStructures(res.data);
                 if (selectedStructure) {
-                    const data = await api.get(`http://localhost:8085/api/fees/get-installments/${selectedStructure?.feeStructureId}`);
+                    const data = await api.get(`/api/fees/get-installments/${selectedStructure?.feeStructureId}`);
                     console.log("Fetched installments:", data.data);
                     setInstallments(data.data || []);
                 }
@@ -78,7 +78,7 @@ const PlanInstallments = () => {
 
         console.log("Saving installment plan with payload:", payload);
 
-        const promise = api.post('http://localhost:8085/api/fees/save-installments', payload);
+        const promise = api.post('/api/fees/save-installments', payload);
 
         toast.promise(promise, {
             loading: 'Creating installment plan...',
