@@ -44,9 +44,9 @@ const AddMembers = () => {
             const [classRoomRes, subjectsRes, studRes, teachRes, parentRes] = await Promise.all([
                 api.get('/api/classrooms'),
                 api.get('/api/subjects'),
-                api.get("http://localhost:8085/api/fetchAllStudents"),
-                api.get("http://localhost:8085/api/fetchAllTeachers"),
-                api.get("http://localhost:8085/api/fetchAllParents")
+                api.get("/api/fetchAllStudents"),
+                api.get("/api/fetchAllTeachers"),
+                api.get("/api/fetchAllParents")
             ]);
             console.log("Classrooms:", classRoomRes.data);
             console.log("Subjects:", subjectsRes.data);
@@ -118,7 +118,7 @@ const AddMembers = () => {
         else if (memberType === 'Teacher') endpoint = "addTeacher";
         else endpoint = "addParent";
 
-        const promise = api.post(`http://localhost:8085/api/${endpoint}`, formData);
+        const promise = api.post(`/api/${endpoint}`, formData);
 
         toast.promise(promise, {
             loading: `Adding ${memberType}...`,
@@ -149,7 +149,7 @@ const InfoBlock = ({ label, value }) => (
         action: {
             label: "Delete",
             onClick: () => {
-                const deletePromise = api.delete(`http://localhost:8085/api/delete${type}/${id}`);
+                const deletePromise = api.delete(`/api/delete${type}/${id}`);
                 
                 toast.promise(deletePromise, {
                     loading: `Deleting ${type}...`,

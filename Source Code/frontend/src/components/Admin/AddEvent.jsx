@@ -29,7 +29,7 @@ const AddEvent = () => {
         setLoading(true);
 
         // API endpoint
-        const endpoint = 'http://localhost:8085/api/events/add';
+        const endpoint = '/api/events/add';
 
         const promise = api.post(endpoint, eventData);
 

@@ -201,7 +201,7 @@ public class FeeService {
 
         StudentFee fee = studentFeeRepository
                 .findAllByFeeStructure(feeStructureRepository.findById(id).orElse(null))
-                .getFirst();
+                .get(0);
 
         List<InstallmentItemDTO> list = fee.getInstallments().stream().map(inst -> {
 

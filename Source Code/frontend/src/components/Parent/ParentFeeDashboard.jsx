@@ -26,7 +26,7 @@ const ParentFeeDashboard = () => {
     const fetchFeeDetails = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`http://localhost:8085/api/fees/student/${studentId}`);
+            const res = await api.get(`/api/fees/student/${studentId}`);
             console.log("Fetched Fee Data:", res.data);
             setFeeData(res.data);
         } catch (err) {
@@ -53,7 +53,7 @@ const ParentFeeDashboard = () => {
         };
 
         // 3. Call API with toast.promise for UI feedback
-        const promise = api.post('http://localhost:8085/api/fees/pay', payload);
+        const promise = api.post('/api/fees/pay', payload);
 
         toast.promise(promise, {
             loading: 'Processing transaction...',

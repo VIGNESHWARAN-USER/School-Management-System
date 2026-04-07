@@ -52,7 +52,7 @@ const StudentResources = () => {
             return;
         }
         // Redirect to backend download endpoint
-        window.open(`http://localhost:8085/api/resources/download/${id}`, '_blank');
+        window.open(`https://springboot-app-kwal.onrender.com/api/resources/download/${id}`, '_blank');
         toast.success(`Downloading ${fileName}`);
     };
 

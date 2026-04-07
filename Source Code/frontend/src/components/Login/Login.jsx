@@ -20,7 +20,7 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     
-    const loginPromise = api.post("http://localhost:8085/auth/login", { email: email, password:password, role: role });
+    const loginPromise = api.post("/auth/login", { email: email, password:password, role: role });
 
     toast.promise(loginPromise, {
       loading: 'Logging in...',
@@ -30,7 +30,7 @@ const Login = () => {
         }
         localStorage.setItem("token", response.data.token);
 
-        const loginData = await api.post("http://localhost:8085/api/getDetails", { email: email, role: role, studentId: role === "Parent" ? studentId : undefined });
+        const loginData = await api.post("/api/getDetails", { email: email, role: role, studentId: role === "Parent" ? studentId : undefined });
         
         console.log(loginData.data);
         

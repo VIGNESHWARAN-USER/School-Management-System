@@ -200,7 +200,7 @@ const TeacherResources = () => {
                                     </div>
                                     <div className="flex gap-2">
                                         <a 
-                                            href={`http://localhost:8085/api/resources/download/${res.id}`}
+                                            href={`/api/resources/download/${res.id}`}
                                             className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition"
                                             title="Download"
                                         >

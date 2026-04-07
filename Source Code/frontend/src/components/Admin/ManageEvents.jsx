@@ -24,7 +24,7 @@ const ManageEvents = () => {
     const fetchEvents = async () => {
         setLoading(true);
         try {
-            const response = await api.get('http://localhost:8085/api/events/all');
+            const response = await api.get('/api/events/all');
             setEvents(response.data);
         } catch (error) {
             toast.error("Failed to load events");
@@ -36,7 +36,7 @@ const ManageEvents = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this event?")) return;
         try {
-            await api.delete(`http://localhost:8085/api/events/delete/${id}`);
+            await api.delete(`/api/events/delete/${id}`);
             toast.success("Event deleted successfully");
             setEvents(events.filter(e => e.id !== id));
         } catch (error) {
@@ -47,7 +47,7 @@ const ManageEvents = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         // Use a promise for the toast notification
-        const updatePromise = api.put(`http://localhost:8085/api/events/update/${editEvent.id}`, editEvent);
+        const updatePromise = api.put(`/api/events/update/${editEvent.id}`, editEvent);
 
         toast.promise(updatePromise, {
             loading: 'Updating event...',
