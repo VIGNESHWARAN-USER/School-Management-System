@@ -1,5 +1,6 @@
 package com.sms.backend.Controllers;
 
+import com.sms.backend.DTO.ResourceDTO;
 import com.sms.backend.Entities.EducationalResource;
 import com.sms.backend.Services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,9 @@ public class ResourceController {
     }
 
     // SMS_U07: Student/Teacher lists resources
-    @GetMapping
-    public List<EducationalResource> getAllResources() {
-        return resourceService.getAllResources();
+    @GetMapping("{classId}")
+    public List<ResourceDTO> getAllResources(@PathVariable Long classId) {
+        return resourceService.getAllResourcesByClassId(classId);
     }
 
     // Download/View Resource

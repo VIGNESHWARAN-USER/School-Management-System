@@ -1,8 +1,13 @@
 package com.sms.backend.Services;
 
+import com.sms.backend.DTO.ResourceDTO;
+import com.sms.backend.Entities.ClassRoom;
 import com.sms.backend.Entities.EducationalResource;
+import com.sms.backend.Entities.Teacher;
 import com.sms.backend.Enum.ResourceCategory;
+import com.sms.backend.Repositories.ClassRoomRepository;
 import com.sms.backend.Repositories.ResourceRepository;
+import com.sms.backend.Repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,6 +26,10 @@ public class ResourceService {
 
     @Autowired
     private ResourceRepository repository;
+    @Autowired
+    private TeacherRepository teacherRepository;
+    @Autowired
+    private ClassRoomRepository classRoomRepository;
 
     // Define upload directory in application.properties (e.g., upload.path=uploads/)
     @Value("${upload.path}")
@@ -44,15 +53,38 @@ public class ResourceService {
         resource.setFileName(fileName);
         resource.setFileType(file.getContentType());
         resource.setFilePath(path.toString());
-        resource.setUploadedBy(teacherId);
         resource.setUploadDate(LocalDateTime.now());
 
+        Teacher teacher = teacherRepository.findById(Long.valueOf(teacherId)).orElse(null);
+        assert teacher != null;
+        ClassRoom classRoom = teacher.getClassRoom();
+        resource.setClassRoom(classRoom);
+        List<EducationalResource> resources = classRoom.getResources();
+        resources.add(resource);
+        classRoom.setResources(resources);
         return repository.save(resource);
     }
 
-    public List<EducationalResource> getAllResources() {
-        return repository.findAll();
+    public List<ResourceDTO> getAllResourcesByClassId(Long classId) {
+        List<EducationalResource> educationalResources =  classRoomRepository.findByClassId(classId).getResources();
+
+        return educationalResources.stream().map(data ->{
+            ResourceDTO dto = new ResourceDTO();
+
+            dto.setClassId(String.valueOf(data.getClassRoom().getClassId()));
+            dto.setId(data.getId());
+            dto.setCategory(String.valueOf(data.getCategory()));
+            dto.setDescription(data.getDescription());
+            dto.setUploadDate(data.getUploadDate());
+            dto.setFileName(data.getFileName());
+            dto.setFilePath(data.getFilePath());
+            dto.setFileType(data.getFileType());
+            dto.setTitle(data.getTitle());
+
+            return dto;
+        }).toList();
     }
+
 
     public EducationalResource getResourceById(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Resource not found"));
