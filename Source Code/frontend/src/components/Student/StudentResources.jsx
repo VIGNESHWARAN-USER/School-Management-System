@@ -14,7 +14,9 @@ const StudentResources = () => {
     const [selectedCategory, setSelectedCategory] = useState('ALL');
 
     // Scenario Check: Verify if student is registered
-    const studentId = localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')).id : null;
+    const student = JSON.parse(localStorage.getItem('userData'));
+    const studentId = student.id;
+    const classId = student.classId;
     const isRegistered = !!studentId;
 
     useEffect(() => {
@@ -27,7 +29,7 @@ const StudentResources = () => {
     const fetchResources = async () => {
         setLoading(true);
         try {
-            const res = await api.get('/api/resources');
+            const res = await api.get(`/api/resources/${classId}`);
             setResources(res.data);
         } catch (err) {
             toast.error("Failed to load resources from server.");

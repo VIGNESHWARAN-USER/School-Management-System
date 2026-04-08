@@ -18,7 +18,11 @@ public class EducationalResource {
     private String fileType;
     @Enumerated(EnumType.STRING)
     private ResourceCategory category;
-    private String uploadedBy;
+
     private LocalDateTime uploadDate;
     private String filePath;
+
+    @ManyToOne
+    @JoinColumn(name = "classId")
+    private ClassRoom classRoom;
 }

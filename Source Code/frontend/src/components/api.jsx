@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 const api = axios.create({
-    baseURL: 'https://springboot-app-kwal.onrender.com',
+    baseURL: 'http://localhost:8080',
 });
 
 let isSessionExpiredHandled = false; 

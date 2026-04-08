@@ -24,15 +24,17 @@ const TeacherResources = () => {
     // Mock Teacher ID (In real app, get from Auth Context or LocalStorage)
     const userData = localStorage.getItem('userData'); 
     const teacherId = userData ? JSON.parse(userData).id : null;
+    const classId = userData ? JSON.parse(userData).classId : null;
     const isRegistered = !!teacherId;
 
+    console.log(userData);
     useEffect(() => {
         fetchResources();
     }, []);
 
     const fetchResources = async () => {
         try {
-            const res = await api.get('/api/resources');
+            const res = await api.get(`/api/resources/${classId}`);
             setResources(res.data);
         } catch (err) {
             toast.error("Failed to load resources");
