@@ -291,7 +291,7 @@ const InfoBlock = ({ label, value }) => (
                             <InfoBlock label="Address" value={viewingMember.address} />
                             <InfoBlock 
                                 label="Parent ID" 
-                                value={parents.find(p => p.id === viewingMember.parentId)?.name || `ID: ${viewingMember.parentId}`} 
+                                value={parents.find(p => p.id === viewingMember.parentId)?.name || `ID: ${viewingMember.id}`} 
                             />
                         </>
                     )}
