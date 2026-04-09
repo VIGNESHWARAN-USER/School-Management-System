@@ -71,7 +71,6 @@ public class FeeController {
     @GetMapping("/student/{studentId}")
     public ResponseEntity<?> getStudentDashboard(@PathVariable Long studentId) {
         try {
-            System.out.println("Hi");
             return ResponseEntity.ok(feeService.getStudentFeeDashboard(studentId));
         } catch (Exception e) {
             return ResponseEntity.status(404).body(e.getMessage());

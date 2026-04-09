@@ -48,14 +48,12 @@ public class ClassScheduleController {
     }
 
 
-
     @PostMapping("/addSubject")
     public String addSubject(@RequestBody Subject subject)
     {
         System.out.println(subject.getSubjectName());
         return classScheduleService.addSubject(subject);
     }
-
     
     @PostMapping("/addSchedule")
     public String addSchedule(@RequestBody ScheduleDTO schedule)
