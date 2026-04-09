@@ -9,4 +9,6 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findAllByClassRoom(ClassRoom classRoom);
+
+    void deleteByClassRoom(ClassRoom classRoom);
 }

@@ -66,6 +66,23 @@ const ManageResources = () => {
         setLoading(false);
     };
 
+    const handleDeleteClassroom = async (classId) => {
+        console.log(classId);
+        toast.promise(api.delete(`/api/deleteClassroom/${classId}`), {
+            loading: 'Deleting classroom...',
+            success: 'Classroom deleted successfully!',
+            error: 'Failed to delete classroom'
+        });
+    };
+
+    const handleDeleteSubject = async (subjectId) => {
+        toast.promise(api.delete(`/api/deleteSubject/${subjectId}`), {
+            loading: 'Deleting subject...',
+            success: 'Subject deleted successfully!',
+            error: 'Failed to delete subject'
+        });
+    }
+
     const handleAddSubject = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -204,9 +221,6 @@ const ManageResources = () => {
                                                 </td>
                                                 <td className="p-4 text-center text-gray-600 font-medium">{cls.capacity}</td>
                                                 <td className="p-4 text-center text-gray-400 text-sm">{cls.academicYear}</td>
-                                                <td className="p-4 text-right">
-                                                    <button className="text-red-400 hover:text-red-600 transition p-2"><HiOutlineTrash size={18} /></button>
-                                                </td>
                                             </tr>
                                         ))
                                     ) : (
@@ -214,9 +228,6 @@ const ManageResources = () => {
                                             <tr key={sub.subjectId} className="hover:bg-gray-50 transition">
                                                 <td className="p-4 font-bold text-gray-700">{sub.subjectName}</td>
                                                 <td className="p-4"><span className="bg-gray-100 px-2 py-1 rounded text-xs font-mono font-bold text-gray-600">{sub.subjectCode}</span></td>
-                                                <td className="p-4 text-right">
-                                                    <button className="text-red-400 hover:text-red-600 transition p-2"><HiOutlineTrash size={18} /></button>
-                                                </td>
                                             </tr>
                                         ))
                                     )}

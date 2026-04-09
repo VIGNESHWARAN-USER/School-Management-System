@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 const api = axios.create({
-    baseURL: 'https://springboot-app-kwal.onrender.com',
+    baseURL: 'http://localhost:8080',
 });
 
 let isSessionExpiredHandled = false; 
@@ -40,7 +40,7 @@ api.interceptors.response.use(
                 
                 setTimeout(() => {
                     if (!window.location.pathname.includes('/login')) {
-                        window.location.href = '/login';
+                        window.location.href = '../';
                     }
                 }, 1500);
             }
