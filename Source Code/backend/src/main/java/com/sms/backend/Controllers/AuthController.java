@@ -50,16 +50,6 @@ public class AuthController {
 
             final UserDetails userDetails = studentUserDetailsService.loadUserByUsername(authRequest.getEmail());
 
-            System.out.println("RAW PASSWORD: " + authRequest.getPassword());
-            System.out.println("DB PASSWORD: " + userDetails.getPassword());
-
-            System.out.println("MATCH: " +
-                    passwordEncoder.matches(
-                            authRequest.getPassword(),
-                            userDetails.getPassword()
-                    ));
-
-
             final String token = jwtUtils.generateToken(userDetails);
 
             return ResponseEntity.ok(new AuthResponse(token, userDetails));
