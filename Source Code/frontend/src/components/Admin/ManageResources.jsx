@@ -201,13 +201,11 @@ const ManageResources = () => {
                                             <th className="p-4 text-xs font-bold text-gray-400 uppercase">Class & Section</th>
                                             <th className="p-4 text-xs font-bold text-gray-400 uppercase text-center">Capacity</th>
                                             <th className="p-4 text-xs font-bold text-gray-400 uppercase text-center">Year</th>
-                                            <th className="p-4 text-xs font-bold text-gray-400 uppercase text-right">Action</th>
                                         </tr>
                                     ) : (
                                         <tr>
                                             <th className="p-4 text-xs font-bold text-gray-400 uppercase">Subject Name</th>
                                             <th className="p-4 text-xs font-bold text-gray-400 uppercase">Code</th>
-                                            <th className="p-4 text-xs font-bold text-gray-400 uppercase text-right">Action</th>
                                         </tr>
                                     )}
                                 </thead>
