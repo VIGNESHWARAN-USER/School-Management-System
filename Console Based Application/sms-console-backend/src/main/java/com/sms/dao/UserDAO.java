@@ -4,8 +4,6 @@ package com.sms.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.sms.entities.Administrator;
 import com.sms.entities.Parent;
@@ -65,7 +63,7 @@ public class UserDAO {
                     String dbRole = rs.getString("role");
                     if (dbRole.equalsIgnoreCase("ADMIN")) {
                         user = new Administrator(
-                                rs.getLong("userId"),
+                                rs.getLong("id"),
                                 rs.getString("name"),
                                 rs.getString("email"),
                                 storedPassword,
@@ -73,37 +71,37 @@ public class UserDAO {
                         );
                     } else if (dbRole.equalsIgnoreCase("STUDENT")) {
                         user = new Student(
-                        		rs.getLong("userId"),
+                        		rs.getLong("id"),
                                 rs.getString("name"),
                                 rs.getString("email"),
                                 storedPassword,
                                 dbRole,
                                 rs.getInt("age"),
                                 rs.getString("address"),
-                                rs.getString("parentEmail"),
-                                rs.getLong("classId")
+                                rs.getString("parent_email"),
+                                rs.getLong("class_id")
                         );
                     } else if (dbRole.equalsIgnoreCase("PARENT")) {
                         user = new Parent(
-                        		rs.getLong("userId"),
+                        		rs.getLong("id"),
                                 rs.getString("name"),
                                 rs.getString("email"),
                                 storedPassword,
                                 dbRole,
                                 rs.getString("address"),
-                                rs.getString("mobileNumber"),
+                                rs.getString("mobile_number"),
                                 rs.getInt("age")
                         );
                     } else if (dbRole.equalsIgnoreCase("TEACHER")) {
                         user = new Teacher(
-                        		rs.getLong("userId"),
+                        		rs.getLong("id"),
                                 rs.getString("name"),
                                 rs.getString("email"),
                                 storedPassword,
                                 dbRole,
-                                rs.getString("phoneNumber"),
-                                rs.getLong("subjectId"),
-                                rs.getLong("classId")
+                                rs.getString("phone_number"),
+                                rs.getLong("subject_id"),
+                                rs.getLong("class_id")
                         );
                     }
                 }
@@ -115,8 +113,6 @@ public class UserDAO {
 
         return user;
     }
-    
-    
     
     public void updatePassword(String email, String newPassword) {
 
@@ -157,11 +153,13 @@ public class UserDAO {
             ps.setInt(1, userId);
             
             return ps.executeUpdate() > 0;
+        } catch (java.sql.SQLIntegrityConstraintViolationException e) {
+            System.out.println("Error: Cannot delete User! They are referenced elsewhere in the system.");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Database Error: " + e.getMessage());
+            return false;
         }
-        catch (Exception e) {
-        		e.printStackTrace();
-        		return false;
-        	}
     }
         
 }

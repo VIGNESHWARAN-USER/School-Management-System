@@ -16,9 +16,9 @@ public class SMSApp{
         while(true) {
 
             System.out.println("----------------Online School Management System----------------");
-            System.out.print("1. Login with email: ");
-            System.out.print("2. Forgot password ");
-            System.out.print("3. Enter choice: ");
+            System.out.println("1. Login with email");
+            System.out.println("2. Forgot password ");
+            System.out.print("Enter choice: ");
             int choice = sc.nextInt();
             sc.nextLine();
 
