@@ -29,15 +29,15 @@ public class LoginController {
                     new AdminController().adminMenu();
                 } else if(user.getRole().equalsIgnoreCase("STUDENT")) {
                     System.out.println("  Redirecting to Student Dashboard...");
-                    //new CustomerController(user.getUserId()).customerMenu();
+                    new StudentController().studentMenu(user);
                 }
                 else if(user.getRole().equalsIgnoreCase("PARENT")) {
                     System.out.println("  Redirecting to Parent Dashboard...");
-                    //new CustomerController(user.getUserId()).customerMenu();
+                    new ParentController().parentMenu();
                 }
                 else if(user.getRole().equalsIgnoreCase("TEACHER")) {
                     System.out.println("  Redirecting to Teacher Dashboard...");
-                    //new CustomerController(user.getUserId()).customerMenu();
+                    new TeacherController().teacherMenu();
                 }
             } else {
                 System.out.println("\n  Invalid email or password. Please try again.");

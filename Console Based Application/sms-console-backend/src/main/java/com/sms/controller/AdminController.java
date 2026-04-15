@@ -8,6 +8,7 @@ public class AdminController {
     
     MembersController membersController = new MembersController();
     ResourceController resourceController = new ResourceController();
+    FeeStructureController feeStructureController = new FeeStructureController();
     
     public void adminMenu() {
 
@@ -15,7 +16,8 @@ public class AdminController {
             System.out.println("  ADMIN DASHBOARD");
             System.out.println("  1. Manage Members");
             System.out.println("  2. Manage Resources");
-            System.out.println("  3. Log Out");
+            System.out.println("  3. Manage Fee Structures");
+            System.out.println("  4. Log Out");
            
 
             System.out.print("  Enter choice: ");
@@ -25,7 +27,8 @@ public class AdminController {
                 
                 case 1: membersMenu(); break;
                 case 2: resourcesMenu(); break;
-                case 3:
+                case 3: feeStructureMenu(); break;
+                case 4:
                     System.out.println("  Logging out...");
                     return;
                 default:
@@ -85,6 +88,31 @@ public class AdminController {
                 case 5: resourceController.deleteSubject(); break;
                 case 6: resourceController.showSubjects(); break;
                 case 7: return;
+                default: System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private void feeStructureMenu() {
+        while(true) {
+
+            System.out.println("FEE STRUCTURE MENU");
+            System.out.println("1. Add Fee Structure");
+            System.out.println("2. Edit Fee Structure");
+            System.out.println("3. Delete Fee Structure");
+            System.out.println("4. Show Fee Structures");
+            System.out.println("5. Exit");
+            
+
+            System.out.print("Enter your choice : ");
+            int c = Integer.parseInt(sc.nextLine());
+
+            switch(c) {
+                case 1: feeStructureController.addFeeStructure(); break;
+                case 2: feeStructureController.editFeeStructure(); break;
+                case 3: feeStructureController.deleteFeeStructure(); break;
+                case 4: feeStructureController.showFeeStructures(); break;
+                case 5: return;
                 default: System.out.println("Invalid choice.");
             }
         }
