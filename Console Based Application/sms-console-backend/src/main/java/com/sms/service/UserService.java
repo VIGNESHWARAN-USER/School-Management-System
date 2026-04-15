@@ -2,17 +2,17 @@ package com.sms.service;
 
 import java.util.List;
 import java.util.Scanner;
+
+import com.sms.dao.UserDAO;
 import com.sms.entities.User;
+import com.sms.exception.InvalidCredentialsException;
 import com.sms.util.InputValidator;
 
 public class UserService {
 
     private UserDAO userDAO = new UserDAO();
     
-    private static final String ADMIN_EMAIL = "onlinetats@gmail.com";
-
-    
-    public User login(String email, String password) {
+    public User login(String email, String password) throws InvalidCredentialsException {
         if(!InputValidator.isValidEmail(email)) {
             System.out.println("Invalid email format.");
             return null;
@@ -28,7 +28,6 @@ public class UserService {
     }
 
     
-
     public void updatePassword(String email, String newPassword) {
        
         if(newPassword == null || newPassword.length() < 4) {
@@ -37,18 +36,5 @@ public class UserService {
         }
 
         userDAO.updatePassword(email, newPassword);
-    }
-
-    
-    public boolean updateUser(int userId, String name, String phone) {
-        return userDAO.updateUser(userId, name, phone);
-    }
-
-    public boolean deleteUser(int userId) {
-        return userDAO.deleteUser(userId);
-    }
-    
-    public List<User> getAllUsers() {
-        return userDAO.getAllUsers();
     }
 }
