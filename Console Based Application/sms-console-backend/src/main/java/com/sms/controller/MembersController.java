@@ -247,4 +247,8 @@ public class MembersController {
         }
         System.out.println("\n");
 	}
+
+    public void getUser(long userId) {
+        System.out.println("  Profile for user " + userId + " coming soon...");
+    }
 }

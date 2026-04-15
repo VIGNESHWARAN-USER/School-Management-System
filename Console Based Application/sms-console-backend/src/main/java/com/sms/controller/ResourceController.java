@@ -15,6 +15,7 @@ public class ResourceController {
     public void addClassRoom() {
         System.out.println("\n--- Add New ClassRoom ---");
         try {
+            new ResourceController().showClassRooms();
             System.out.print("Enter Class Name (e.g. 10th Grade): ");
             String className = sc.nextLine();
             System.out.print("Enter Section: ");
