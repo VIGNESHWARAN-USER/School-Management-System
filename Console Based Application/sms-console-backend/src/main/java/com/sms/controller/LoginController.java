@@ -33,7 +33,7 @@ public class LoginController {
                 }
                 else if(user.getRole().equalsIgnoreCase("PARENT")) {
                     System.out.println("  Redirecting to Parent Dashboard...");
-                    new ParentController().parentMenu();
+                    new ParentController().parentMenu(user);
                 }
                 else if(user.getRole().equalsIgnoreCase("TEACHER")) {
                     System.out.println("  Redirecting to Teacher Dashboard...");

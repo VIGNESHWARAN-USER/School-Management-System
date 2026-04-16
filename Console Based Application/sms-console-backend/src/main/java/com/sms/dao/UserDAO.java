@@ -61,48 +61,77 @@ public class UserDAO {
                 if (PasswordUtil.verifyPassword(password, storedPassword)) {
 
                     String dbRole = rs.getString("role");
+                    long userId = rs.getLong("id");
+
                     if (dbRole.equalsIgnoreCase("ADMIN")) {
                         user = new Administrator(
-                                rs.getLong("id"),
+                                userId,
                                 rs.getString("name"),
                                 rs.getString("email"),
                                 storedPassword,
                                 dbRole
                         );
                     } else if (dbRole.equalsIgnoreCase("STUDENT")) {
-                        user = new Student(
-                        		rs.getLong("id"),
-                                rs.getString("name"),
-                                rs.getString("email"),
-                                storedPassword,
-                                dbRole,
-                                rs.getInt("age"),
-                                rs.getString("address"),
-                                rs.getString("parent_email"),
-                                rs.getLong("class_id")
-                        );
+                        String studentQuery = "SELECT * FROM students WHERE id = ?";
+                        PreparedStatement sps = con.prepareStatement(studentQuery);
+                        sps.setLong(1, userId);
+                        ResultSet srs = sps.executeQuery();
+                        if (srs.next()) {
+                            user = new Student(
+                                    userId,
+                                    rs.getString("name"),
+                                    rs.getString("email"),
+                                    storedPassword,
+                                    dbRole,
+                                    srs.getInt("age"),
+                                    srs.getString("address"),
+                                    srs.getString("parent_email"),
+                                    srs.getLong("class_id")
+                            );
+                        }
                     } else if (dbRole.equalsIgnoreCase("PARENT")) {
-                        user = new Parent(
-                        		rs.getLong("id"),
-                                rs.getString("name"),
-                                rs.getString("email"),
-                                storedPassword,
-                                dbRole,
-                                rs.getString("address"),
-                                rs.getString("mobile_number"),
-                                rs.getInt("age")
-                        );
+                        String parentQuery = "SELECT * FROM parents WHERE id = ?";
+                        PreparedStatement pps = con.prepareStatement(parentQuery);
+                        pps.setLong(1, userId);
+                        ResultSet prs = pps.executeQuery();
+                        if (prs.next()) {
+                            java.util.List<Long> childIds = new java.util.ArrayList<>();
+                            String pq3 = "SELECT student_id FROM parent_children WHERE parent_id = ?";
+                            PreparedStatement pps3 = con.prepareStatement(pq3);
+                            pps3.setLong(1, userId);
+                            ResultSet prs3 = pps3.executeQuery();
+                            while(prs3.next()) {
+                                childIds.add(prs3.getLong("student_id"));
+                            }
+                            user = new Parent(
+                                    userId,
+                                    rs.getString("name"),
+                                    rs.getString("email"),
+                                    storedPassword,
+                                    dbRole,
+                                    prs.getString("mobile_number"),
+                                    prs.getString("address"),
+                                    prs.getInt("age"),
+                                    childIds
+                            );
+                        }
                     } else if (dbRole.equalsIgnoreCase("TEACHER")) {
-                        user = new Teacher(
-                        		rs.getLong("id"),
-                                rs.getString("name"),
-                                rs.getString("email"),
-                                storedPassword,
-                                dbRole,
-                                rs.getString("phone_number"),
-                                rs.getLong("subject_id"),
-                                rs.getLong("class_id")
-                        );
+                        String teacherQuery = "SELECT * FROM teachers WHERE id = ?";
+                        PreparedStatement tps = con.prepareStatement(teacherQuery);
+                        tps.setLong(1, userId);
+                        ResultSet trs = tps.executeQuery();
+                        if (trs.next()) {
+                            user = new Teacher(
+                                    userId,
+                                    rs.getString("name"),
+                                    rs.getString("email"),
+                                    storedPassword,
+                                    dbRole,
+                                    trs.getString("phone_number"),
+                                    trs.getLong("subject_id"),
+                                    trs.getLong("class_id")
+                            );
+                        }
                     }
                 }
             }

@@ -15,13 +15,22 @@ public class FeeStructureDAO {
         try {
             Connection con = DatabaseConfig.getConnection();
             String query = "INSERT INTO fee_structures (class_room_id, total_amount, description, term) VALUES (?, ?, ?, ?)";
-            PreparedStatement ps = con.prepareStatement(query);
+            PreparedStatement ps = con.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, feeStructure.getClassRoomId());
             ps.setDouble(2, feeStructure.getTotalAmount());
             ps.setString(3, feeStructure.getDescription());
             ps.setString(4, feeStructure.getTerm());
 
-            return ps.executeUpdate() > 0;
+            int res = ps.executeUpdate();
+            if (res > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    long newId = rs.getLong(1);
+                    new StudentFeeDAO().allocateFeeToStudents(newId, feeStructure.getClassRoomId());
+                }
+                return true;
+            }
+            return false;
         } catch (java.sql.SQLIntegrityConstraintViolationException e) {
             System.out.println("Error: ClassRoom does not exist or invalid reference.");
             return false;
