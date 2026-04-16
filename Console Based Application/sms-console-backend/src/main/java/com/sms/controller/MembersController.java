@@ -85,8 +85,17 @@ public class MembersController {
                 String address = sc.nextLine();
                 System.out.print("Enter Age: ");
                 int age = Integer.parseInt(sc.nextLine());
+                showStudents();
+                System.out.print("Enter child Student IDs (comma separated): ");
+                String idsStr = sc.nextLine();
+                java.util.List<Long> childIds = new java.util.ArrayList<>();
+                if (!idsStr.trim().isEmpty()) {
+                    for (String idStr : idsStr.split(",")) {
+                        childIds.add(Long.parseLong(idStr.trim()));
+                    }
+                }
 
-                Parent p = new Parent(0L, name, email, DEFAULT_PASSWORD, "PARENT", mobile, address, age);
+                Parent p = new Parent(0L, name, email, DEFAULT_PASSWORD, "PARENT", mobile, address, age, childIds);
                 newUser = p;
             }
         } catch (NumberFormatException e) {
@@ -245,6 +254,33 @@ public class MembersController {
                     p.getId(), p.getName(), p.getEmail(), p.getMobileNumber(), p.getAge(), p.getAddress());
             }
         }
+        System.out.println("\n");
+	}
+
+    public void showStudents()
+	{
+		List<User> members = membersService.getAllMembers();
+        
+        if (members.isEmpty()) {
+            System.out.println("No members found.");
+            return;
+        }
+
+        List<User> students = members.stream().filter(u -> u instanceof Student).collect(Collectors.toList());
+
+        System.out.println("\n--- Students List ---");
+        
+        if (!students.isEmpty()) {
+            System.out.println("\n[ STUDENTS ]");
+            System.out.printf("%-5s | %-15s | %-20s | %-4s | %-15s | %-20s | %-8s\n", "ID", "Name", "Email", "Age", "Address", "Parent Email", "Class ID");
+            System.out.println("-".repeat(100));
+            for (User u : students) {
+                Student s = (Student) u;
+                System.out.printf("%-5d | %-15s | %-20s | %-4d | %-15s | %-20s | %-8d\n", 
+                    s.getId(), s.getName(), s.getEmail(), s.getAge(), s.getAddress(), s.getParentEmail(), s.getClassId());
+            }
+        }
+
         System.out.println("\n");
 	}
 

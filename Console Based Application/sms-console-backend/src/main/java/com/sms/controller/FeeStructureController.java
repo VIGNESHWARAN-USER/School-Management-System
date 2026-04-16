@@ -14,6 +14,7 @@ public class FeeStructureController {
     public void addFeeStructure() {
         System.out.println("\n--- Add Fee Structure ---");
         try {
+            new ResourceController().showClassRooms();
             System.out.print("Enter Target ClassRoom ID: ");
             long classRoomId = Long.parseLong(sc.nextLine());
             System.out.print("Enter Total Amount: ");
@@ -96,6 +97,51 @@ public class FeeStructureController {
     }
     
     public void getFeeStructure(long userId) {
-        System.out.println("  Fee structure for user " + userId + " coming soon...");
+        System.out.println("\n--- Your Fee Structures ---");
+        com.sms.dao.StudentFeeDAO sfDao = new com.sms.dao.StudentFeeDAO();
+        List<com.sms.entities.StudentFee> fees = sfDao.getFeesForStudent(userId);
+        
+        if (fees.isEmpty()) {
+            System.out.println("No fees allocated to you yet.");
+            return;
+        }
+
+        List<FeeStructure> allStructures = feeStructureService.getAllFeeStructures();
+
+        System.out.printf("%-10s | %-25s | %-12s | %-15s | %-10s\n", "StudentFee", "Description", "Tot Amount", "Term", "Status");
+        System.out.println("-".repeat(80));
+
+        for (com.sms.entities.StudentFee sf : fees) {
+            FeeStructure match = allStructures.stream().filter(f -> f.getId() == sf.getFeeStructureId()).findFirst().orElse(null);
+            if (match != null) {
+                System.out.printf("%-10d | %-25s | %-12.2f | %-15s | %-10s\n",
+                        sf.getId(), match.getDescription(), match.getTotalAmount(), match.getTerm(), sf.getStatus());
+            }
+        }
+
+        System.out.print("\nEnter StudentFee ID to pay (or 0 to exit): ");
+        try {
+            Scanner in = new Scanner(System.in);
+            long feeId = Long.parseLong(in.nextLine());
+            if(feeId == 0) return;
+
+            com.sms.entities.StudentFee selectedFee = fees.stream().filter(f -> f.getId() == feeId).findFirst().orElse(null);
+            if(selectedFee == null) {
+                System.out.println("Invalid Selection.");
+                return;
+            }
+            if("PAID".equalsIgnoreCase(selectedFee.getStatus())) {
+                System.out.println("This fee is already paid!");
+                return;
+            }
+
+            FeeStructure structure = allStructures.stream().filter(f -> f.getId() == selectedFee.getFeeStructureId()).findFirst().orElse(null);
+            if(structure != null) {
+                new PaymentController().processPayment(selectedFee.getId(), structure.getTotalAmount());
+            }
+
+        } catch(Exception e) {
+            System.out.println("Invalid input!");
+        }
     }
 }

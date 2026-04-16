@@ -71,7 +71,19 @@ public class MembersDAO {
                 ps2.setString(2, p.getAddress());
                 ps2.setString(3, p.getMobileNumber());
                 ps2.setLong(4, userId);
-                return ps2.executeUpdate() > 0;
+                boolean res2 = ps2.executeUpdate() > 0;
+                
+                if (res2 && p.getChildIds() != null && !p.getChildIds().isEmpty()) {
+                    String query3 = "INSERT INTO parent_children (parent_id, student_id) VALUES (?, ?)";
+                    PreparedStatement ps3 = con.prepareStatement(query3);
+                    for (Long childId : p.getChildIds()) {
+                        ps3.setLong(1, userId);
+                        ps3.setLong(2, childId);
+                        ps3.addBatch();
+                    }
+                    ps3.executeBatch();
+                }
+                return res2;
             }
 
             return res;                        
@@ -132,6 +144,15 @@ public class MembersDAO {
                     ps2.setLong(1, rs.getLong("id"));
                     ResultSet rs2 = ps2.executeQuery();
                     if (rs2.next()) {
+                        List<Long> childIds = new ArrayList<>();
+                        String query3 = "SELECT student_id FROM parent_children WHERE parent_id = ?";
+                        PreparedStatement ps3 = con.prepareStatement(query3);
+                        ps3.setLong(1, rs.getLong("id"));
+                        ResultSet rs3 = ps3.executeQuery();
+                        while (rs3.next()) {
+                            childIds.add(rs3.getLong("student_id"));
+                        }
+                        
                         members.add(new Parent(
                             rs.getLong("id"),
                             rs.getString("name"),
@@ -140,7 +161,8 @@ public class MembersDAO {
                             dbRole,
                             rs2.getString("mobile_number"),
                             rs2.getString("address"),
-                            rs2.getInt("age")
+                            rs2.getInt("age"),
+                            childIds
                     ));
                 }
                 }
