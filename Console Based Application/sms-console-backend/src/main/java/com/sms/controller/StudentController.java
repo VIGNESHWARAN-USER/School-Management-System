@@ -1,14 +1,23 @@
 package com.sms.controller;
 
+// Vigneshwaran M
+/*
+ * This Controller handles all student related functionalities
+ * It includes viewing profile, fees, payments, events and exam results
+ */
+
 import com.sms.entities.User;
 import com.sms.util.AppScanner;
 
 public class StudentController {
 
+    // Getting scanner object
     private final java.util.Scanner sc = AppScanner.get();
     
+    // Student dashboard menu
     public void studentMenu(User user) {
 
+        // Loop to keep menu running
         while (true) {
             System.out.println("  STUDENT DASHBOARD");
             System.out.println("  1. View Profile");
@@ -19,19 +28,50 @@ public class StudentController {
             System.out.println("  6. Log Out");
 
             System.out.print("  Enter choice: ");
+            
             int choice;
-            try { choice = Integer.parseInt(sc.nextLine()); }
-            catch(Exception e) { System.out.println("Invalid."); continue; }
+            try {
+                // Conversion method
+                choice = Integer.parseInt(sc.nextLine());
+            }
+            catch(Exception e) {
+                System.out.println("Invalid.");
+                continue;
+            }
 
+            // Switch case to handle different options
             switch(choice) {
-                case 1: new MembersController().getUser(user.getId()); break;
-                case 2: new FeeStructureController().getFeeStructure(user.getId(), false); break;
-                case 3: new PaymentController().getPayment(user.getId()); break;
-                case 4: new EventController().studentEventsMenu(user.getId()); break;
-                case 5: new ExamController().studentResultsMenu(user.getId()); break;
+                
+                case 1:
+                    // View student profile
+                    new MembersController().getUser(user.getId());
+                    break;
+                
+                case 2:
+                    // View fee structure without payment option
+                    new FeeStructureController().getFeeStructure(user.getId(), false);
+                    break;
+                
+                case 3:
+                    // View payment history
+                    new PaymentController().getPayment(user.getId());
+                    break;
+                
+                case 4:
+                    // View and register for events
+                    new EventController().studentEventsMenu(user.getId());
+                    break;
+                
+                case 5:
+                    // View exam results
+                    new ExamController().studentResultsMenu(user.getId());
+                    break;
+                
                 case 6:
+                    // Logout option
                     System.out.println("  Logging out...");
                     return;
+                
                 default:
                     System.out.println("Invalid choice.");
             }

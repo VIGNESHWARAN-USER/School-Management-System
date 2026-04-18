@@ -1,4 +1,5 @@
 package com.sms.util;
+
 //Author: Vigneshwaran M 
 import java.util.Scanner;
 //Creating the scanner object only once for the entire application 

@@ -1,17 +1,24 @@
 package com.sms.controller;
 
 import com.sms.util.AppScanner;
-
+// Author : Reshma K
+/*
+ * This Controller is to prompt the admin menu
+ * This menu includes members, resources, fees structures, events and exams
+ */
 public class AdminController {
-
+	
+	// Getting scanner object
     private final java.util.Scanner sc = AppScanner.get();
     
+    // Creating objects for controllers
     MembersController membersController = new MembersController();
     ResourceController resourceController = new ResourceController();
     FeeStructureController feeStructureController = new FeeStructureController();
     EventController eventController = new EventController();
     ExamController examController = new ExamController();
     
+    //This is the main menu for admin
     public void adminMenu() {
 
         while (true) {
@@ -25,7 +32,8 @@ public class AdminController {
 
             System.out.print("  Enter choice: ");
             int choice = Integer.parseInt(sc.nextLine());
-
+            
+            //Calling other menu's from main menu
             switch(choice) {
                 case 1: membersMenu(); break;
                 case 2: resourcesMenu(); break;
@@ -41,7 +49,7 @@ public class AdminController {
         }
     }
 
-   
+   // This is the members menu
     private void membersMenu() {
 
         while(true) {
@@ -57,6 +65,7 @@ public class AdminController {
             System.out.print("Enter your choice : ");
             int c = Integer.parseInt(sc.nextLine());
 
+            // Calling the corresponding controller method
             switch(c) {
                 case 1: membersController.addMember(); break;
                 case 2: membersController.editMember(); break;
@@ -68,6 +77,7 @@ public class AdminController {
         }
     }
 
+    // This is the resources menu
     private void resourcesMenu(){
         while(true) {
 
@@ -84,6 +94,7 @@ public class AdminController {
             System.out.print("Enter your choice : ");
             int c = Integer.parseInt(sc.nextLine());
 
+         // Calling the corresponding controller method
             switch(c) {
                 case 1: resourceController.addClassRoom(); break;
                 case 2: resourceController.deleteClassRoom(); break;
@@ -97,6 +108,7 @@ public class AdminController {
         }
     }
 
+    // This is the feeStructure menu
     private void feeStructureMenu() {
         while(true) {
 
@@ -111,6 +123,7 @@ public class AdminController {
             System.out.print("Enter your choice : ");
             int c = Integer.parseInt(sc.nextLine());
 
+         // Calling the corresponding controller method
             switch(c) {
                 case 1: feeStructureController.addFeeStructure(); break;
                 case 2: feeStructureController.editFeeStructure(); break;
@@ -122,6 +135,7 @@ public class AdminController {
         }
     }
 
+    // This is the events menu
     private void eventsMenu() {
         while(true) {
             System.out.println("EVENTS MENU");
@@ -133,6 +147,8 @@ public class AdminController {
             System.out.println("6. Exit");
             System.out.print("Enter your choice : ");
             int c = Integer.parseInt(sc.nextLine());
+            
+         // Calling the corresponding controller method
             switch(c) {
                 case 1: eventController.addEvent(); break;
                 case 2: eventController.editEvent(); break;
