@@ -9,7 +9,6 @@ import {
 import api from '../api';
 
 const FeeDashboard = () => {
-    const [loading, setLoading] = useState(true);
     const [feeData, setFeeData] = useState([]);
     const [showPayModal, setShowPayModal] = useState(false);
     const [selectedInstallment, setSelectedInstallment] = useState(null);
@@ -21,17 +20,15 @@ const FeeDashboard = () => {
     }, []);
 
     const fetchFeeDetails = async () => {
-        setLoading(true);
         try {
-            // This endpoint should return StudentFee + FeeStructure + Components + Installments
-            const res = await api.get(`http://localhost:8085/api/fees/student/${user.id}`);
+            console.log("Hii");
+            const res = await api.get(`/api/fees/student/${user.id}`);
             console.log("Fetched fee details:", res.data);
             setFeeData(res.data);
         } catch (err) {
+            console.log("Error fetching fee details:", err);    
             toast.error("Failed to load fee details");
-        } finally {
-            setLoading(false);
-        }
+        } 
     };
 
     const handlePayment = async () => {
@@ -49,10 +46,7 @@ const FeeDashboard = () => {
             error: 'Transaction failed. Please try again.'
         });
     };
-
-    if (loading) return <div className="flex h-screen items-center justify-center">Loading Financial Records...</div>;
-
-    
+ 
 
     return (
         <div className="flex h-screen bg-gray-50">
@@ -102,7 +96,7 @@ const FeeDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                    {feeData?.breakdown.map((comp, idx) => (
+                                    {feeData?.breakdown?.map((comp, idx) => (
                                         <tr key={idx} className="text-sm">
                                             <td className="px-6 py-4 font-bold text-gray-700">{comp.name.replace('_', ' ')}</td>
                                             <td className="px-6 py-4 text-gray-500">{comp.description}</td>
@@ -130,7 +124,7 @@ const FeeDashboard = () => {
                                 </h2>
                             </div>
                             <div className="p-4 space-y-4">
-                                {feeData?.installments.map((inst, idx) => (
+                                {feeData?.installments?.map((inst, idx) => (
                                     <div key={idx} className={`p-4 rounded-xl border transition ${inst.status === 'PAID' ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`}>
                                         <div className="flex justify-between items-start mb-2">
                                             <div>

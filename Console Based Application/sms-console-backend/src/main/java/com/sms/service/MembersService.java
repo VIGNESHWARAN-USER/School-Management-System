@@ -1,0 +1,36 @@
+package com.sms.service;
+
+import java.util.List;
+
+import com.sms.dao.MembersDAO;
+import com.sms.dao.UserDAO;
+import com.sms.entities.User;
+
+public class MembersService {
+
+    private final MembersDAO membersDAO = new MembersDAO();
+    private final UserDAO userDAO = new UserDAO();
+
+    public String addMember(User member) {
+        if (userDAO.isEmailExists(member.getEmail())) {
+            return "Email already exists! Cannot add member.";
+        }
+        
+        boolean success = membersDAO.addMember(member);
+        return success ? "Member added successfully!" : "Failed to add member.";
+    }
+
+    public List<User> getAllMembers() {
+        return membersDAO.getAllMembers();
+    }
+
+    public String updateMember(User member) {
+        boolean success = membersDAO.updateMember(member);
+        return success ? "Member updated successfully!" : "Failed to update member.";
+    }
+
+    public String deleteMember(Long userId) {
+        boolean success = membersDAO.deleteMember(userId);
+        return success ? "Member deleted successfully!" : "Failed to delete member or member not found.";
+    }
+}

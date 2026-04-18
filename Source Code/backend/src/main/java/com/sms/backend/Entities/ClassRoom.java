@@ -10,7 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ClassRoom {
+public class
+
+ClassRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +33,13 @@ public class ClassRoom {
 
     @OneToMany(mappedBy = "classRoom")
     private List<ExamSchedule> examSchedules;
+
+    @OneToMany(mappedBy = "classRoom")
+    private List<EducationalResource> resources;
+
+    @OneToOne
+    @JoinColumn(name = "fee_structure_id")
+    private FeeStructure feeStructure;
 
     private String academicYear;
 }

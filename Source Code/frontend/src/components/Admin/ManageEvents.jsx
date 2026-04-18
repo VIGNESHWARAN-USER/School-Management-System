@@ -24,8 +24,9 @@ const ManageEvents = () => {
     const fetchEvents = async () => {
         setLoading(true);
         try {
-            const response = await api.get('http://localhost:8085/api/events/all');
+            const response = await api.get('/api/events/all');
             setEvents(response.data);
+            console.log("Fetched events:", response.data);
         } catch (error) {
             toast.error("Failed to load events");
         } finally {
@@ -36,7 +37,7 @@ const ManageEvents = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this event?")) return;
         try {
-            await api.delete(`http://localhost:8085/api/events/delete/${id}`);
+            await api.delete(`/api/events/delete/${id}`);
             toast.success("Event deleted successfully");
             setEvents(events.filter(e => e.id !== id));
         } catch (error) {
@@ -47,7 +48,7 @@ const ManageEvents = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         // Use a promise for the toast notification
-        const updatePromise = api.put(`http://localhost:8085/api/events/update/${editEvent.id}`, editEvent);
+        const updatePromise = api.put(`/api/events/update/${editEvent.id}`, editEvent);
 
         toast.promise(updatePromise, {
             loading: 'Updating event...',
@@ -187,16 +188,16 @@ const ManageEvents = () => {
                                             <th className="px-4 py-2">ID</th>
                                             <th className="px-4 py-2">Student Name</th>
                                             <th className="px-4 py-2">Email</th>
-                                            <th className="px-4 py-2">Reg. Date</th>
+                                            <th className="px-4 py-2">Class</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y">
                                         {viewEvent.registrationDTOS?.length > 0 ? viewEvent.registrationDTOS.map((reg, idx) => (
                                             <tr key={idx} className="hover:bg-gray-50">
                                                 <td className="px-4 py-2">{reg.studentId}</td>
-                                                <td className="px-4 py-2 font-medium">{reg.studentName}</td>
+                                                <td className="px-4 py-2 font-medium">{reg.name}</td>
                                                 <td className="px-4 py-2">{reg.email}</td>
-                                                <td className="px-4 py-2 text-gray-500">{reg.registrationDate}</td>
+                                                <td className="px-4 py-2">{reg.classId}</td>
                                             </tr>
                                         )) : <tr><td colSpan="4" className="text-center py-4 text-gray-500">No participants yet.</td></tr>}
                                     </tbody>

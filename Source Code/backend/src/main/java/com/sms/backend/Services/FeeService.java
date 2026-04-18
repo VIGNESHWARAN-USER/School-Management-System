@@ -71,13 +71,14 @@ public class FeeService {
     @Transactional
     public ResponseEntity<?> createFeeStructure(FeeStructureDTO dto) {
 
-        FeeStructure structure = feeStructureRepository
-                .findByClassIdAndAcademicYear(dto.getClassId(), dto.getAcademicYear());
+        ClassRoom cr = classRoomRepository.findById(Long.valueOf(dto.getClassId())).orElse(null);
+        assert cr != null;
+
+        FeeStructure structure = cr.getFeeStructure();;
 
         if (structure == null) {
             structure = new FeeStructure();
-            structure.setClassId(dto.getClassId());
-            structure.setAcademicYear(dto.getAcademicYear());
+            structure.setClassRoom(classRoomRepository.findById(Long.valueOf(dto.getClassId())).orElse(null));
         }
 
         List<FeeComponent> components = new ArrayList<>();
@@ -100,22 +101,25 @@ public class FeeService {
 
         structure.setComponents(components);
         structure.setTotalAmount(BigDecimal.valueOf(total));
+        structure.setClassRoom(cr);
 
         feeComponentRepository.saveAll(components);
         feeStructureRepository.save(structure);
+        cr.setFeeStructure(structure);
 
         return ResponseEntity.ok(structure);
     }
 
     // GET SINGLE STRUCTURE
 
-    public ResponseEntity<?> getStructure(String classId, String year) {
+    public ResponseEntity<?> getStructure(String classId) {
 
-        FeeStructure fs = feeStructureRepository.findByClassIdAndAcademicYear(classId, year);
+        ClassRoom cr = classRoomRepository.findById(Long.valueOf(classId)).orElse(null);
+        assert cr != null;
+        FeeStructure fs = cr.getFeeStructure();
 
         FeeStructureDTO dto = new FeeStructureDTO();
-        dto.setClassId(fs.getClassId());
-        dto.setAcademicYear(fs.getAcademicYear());
+        dto.setClassId(fs.getClassRoom().getClassName());
 
         List<FeeComponentDTO> list = fs.getComponents().stream().map(c -> {
             FeeComponentDTO d = new FeeComponentDTO();
@@ -138,8 +142,8 @@ public class FeeService {
 
         List<FeeStructureDTO> list = feeStructureRepository.findAll().stream().map(fs -> {
             FeeStructureDTO dto = new FeeStructureDTO();
-            dto.setClassId(fs.getClassId());
-            dto.setAcademicYear(fs.getAcademicYear());
+            dto.setClassId(String.valueOf(fs.getClassRoom().getClassId()));
+            dto.setClassName(fs.getClassRoom().getClassName());
             dto.setFeeStructureId(fs.getId());
             dto.setTotalAmount(fs.getTotalAmount());
             return dto;
@@ -156,7 +160,7 @@ public class FeeService {
         FeeStructure structure = feeStructureRepository.findById(dto.getFeeStructureId())
                 .orElseThrow(() -> new RuntimeException("Structure not found"));
 
-        List<Student> students = studentRepository.findAllByClassRoom(classRoomRepository.findById(Long.valueOf(structure.getClassId())).orElse(null));
+        List<Student> students = studentRepository.findAllByClassRoom(structure.getClassRoom());
 
         for (Student student : students) {
 
@@ -197,7 +201,7 @@ public class FeeService {
 
         StudentFee fee = studentFeeRepository
                 .findAllByFeeStructure(feeStructureRepository.findById(id).orElse(null))
-                .getFirst();
+                .get(0);
 
         List<InstallmentItemDTO> list = fee.getInstallments().stream().map(inst -> {
 

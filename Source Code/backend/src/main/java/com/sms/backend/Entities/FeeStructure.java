@@ -23,9 +23,9 @@ public class FeeStructure {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String classId;
-
-    private String academicYear;
+    @OneToOne
+    @JoinColumn(name = "class_id")
+    private ClassRoom classRoom;
 
     @Column(nullable = false)
     private BigDecimal totalAmount;

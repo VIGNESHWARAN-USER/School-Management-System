@@ -173,7 +173,7 @@ public class AdminServices {
 
                             dto.setParentDTO(parentDTO);
                         }
-                        
+
                         if (student.getAttendenceList() != null) {
                             List<AttendanceDTO> attendanceList =
                                     student.getAttendenceList().stream()

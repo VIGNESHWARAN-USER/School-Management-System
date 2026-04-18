@@ -26,11 +26,11 @@ public class FeeController {
         }
     }
 
-    @GetMapping("/structure/{classId}/{academicYear}")
-    public ResponseEntity<?> getStructure(@PathVariable String classId, @PathVariable String academicYear)
+    @GetMapping("/structure/{classId}")
+    public ResponseEntity<?> getStructure(@PathVariable String classId)
     {
         try {
-            return feeService.getStructure(classId, academicYear);
+            return feeService.getStructure(classId);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error fetching fee structure: " + e.getMessage());
         }

@@ -25,7 +25,7 @@ const TransactionHistory = () => {
     const fetchHistory = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`http://localhost:8085/api/fees/student/${studentId}/transactions`);
+            const res = await api.get(`/api/fees/student/${studentId}/transactions`);
             setTransactions(res.data.body || []);
         } catch (err) {
             toast.error("Failed to load payment history");

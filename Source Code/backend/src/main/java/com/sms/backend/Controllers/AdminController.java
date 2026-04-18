@@ -92,11 +92,5 @@ public class AdminController {
         return adminService.fetchAllTeachers();
     }
 
-//    @GetMapping("/classrooms/add")
-//    public ResponseEntity<?> addClassRoom(@RequestBody ClassRoom classRoom)
-//    {
-//        return adminService.addClassRoom(classRoom);
-//    }
-
 
 }

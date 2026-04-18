@@ -11,7 +11,7 @@ const MyAttendance = () => {
     // Get user info from localStorage
     const user = JSON.parse(localStorage.getItem('userData')) || { name: 'User', id: '1' };
     const accessLevel = localStorage.getItem('accessLevel');
-
+    console.log("User data loaded:", user, "Access level:", accessLevel);
     useEffect(() => {
         fetchMyAttendance();
     }, []);

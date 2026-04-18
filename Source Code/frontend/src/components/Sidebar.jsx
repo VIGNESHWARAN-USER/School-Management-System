@@ -35,24 +35,21 @@ const Sidebar = ({ redCount }) => {
 
   const menus = {
     Student: [
-      { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
       { name: "Participate Events", to: "../participate-events", icon: <MdEvent /> },
       { name: "Fees Details", to: "../fees-details", icon: <MdReceipt /> },
       { name: "View My Attendance", to: "../my-attendance", icon: <MdEvent /> },
       { name: "View Academic Performance", to: "../academic-performance", icon: <MdEvent /> },
-      { name: "View Class Schedule", to: "../class-schedule", icon: <MdEvent /> },
+      { name: "View Class Schedule", to: "../view-schedule", icon: <MdEvent /> },
       {name: "View Resources", to: "../student-resources", icon: <MdLibraryAdd />}
     ],
     Parent: [
-      { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
       { name: "View Fee Details", to: "../parent-fee", icon: <MdReceipt /> },
       { name: "Transaction History", to: "../transaction-history", icon: <MdReceipt /> },
       { name: "View Child's Attendance", to: "../child-attendance", icon: <MdEvent /> },
       { name: "View Child's Academic Performance", to: "../child-academic-performance", icon: <MdEvent /> },
-      { name: "View Child's Class Schedule", to: "../class-schedule", icon: <MdEvent /> }
+      { name: "View Child's Class Schedule", to: "../view-schedule", icon: <MdEvent /> }
     ],
     Teacher: [
-      { name: "Dashboard", to: "../dashboard", icon: <MdDashboard /> },
       { name: "Mark Attendance", to: "../mark-attendance", icon: <MdEvent /> },
       { name: "View My Attendance", to: "../my-attendance", icon: <MdEvent /> },
       { name: "View Class Schedule", to: "../class-schedule", icon: <MdEvent /> },
@@ -60,7 +57,6 @@ const Sidebar = ({ redCount }) => {
       { name: "Mark Grades", to: "../mark-grades", icon: <MdLibraryAdd />}
     ],
     Admin: [
-      { name: "Admin Dashboard", to: "../admindashboard", icon: <FaUsers /> },
       { name: "Add Members", to: "../add-members", icon: <FaUsers /> },
       { name: "Manage Resources", to: "../manage-resources", icon: <FaUsers /> },
       { name: "Mark Attendance", to: "../mark-attendance", icon: <MdEvent /> },

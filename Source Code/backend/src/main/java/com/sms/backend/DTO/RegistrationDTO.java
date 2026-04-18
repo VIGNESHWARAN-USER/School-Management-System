@@ -16,7 +16,7 @@ public class RegistrationDTO {
     private Long studentId;
     private String name;
     private String classId;
-    private int age;
+    private String age;
     private String email;
     
 }

@@ -10,7 +10,7 @@ import {
 } from 'react-icons/hi';
 import api from "../api";
 
-const ScheduleView = ({ role, userId }) => {
+const ScheduleView = () => {
     const [schedules, setSchedules] = useState([]);
     const [loading, setLoading] = useState(true);
     const [metadata, setMetadata] = useState({ title: "Class Timetable", subtitle: "" });
@@ -28,23 +28,16 @@ const ScheduleView = ({ role, userId }) => {
 
     useEffect(() => {
         fetchData();
-    }, [role, userId]);
+    }, []);
+
+    const user = JSON.parse(localStorage.getItem("userData"));
+    const classId = user?.classId;
+    const role = localStorage.getItem("accessLevel");
 
     const fetchData = async () => {
         try {
             setLoading(true);
-            let endpoint = "";
-            
-            // Logic to determine which schedule to fetch based on role
-            if (role === 'student') {
-                endpoint = `/api/fetchStudentSchedule/${userId}`;
-            } else if (role === 'teacher') {
-                endpoint = `/api/fetchTeacherSchedule/${userId}`;
-            } else {
-                // Default fallback (e.g. for testing)
-                endpoint = `/api/fetchClassSchedule/1`; 
-            }
-
+            let endpoint = `/api/fetchClassSchedule/${classId}`;
             const res = await api.get(endpoint);
             setSchedules(res.data);
             
@@ -93,13 +86,6 @@ const ScheduleView = ({ role, userId }) => {
                     </button>
                 </div>
 
-                {/* Legend / Info (Optional) */}
-                <div className="mb-6 bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-start gap-3 print:hidden">
-                    <HiOutlineInformationCircle className="text-blue-500 mt-0.5" size={20} />
-                    <p className="text-sm text-blue-700 font-medium">
-                        This schedule is effective for the current academic semester. Please contact the administration for any discrepancies.
-                    </p>
-                </div>
 
                 {/* Main Schedule Table */}
                 <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden print:shadow-none print:border-gray-300">

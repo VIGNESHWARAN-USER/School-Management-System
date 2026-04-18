@@ -15,9 +15,6 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    // IMPORTANT: This key is for demonstration only.
-    // In production, use a much stronger key and store it securely (e.g., in environment variables or a vault).
-    // This key is a 256-bit key encoded in Base64.
     private static final String SECRET = "======================YourSuperLongAndSecretKeyHere=========================";
 
     public String extractUsername(String token) {
