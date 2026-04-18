@@ -1,5 +1,9 @@
 package com.sms.entities;
-
+//Author:Jothika R
+/*
+* This class for scheduling the exam
+* OOPS:Encapsulation
+*/
 public class Exam {
     private long id;
     private String name;
@@ -9,8 +13,10 @@ public class Exam {
     private String examDate;   // YYYY-MM-DD
     private double maxMarks;
 
+  //No arguments constructor
     public Exam() {}
 
+    //All arguments constructor
     public Exam(long id, String name, String description, long subjectId, long classRoomId,
                 String examDate, double maxMarks) {
         this.id = id;

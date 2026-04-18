@@ -1,14 +1,21 @@
 package com.sms;
-
+//Author: Vigneshwaran M 
 import com.sms.controller.LoginController;
 import com.sms.util.AppScanner;
+
+/*This class is for the main method of the application
+ * Here we have login prompt for user
+ * 
+ */
 
 public class SMSApp {
 
     public static void main(String[] args) {
-
+   
+    	//Object for login controller
         LoginController loginController = new LoginController();
 
+        //This loop is for the user choice
         while(true) {
             System.out.println("----------------Online School Management System----------------");
             System.out.println("1. Login with email");
@@ -25,7 +32,11 @@ public class SMSApp {
             }
 
             switch(choice) {
+               
+                //Calling the login method
                 case 1: loginController.login(); break;
+                
+                //Calling the forgot password method
                 case 2: loginController.forgotPassword(); break;
                 case 3:
                     System.out.println("Exiting online school management system!");

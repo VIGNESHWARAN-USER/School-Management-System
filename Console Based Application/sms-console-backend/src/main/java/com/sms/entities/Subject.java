@@ -1,13 +1,21 @@
 package com.sms.entities;
-
+//Author:Shobana V
+/*
+* This class is for assigning the subjects
+* OOPS:Encapsulation
+*/
 public class Subject {
     private long subjectId;
     private String subjectName;
     private String subjectCode;
     private long classId;
 
+
+    //No arguments constructor
     public Subject() {
     }
+
+    //All arguments constructor
 
     public Subject(long subjectId, String subjectName, String subjectCode, long classId) {
         this.subjectId = subjectId;
@@ -16,6 +24,7 @@ public class Subject {
         this.classId = classId;
     }
 
+    //Getters and setters
     public long getSubjectId() {
         return subjectId;
     }

@@ -1,5 +1,9 @@
 package com.sms.entities;
-
+//Author:Jothika R
+/*
+* This class is for the student fees
+* OOPS:Encapsulation
+*/
 public class StudentFee {
     private long id;
     private long studentId;
@@ -7,6 +11,7 @@ public class StudentFee {
     private String status;
     private Long paymentId;
 
+    //All arguments constructor
     public StudentFee(long id, long studentId, long feeStructureId, String status, Long paymentId) {
         this.id = id;
         this.studentId = studentId;
@@ -15,6 +20,7 @@ public class StudentFee {
         this.paymentId = paymentId;
     }
 
+    //Getters and setters
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
     public long getStudentId() { return studentId; }

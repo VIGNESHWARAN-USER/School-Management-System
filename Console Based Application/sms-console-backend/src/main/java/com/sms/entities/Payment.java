@@ -1,5 +1,9 @@
 package com.sms.entities;
-
+//Author:Reshma K
+/*
+* This class is an abstract class of payment 
+* OOPS:Encapsulation,Abstraction
+*/
 import java.time.LocalDateTime;
 
 public abstract class Payment {
@@ -10,6 +14,7 @@ public abstract class Payment {
     private String remarks;
     private String paymentMethod;
 
+    //All arguments constructor
     public Payment(double amountPaid, String paymentMethod) {
         this.amountPaid = amountPaid;
         this.paymentMethod = paymentMethod;
@@ -23,7 +28,7 @@ public abstract class Payment {
     /** Process the payment after validation. Returns true on success. */
     public abstract boolean process();
 
-    // ─── Getters & Setters ───
+    //  Getters & Setters
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
     public double getAmountPaid() { return amountPaid; }

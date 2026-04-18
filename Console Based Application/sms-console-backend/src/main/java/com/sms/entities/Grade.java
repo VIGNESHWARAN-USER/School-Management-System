@@ -1,5 +1,9 @@
 package com.sms.entities;
-
+//Author:Jothika R
+/*
+* This class for assigning grades of students
+* OOPS:Encapsulation
+*/
 public class Grade {
    
     private long id;
@@ -9,7 +13,11 @@ public class Grade {
     private String letterGrade;
     private String remarks;
 
+    //No arguments constructor
+
     public Grade() {}
+
+    //All arguments constructor
 
     public Grade(long id, long studentId, long examId, double marksObtained, String letterGrade, String remarks) {
         this.id = id;
@@ -19,6 +27,8 @@ public class Grade {
         this.letterGrade = letterGrade;
         this.remarks = remarks;
     }
+    
+    //Getters and Setters
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }

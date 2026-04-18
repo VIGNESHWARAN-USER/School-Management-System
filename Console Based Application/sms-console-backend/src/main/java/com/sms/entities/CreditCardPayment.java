@@ -1,8 +1,12 @@
 package com.sms.entities;
+//Author:Reshma K
+/*
+* This class is inherited from payment class
+* OOPS:Encapsulation,Inheritance,Polymorphism
+* Credit Card Payment — validates 16-digit card number, expire (MM/YY), CVV (3 digits).
+*/
 
-/**
- * Credit Card Payment — validates 16-digit card number, expiry (MM/YY), CVV (3 digits).
- */
+
 public class CreditCardPayment extends Payment {
 
     private String cardNumber;
@@ -10,6 +14,7 @@ public class CreditCardPayment extends Payment {
     private String expiry;   // MM/YY
     private String cvv;
 
+    //All arguments constructor
     public CreditCardPayment(double amountPaid, String cardNumber, String cardHolderName,
                              String expiry, String cvv) {
         super(amountPaid, "CREDIT_CARD");
@@ -19,6 +24,7 @@ public class CreditCardPayment extends Payment {
         this.cvv = cvv;
     }
 
+    //Runtime polymorphism
     @Override
     public String validate() {
         if (cardNumber == null || !cardNumber.matches("\\d{16}")) {
@@ -33,7 +39,7 @@ public class CreditCardPayment extends Payment {
         if (cvv == null || !cvv.matches("\\d{3}")) {
             return "Invalid CVV. Must be 3 digits.";
         }
-        // Check expiry is not in the past
+        // Check expire is not in the past
         String[] parts = expiry.split("/");
         int month = Integer.parseInt(parts[0]);
         int year = Integer.parseInt(parts[1]) + 2000;
@@ -44,6 +50,8 @@ public class CreditCardPayment extends Payment {
         return null;
     }
 
+
+    //Runtime polymorphism
     @Override
     public boolean process() {
         // Mask card number for display
@@ -57,6 +65,7 @@ public class CreditCardPayment extends Payment {
     }
 
     private void simulateGatewayDelay() {
-        try { Thread.sleep(1500); } catch (InterruptedException ignored) {}
+        try { Thread.sleep(1500); } catch (InterruptedException ignored)
+        {}
     }
 }

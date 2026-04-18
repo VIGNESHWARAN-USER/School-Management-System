@@ -1,5 +1,9 @@
 package com.sms.entities;
-
+//Author:Jothika R
+/*
+* This class is for managing classrooms
+* OOPS:Encapsulation
+*/
 
 public class ClassRoom {    
     private long id;
@@ -8,9 +12,11 @@ public class ClassRoom {
     private int capacity;
     private String academicYear;
 
+    //No arguments constructor
     public ClassRoom() {
     }
 
+    //All arguments constructor
     public ClassRoom(long id, String className, String section, int capacity, String academicYear) {
         this.id = id;
         this.className = className;
@@ -19,6 +25,7 @@ public class ClassRoom {
         this.academicYear = academicYear;
     }
 
+    //Getters and Setters
     public long getId() {
         return id;
     }
