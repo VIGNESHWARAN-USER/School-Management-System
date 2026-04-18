@@ -1,5 +1,9 @@
 package com.sms.entities;
-
+//Author:Vigneshwaran M
+/*
+* This class is an inherited class from user 
+* OOPS:Inheritance
+*/
 
 public class Student extends User {
     private int age;
@@ -7,12 +11,14 @@ public class Student extends User {
     private String parentEmail;
     private long classId;
     
+    //No arguments constructor
     public Student() {
     	this.setRole("STUDENT"); 	
     }
     
     
 
+    //All arguments constructor
 	public Student(Long id, String name, String email, String password, String role, int age, String address,
 			String parentEmail, long classId) {
 		super(id, name, email, password, role);
@@ -23,7 +29,7 @@ public class Student extends User {
 	}
 
 
-
+//Getters and Setters
 	public int getAge() {
 		return age;
 	}

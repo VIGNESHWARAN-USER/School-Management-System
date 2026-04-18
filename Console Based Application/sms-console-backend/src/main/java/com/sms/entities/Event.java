@@ -1,5 +1,9 @@
 package com.sms.entities;
-
+//Author:Shobana V
+/*
+* This class for managing the events
+* OOPS:Encapsulation
+*/
 public class Event {
 
     private Long id;
@@ -13,8 +17,11 @@ public class Event {
     private int currentParticipants;
     private String eventStatus;
 
+    //No arguments constructor 
     public Event() {}
 
+
+    //All arguments constructor 
     public Event(Long id, String eventName, String eventDescription, String eventDate,
                  String eventTime, String eventLocation, String organizer,
                  int maxParticipants, int currentParticipants, String eventStatus) {

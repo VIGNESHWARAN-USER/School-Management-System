@@ -1,18 +1,32 @@
 package com.sms.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+//Author:Vigneshwaran M
+/*
+ * This class is an inherited class from user
+ * OOPS:Encapsulation,Inheritance
+ */
 public class Parent extends User {
     private String mobileNumber;
     private String address;
     private int age;
-    private java.util.List<Long> childIds = new java.util.ArrayList<>();
+    private List<Long> childIds = new ArrayList<>();//Collections
     
+	//No arguments constructor
+
     public Parent() 
     { 
     	this.setRole("PARENT");
     }
     
+
+    
+    //All arguments constructor
 	public Parent(Long id, String name, String email, String password, String role, String mobileNumber, String address,
-			int age, java.util.List<Long> childIds) {
+			int age, List<Long> childIds) //Collections
+	{
 		super(id, name, email, password, role);
 		this.mobileNumber = mobileNumber;
 		this.address = address;
@@ -20,6 +34,8 @@ public class Parent extends User {
 		if (childIds != null) this.childIds = childIds;
 	}
 
+
+	//All arguments constructor
 	public Parent(Long id, String name, String email, String password, String role, String mobileNumber, String address,
 			int age) {
 		super(id, name, email, password, role);
@@ -28,6 +44,7 @@ public class Parent extends User {
 		this.age = age;
 	}
 
+	//Getters and Setters
 	public String getMobileNumber() {
 		return mobileNumber;
 	}
@@ -56,7 +73,7 @@ public class Parent extends User {
         return childIds;
     }
     
-    public void setChildIds(java.util.List<Long> childIds) {
+    public void setChildIds(List<Long> childIds) {
         this.childIds = childIds;
     }
     

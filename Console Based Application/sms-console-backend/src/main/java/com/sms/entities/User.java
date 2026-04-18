@@ -1,5 +1,10 @@
 package com.sms.entities;
-
+//Author:Vigneshwaran M
+/*
+ * This is an abstract class of an user 
+ * classes like admin,teacher,student,parent are inherited from here
+ * OOPS:Encapsulation,Abstraction
+ */
 public abstract class User {
     private Long id;
     private String name;
@@ -7,6 +12,7 @@ public abstract class User {
     private String password;
     private String role;
     
+    //All arguments constructor
 	public User(Long id, String name, String email, String password, String role) {
 		this.id = id;
 		this.name = name;
@@ -15,9 +21,11 @@ public abstract class User {
 		this.role = role;
 	}
 
+	//No arguments constructor
 	public User() {
 	}
 
+	//Getters and setter
 	public Long getId() {
 		return id;
 	}

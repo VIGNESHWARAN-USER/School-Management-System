@@ -1,9 +1,15 @@
 package com.sms.dao;
-
+//Author:Vigneshwaran M
+/*
+ * This class for the query logic of an user based on the roles like admin
+ * teacher,parent,student
+ */
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.sms.entities.Administrator;
 import com.sms.entities.Parent;
@@ -14,7 +20,8 @@ import com.sms.util.DatabaseConfig;
 import com.sms.util.PasswordUtil;
 
 public class UserDAO {
-
+	
+	//Using this method for checking the given email is present 
 	public boolean isEmailExists(String email) {
 
 	    try {
@@ -37,7 +44,7 @@ public class UserDAO {
 	}
 	
 	
-
+    //Getting email and password from user and returning if the user is present in the user table
     public User login(String email, String password) {
 
         User user = null;
@@ -57,13 +64,15 @@ public class UserDAO {
             if (rs.next()) {
 
                 String storedPassword = rs.getString("password");
-
+                 
+                //Comparing the raw password and the hashed password
                 if (PasswordUtil.verifyPassword(password, storedPassword)) {
 
                     String dbRole = rs.getString("role");
                     long userId = rs.getLong("id");
 
                     if (dbRole.equalsIgnoreCase("ADMIN")) {
+                    	//Upcasting concept is used
                         user = new Administrator(
                                 userId,
                                 rs.getString("name"),
@@ -71,12 +80,16 @@ public class UserDAO {
                                 storedPassword,
                                 dbRole
                         );
-                    } else if (dbRole.equalsIgnoreCase("STUDENT")) {
+                    } else if (dbRole.equalsIgnoreCase("STUDENT")) 
+                    	
+                    {
                         String studentQuery = "SELECT * FROM students WHERE id = ?";
                         PreparedStatement sps = con.prepareStatement(studentQuery);
                         sps.setLong(1, userId);
                         ResultSet srs = sps.executeQuery();
                         if (srs.next()) {
+                        	//Upcasting concept is used
+
                             user = new Student(
                                     userId,
                                     rs.getString("name"),
@@ -95,7 +108,7 @@ public class UserDAO {
                         pps.setLong(1, userId);
                         ResultSet prs = pps.executeQuery();
                         if (prs.next()) {
-                            java.util.List<Long> childIds = new java.util.ArrayList<>();
+                           List<Long> childIds = new ArrayList<>();//Collections used
                             String pq3 = "SELECT student_id FROM parent_children WHERE parent_id = ?";
                             PreparedStatement pps3 = con.prepareStatement(pq3);
                             pps3.setLong(1, userId);
@@ -103,6 +116,8 @@ public class UserDAO {
                             while(prs3.next()) {
                                 childIds.add(prs3.getLong("student_id"));
                             }
+                        	//Upcasting concept is used
+
                             user = new Parent(
                                     userId,
                                     rs.getString("name"),
@@ -121,6 +136,8 @@ public class UserDAO {
                         tps.setLong(1, userId);
                         ResultSet trs = tps.executeQuery();
                         if (trs.next()) {
+                        	//Upcasting concept is used
+
                             user = new Teacher(
                                     userId,
                                     rs.getString("name"),
@@ -143,6 +160,7 @@ public class UserDAO {
         return user;
     }
     
+    //This method is used to update password of the user
     public void updatePassword(String email, String newPassword) {
 
         try {
@@ -172,6 +190,7 @@ public class UserDAO {
     }
     
 
+    //This method is used to delete the user based on id
     public boolean deleteUser(int userId) {
         try {
         	
@@ -182,7 +201,8 @@ public class UserDAO {
             ps.setInt(1, userId);
             
             return ps.executeUpdate() > 0;
-        } catch (java.sql.SQLIntegrityConstraintViolationException e) {
+        } catch (java.sql.SQLIntegrityConstraintViolationException e)//To handle foreign key constraint exception
+        {
             System.out.println("Error: Cannot delete User! They are referenced elsewhere in the system.");
             return false;
         } catch (Exception e) {

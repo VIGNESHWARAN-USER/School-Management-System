@@ -1,5 +1,9 @@
 package com.sms.entities;
-
+//Author:Shobana V
+/*
+* This class for creating the fees structure of students
+* OOPS:Encapsulation
+*/
 public class FeeStructure {
     private long id;
     private long classRoomId;
@@ -7,9 +11,12 @@ public class FeeStructure {
     private String description;
     private String term;
 
+    //No arguments constructor
     public FeeStructure() {
     }
 
+
+    //All arguments constructor
     public FeeStructure(long id, long classRoomId, double totalAmount, String description, String term) {
         this.id = id;
         this.classRoomId = classRoomId;
@@ -18,6 +25,7 @@ public class FeeStructure {
         this.term = term;
     }
 
+    //Getters and Setters
     public long getId() {
         return id;
     }

@@ -1,20 +1,29 @@
 package com.sms.entities;
 
-/**
+//Author:Reshma K
+/*
+ * This class is an inherited class from payment and the payment through an UPI Payment  
+ * OOPS:Encapsulation,Polymorphism,Inheritance
  * UPI Payment — validates UPI ID format (e.g. name@bank).
  * Simulates processing via a mock gateway.
  */
+
+
+
 public class UPIPayment extends Payment {
 
     private String upiId;
 
+    //All arguments constructor
     public UPIPayment(double amountPaid, String upiId) {
         super(amountPaid, "UPI");
         this.upiId = upiId;
     }
 
+    //Getter
     public String getUpiId() { return upiId; }
 
+    //Runtime Polymorphism
     @Override
     public String validate() {
         if (upiId == null || upiId.trim().isEmpty()) {
@@ -27,6 +36,8 @@ public class UPIPayment extends Payment {
         return null;
     }
 
+
+    //Runtime Polymorphism
     @Override
     public boolean process() {
         System.out.println("  [UPI] Sending payment request to VPA: " + upiId + " ...");

@@ -1,5 +1,8 @@
 package com.sms.service;
-
+//Author: Vigneshwaran M 
+/*
+ * This class is for the business logic of user registration
+ */
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,9 +13,12 @@ import com.sms.util.InputValidator;
 
 public class UserService {
 
+	//Creating DAO object
     private UserDAO userDAO = new UserDAO();
     
-    public User login(String email, String password) throws InvalidCredentialsException {
+    //Getting email and password from controller,validating email and passing to the DAO
+    public User login(String email, String password) throws InvalidCredentialsException//Declaring the domain based exception
+    {
         if(!InputValidator.isValidEmail(email)) {
             System.out.println("Invalid email format.");
             return null;
@@ -27,7 +33,8 @@ public class UserService {
         return user;
     }
 
-    
+    //Getting email and new password from controller,validating password  and passing to the DAO
+
     public void updatePassword(String email, String newPassword) {
        
         if(newPassword == null || newPassword.length() < 4) {

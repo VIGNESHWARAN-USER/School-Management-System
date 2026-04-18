@@ -1,14 +1,20 @@
 package com.sms.entities;
 
+ //Author:Reshma K
 /**
- * Net Banking Payment — validates account number (9-18 digits), IFSC code (e.g. SBIN0001234).
- */
+/*
+* This class is an inherited class from payment and the payment through an net banking
+* OOPS:Encapsulation,Polymorphism,Inheritance
+* Net Banking Payment — validates account number (9-18 digits), IFSC code (e.g. SBIN0001234).
+*/
+
 public class NetBankingPayment extends Payment {
 
     private String bankName;
     private String accountNumber;
     private String ifscCode;
 
+    //All arguments constructor
     public NetBankingPayment(double amountPaid, String bankName, String accountNumber, String ifscCode) {
         super(amountPaid, "NET_BANKING");
         this.bankName = bankName;
@@ -16,10 +22,12 @@ public class NetBankingPayment extends Payment {
         this.ifscCode = ifscCode.trim().toUpperCase();
     }
 
+    //Getters and Setters
     public String getBankName() { return bankName; }
     public String getAccountNumber() { return accountNumber; }
     public String getIfscCode() { return ifscCode; }
 
+    //Runtime polymorphism
     @Override
     public String validate() {
         if (bankName == null || bankName.trim().length() < 2) {
@@ -35,6 +43,7 @@ public class NetBankingPayment extends Payment {
         return null;
     }
 
+    //Runtime polymorphism
     @Override
     public boolean process() {
         String masked = accountNumber.substring(0, 4) + "****" + accountNumber.substring(accountNumber.length() - 2);
