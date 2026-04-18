@@ -57,7 +57,7 @@ public class ExamService {
             );
         }
 
-        boolean success = gradeDAO.upsertGrade(grade);
+        boolean success = gradeDAO.insertGrade(grade);
         return success ? "Grade assigned successfully!" : "Failed to assign grade.";
     }
 
