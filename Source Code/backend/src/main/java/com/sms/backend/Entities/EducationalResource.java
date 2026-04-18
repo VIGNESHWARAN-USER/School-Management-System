@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-public class EducationalResource {
+public class
+EducationalResource {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
