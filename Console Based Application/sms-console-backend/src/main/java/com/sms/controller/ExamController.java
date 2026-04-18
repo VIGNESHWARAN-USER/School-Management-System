@@ -1,5 +1,11 @@
 package com.sms.controller;
 
+// Author : Jothika R
+/*
+ *  This controller is used to handle all the exam functionalities
+ *  It consists of adding, editing, deleting and viewing exam 
+ *  IT contains teacher grade assigning and results
+ */
 import java.util.List;
 import java.util.Scanner;
 import com.sms.entities.Exam;
@@ -12,12 +18,12 @@ import com.sms.util.AppScanner;
 
 public class ExamController {
 
+	// Getting scanner object
     private final Scanner sc = AppScanner.get();
     private final ExamService examService = new ExamService();
     private final MembersService membersService = new MembersService();
 
-    // --- Admin Functionality ---
-
+    // This is admin menu for exam
     public void adminExamMenu() {
         while (true) {
             System.out.println("\n--- EXAM MANAGEMENT (ADMIN) ---");
@@ -28,7 +34,10 @@ public class ExamController {
             System.out.println("5. Back");
             System.out.print("Enter choice: ");
             int choice = 0;
-            try { choice = Integer.parseInt(sc.nextLine()); } catch (Exception e) { continue; }
+            try { 
+            	// Conversion method
+            	choice = Integer.parseInt(sc.nextLine()); } catch (Exception e) { continue; 
+            	}
 
             switch (choice) {
                 case 1: addExam(); break;
@@ -41,6 +50,7 @@ public class ExamController {
         }
     }
 
+    // Add a exam
     private void addExam() {
         System.out.print("Enter Exam Name: ");
         String name = sc.nextLine();
@@ -53,12 +63,13 @@ public class ExamController {
         System.out.print("Enter Date (YYYY-MM-DD): ");
         String date = sc.nextLine();
         System.out.print("Enter Max Marks: ");
-        double maxMarks = Double.parseDouble(sc.nextLine());
+        double maxMarks = Double.parseDouble(sc.nextLine()); // Type Conversion
 
         Exam exam = new Exam(0, name, desc, subId, classId, date, maxMarks);
         System.out.println(examService.addExam(exam));
     }
 
+    // Edit a exam
     private void editExam() {
         System.out.print("Enter Exam ID to edit: ");
         long id = Long.parseLong(sc.nextLine());
@@ -68,6 +79,7 @@ public class ExamController {
             return;
         }
 
+        // String handling
         System.out.print("Enter New Name (leave blank to keep current): ");
         String name = sc.nextLine();
         if (!name.isEmpty()) exam.setName(name);
@@ -81,7 +93,7 @@ public class ExamController {
         if (!date.isEmpty()) exam.setExamDate(date);
 
         System.out.print("Enter New Max Marks (or 0 to keep current): ");
-        double max = Double.parseDouble(sc.nextLine());
+        double max = Double.parseDouble(sc.nextLine()); // Conversion method
         if (max > 0) exam.setMaxMarks(max);
 
         System.out.println(examService.updateExam(exam));
@@ -94,18 +106,22 @@ public class ExamController {
     }
 
     private void viewAllExams() {
+    	
+    	// Collection used
         List<Exam> exams = examService.getAllExams();
         if (exams.isEmpty()) {
             System.out.println("No exams found.");
             return;
         }
+        
+        // Formatting output in table format
         System.out.printf("%-5s | %-20s | %-10s | %-10s | %-10s%n", "ID", "Name", "SubID", "ClassID", "Date");
         for (Exam e : exams) {
             System.out.printf("%-5d | %-20s | %-10d | %-10d | %-10s%n", e.getId(), e.getName(), e.getSubjectId(), e.getClassRoomId(), e.getExamDate());
         }
     }
 
-    // --- Teacher Functionality ---
+    // Teacher Grading
 
     public void teacherGradingMenu(long teacherClassId) {
         while (true) {
@@ -115,7 +131,7 @@ public class ExamController {
             System.out.println("3. Back");
             System.out.print("Enter choice: ");
             int choice = 0;
-            try { choice = Integer.parseInt(sc.nextLine()); } catch (Exception e) { continue; }
+            try { choice = Integer.parseInt(sc.nextLine()); } catch (Exception e) { continue; } // Conversion Method
 
             switch (choice) {
                 case 1: viewExamsByClass(teacherClassId); break;
@@ -126,12 +142,15 @@ public class ExamController {
         }
     }
 
+    // View Exams by Class
     private void viewExamsByClass(long classId) {
-        List<Exam> exams = examService.getExamsByClass(classId);
+        List<Exam> exams = examService.getExamsByClass(classId); // Collection used
         if (exams.isEmpty()) {
             System.out.println("No exams found for your class.");
             return;
         }
+        
+        // Formatting output in the table format
         System.out.printf("%-5s | %-20s | %-10s | %-10s%n", "ID", "Name", "Date", "Max Marks");
         for (Exam e : exams) {
             System.out.printf("%-5d | %-20s | %-10s | %-10.2f%n", e.getId(), e.getName(), e.getExamDate(), e.getMaxMarks());
@@ -140,7 +159,7 @@ public class ExamController {
 
     private void assignGrades(long classId) {
         System.out.print("Enter Exam ID: ");
-        long examId = Long.parseLong(sc.nextLine());
+        long examId = Long.parseLong(sc.nextLine()); // Conversion method
         Exam exam = examService.getExamById(examId);
         if (exam == null || exam.getClassRoomId() != classId) {
             System.out.println("Invalid Exam ID or not authorized for this class.");
@@ -148,7 +167,7 @@ public class ExamController {
         }
 
         // Get students in this class
-        List<User> allMembers = membersService.getAllMembers();
+        List<User> allMembers = membersService.getAllMembers(); // Collection used
         System.out.println("\nStudents in your class:");
         for (User u : allMembers) {
             if (u instanceof Student && ((Student) u).getClassId() == classId) {
@@ -156,6 +175,7 @@ public class ExamController {
             }
         }
 
+        // Type Conversion
         System.out.print("Enter Student ID to grade: ");
         long studentId = Long.parseLong(sc.nextLine());
         System.out.print("Enter Marks Obtained (Max: " + exam.getMaxMarks() + "): ");
@@ -167,15 +187,15 @@ public class ExamController {
         System.out.println(examService.assignGrade(grade));
     }
 
-    // --- Student/Parent Functionality ---
-
+    // Student can see the result
     public void studentResultsMenu(long studentId) {
         System.out.println("\n--- YOUR EXAM RESULTS ---");
-        List<Grade> grades = examService.getStudentResults(studentId);
-        displayGrades(grades);
+        List<Grade> grades = examService.getStudentResults(studentId); // Collection used
+        displayGrades(grades); 
     }
 
-    public void parentResultsMenu(List<Long> childIds) {
+    public void parentResultsMenu(List<Long> childIds)// Collection used
+    {
         System.out.println("\n--- CHILDREN'S EXAM RESULTS ---");
         for (Long childId : childIds) {
             User u = membersService.getAllMembers().stream().filter(m -> m.getId() == childId).findFirst().orElse(null);
@@ -186,11 +206,14 @@ public class ExamController {
         }
     }
 
-    private void displayGrades(List<Grade> grades) {
+    private void displayGrades(List<Grade> grades) // Collection used
+    {
         if (grades.isEmpty()) {
             System.out.println("No results available.");
             return;
         }
+        
+        // Formatting output in the table format
         System.out.printf("%-20s | %-10s | %-10s | %-10s | %-15s%n", "Exam", "Marks", "Max", "Grade", "Remarks");
         for (Grade g : grades) {
             Exam e = examService.getExamById(g.getExamId());

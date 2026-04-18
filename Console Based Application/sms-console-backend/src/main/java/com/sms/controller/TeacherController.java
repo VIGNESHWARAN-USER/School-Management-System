@@ -1,14 +1,21 @@
 package com.sms.controller;
 
+//Vigneshwaran M
+/*
+* This Controller handles all Teacher related functionalities
+*/
 import com.sms.entities.Teacher;
 import com.sms.entities.User;
 import com.sms.util.AppScanner;
-
 public class TeacherController {
 
+	// Getting scanner object
     private final java.util.Scanner sc = AppScanner.get();
 
+ // Teacher dashboard menu
     public void teacherMenu(User user) {
+    	
+    	// Loop to keep menu running
         Teacher teacher = (Teacher) user;
         while (true) {
             System.out.println("\n  TEACHER DASHBOARD - " + teacher.getName());
@@ -18,9 +25,10 @@ public class TeacherController {
             System.out.println("  4. Log Out");
             System.out.print("  Enter choice: ");
             int choice;
-            try { choice = Integer.parseInt(sc.nextLine().trim()); }
+            
+            // Exception handling
+            try { choice = Integer.parseInt(sc.nextLine().trim()); } // Conversion method
             catch(Exception e) { System.out.println("Invalid."); continue; }
-
             if (choice == 1) {
                 new MembersController().showMembers();
             } else if (choice == 2) {

@@ -1,5 +1,9 @@
 package com.sms.controller;
-
+ // Author : Shobana V
+/*
+ *  This Controller is to handle all the event functionalities
+ *  It consists of adding, updating, deleting and viewing events and participants
+ */
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,18 +14,24 @@ import com.sms.util.AppScanner;
 
 public class EventController {
 
+	// Getting scanner object
     private final Scanner sc = AppScanner.get();
+    
+    // Creating DAO object
     private final EventDAO eventDAO = new EventDAO();
 
-    // ─────────────── DISPLAY ───────────────
-
+    // Display all events
     public void showAllEvents() {
+    	
+    	// Collection used
         List<Event> events = eventDAO.getAllEvents();
         if (events.isEmpty()) {
             System.out.println("No events found.");
             return;
         }
         System.out.println("\n--- Events ---");
+        
+        // Formatting output in table format
         System.out.printf("%-5s | %-25s | %-12s | %-8s | %-20s | %-15s | %-5s/%-5s | %-10s%n",
             "ID", "Name", "Date", "Time", "Location", "Organizer", "Enr", "Max", "Status");
         System.out.println("-".repeat(115));
@@ -33,25 +43,33 @@ public class EventController {
         }
     }
 
+    // Display Participants
     public void showParticipants() {
         showAllEvents();
         System.out.print("Enter Event ID to see participants: ");
+        
+        // Exception handling
         try {
+        	
+        	// Conversion method
             long eventId = Long.parseLong(sc.nextLine().trim());
             Event event = eventDAO.getEventById(eventId);
             if (event == null) {
                 System.out.println("Event not found.");
                 return;
             }
+            
+            // Collections used
             List<Long> participants = eventDAO.getParticipants(eventId);
             System.out.println("\n--- Participants for: " + event.getEventName() + " ---");
             if (participants.isEmpty()) {
                 System.out.println("No participants yet.");
             } else {
+            	
                 // Enrich with names via MembersService for display
                 com.sms.service.MembersService membersService = new com.sms.service.MembersService();
-                List<User> allMembers = membersService.getAllMembers();
-                System.out.printf("%-8s | %-20s | %-25s%n", "Stud ID", "Name", "Email");
+                List<User> allMembers = membersService.getAllMembers(); // Collections used
+                System.out.printf("%-8s | %-20s | %-25s%n", "Stud ID", "Name", "Email"); // Formatting output in table format
                 System.out.println("-".repeat(60));
                 for (Long pid : participants) {
                     User u = allMembers.stream().filter(m -> m.getId() == pid).findFirst().orElse(null);
@@ -67,8 +85,7 @@ public class EventController {
         }
     }
 
-    // ─────────────── ADMIN ───────────────
-
+    // Add a new event
     public void addEvent() {
         System.out.println("\n--- Add New Event ---");
         try {
@@ -100,10 +117,12 @@ public class EventController {
         }
     }
 
+    // Edit a event
     public void editEvent() {
         showAllEvents();
         System.out.print("Enter Event ID to edit: ");
         try {
+        	// Conversion method
             long id = Long.parseLong(sc.nextLine().trim());
             Event event = eventDAO.getEventById(id);
             if (event == null) {
@@ -112,6 +131,7 @@ public class EventController {
             }
             System.out.println("Press Enter to keep existing value.");
 
+            // String handling
             System.out.print("Event Name [" + event.getEventName() + "]: ");
             String v = sc.nextLine(); if (!v.trim().isEmpty()) event.setEventName(v.trim());
 
@@ -142,6 +162,7 @@ public class EventController {
         }
     }
 
+    // Delete a event
     public void deleteEvent() {
         showAllEvents();
         System.out.print("Enter Event ID to delete: ");
@@ -153,8 +174,7 @@ public class EventController {
         }
     }
 
-    // ─────────────── STUDENT ───────────────
-
+    // Menu for Student Event
     public void studentEventsMenu(long studentId) {
         while (true) {
             System.out.println("\n  --- Events ---");
@@ -164,7 +184,13 @@ public class EventController {
             System.out.println("  4. Back");
             System.out.print("  Enter choice: ");
             int c;
-            try { c = Integer.parseInt(sc.nextLine().trim()); }
+            
+            // Exception handling
+            try { 
+            	
+            	// Conversion method
+            	c = Integer.parseInt(sc.nextLine().trim()); 
+            	}
             catch (Exception e) { System.out.println("Invalid."); continue; }
 
             if (c == 1) {
@@ -173,6 +199,8 @@ public class EventController {
                 showAllEvents();
                 System.out.print("Enter Event ID to register: ");
                 try {
+                	
+                	// Conversion method
                     long eventId = Long.parseLong(sc.nextLine().trim());
                     if (eventDAO.isRegistered(eventId, studentId)) {
                         System.out.println("You are already registered for this event.");
@@ -184,11 +212,15 @@ public class EventController {
                     System.out.println("Invalid ID.");
                 }
             } else if (c == 3) {
+            	
+            	// Collection used
                 List<Event> myEvents = eventDAO.getEventsByStudent(studentId);
                 if (myEvents.isEmpty()) {
                     System.out.println("You have not registered for any events.");
                 } else {
                     System.out.println("\n--- Your Registered Events ---");
+                    
+                    // Formatting output in table format
                     System.out.printf("%-5s | %-25s | %-12s | %-20s | %-10s%n", "ID", "Name", "Date", "Location", "Status");
                     System.out.println("-".repeat(80));
                     for (Event e : myEvents) {
@@ -204,8 +236,7 @@ public class EventController {
         }
     }
 
-    // ─────────────── VIEWER (Teacher, Admin, Parent) ───────────────
-
+    // Teacher, Admin and Parent can view the events
     public void viewerEventsMenu(String role, Long parentChildId) {
         while (true) {
             System.out.println("\n  --- Events ---");
@@ -217,6 +248,8 @@ public class EventController {
             System.out.println("  0. Back");
             System.out.print("  Enter choice: ");
             int c;
+            
+            // Exception handling
             try { c = Integer.parseInt(sc.nextLine().trim()); }
             catch (Exception e) { System.out.println("Invalid."); continue; }
 
@@ -224,17 +257,21 @@ public class EventController {
                 showAllEvents();
             } else if (c == 2) {
                 showParticipants();
-            } else if (c == 3 && "PARENT".equalsIgnoreCase(role) && parentChildId != null) {
+            } else if (c == 3 && "PARENT".equalsIgnoreCase(role) && parentChildId != null) { // String handling
+            	
+            	// Collection used
                 List<Event> events = eventDAO.getEventsByStudent(parentChildId);
                 System.out.println("\n--- Events Your Child (ID: " + parentChildId + ") Participated In ---");
                 if (events.isEmpty()) {
                     System.out.println("No events found.");
                 } else {
+                	
+                	// Formatting output in table format
                     System.out.printf("%-5s | %-25s | %-12s | %-20s | %-10s%n", "ID", "Name", "Date", "Location", "Status");
                     System.out.println("-".repeat(80));
                     for (Event e : events) {
                         System.out.printf("%-5d | %-25s | %-12s | %-20s | %-10s%n",
-                            e.getId(), e.getEventName(), e.getEventDate(), e.getEventLocation(), e.getEventStatus());
+                            e.getId(), e.getEventName(), e.getEventDate(), e.getEventLocation(), e.getEventStatus()); // Formatting output in table format
                     }
                 }
             } else if (c == 0) {

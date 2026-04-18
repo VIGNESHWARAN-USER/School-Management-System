@@ -1,4 +1,5 @@
 package com.sms.util;
+
 //Author:Vigneshwaran M
 /*
  * This class is for hashing password and comparing with the raw password
