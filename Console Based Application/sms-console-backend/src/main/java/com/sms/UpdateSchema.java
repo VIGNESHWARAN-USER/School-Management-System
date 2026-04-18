@@ -34,6 +34,34 @@ public class UpdateSchema {
                                           ")";
                 stmt.execute(studentFeesTable);
                 System.out.println("Created student_fees table.");
+
+                String examsTable = "CREATE TABLE IF NOT EXISTS exams (" +
+                                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                                    "name VARCHAR(100) NOT NULL, " +
+                                    "description TEXT, " +
+                                    "subject_id BIGINT, " +
+                                    "class_id BIGINT, " +
+                                    "exam_date DATE, " +
+                                    "max_marks DOUBLE, " +
+                                    "FOREIGN KEY (subject_id) REFERENCES subjects(subject_id), " +
+                                    "FOREIGN KEY (class_id) REFERENCES classrooms(id)" +
+                                    ")";
+                stmt.execute(examsTable);
+                System.out.println("Created exams table.");
+
+                String gradesTable = "CREATE TABLE IF NOT EXISTS grades (" +
+                                     "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                                     "student_id BIGINT, " +
+                                     "exam_id BIGINT, " +
+                                     "marks_obtained DOUBLE, " +
+                                     "letter_grade VARCHAR(5), " +
+                                     "remarks TEXT, " +
+                                     "UNIQUE(student_id, exam_id), " +
+                                     "FOREIGN KEY (student_id) REFERENCES students(id), " +
+                                     "FOREIGN KEY (exam_id) REFERENCES exams(id)" +
+                                     ")";
+                stmt.execute(gradesTable);
+                System.out.println("Created grades table.");
             }
         } catch (Exception e) {
             e.printStackTrace();

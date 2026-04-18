@@ -16,8 +16,8 @@ import javax.mail.internet.MimeMessage;
 
 public class EmailUtil {
 
-    private static final String FROM_EMAIL = "onlinetats@gmail.com";
-    private static final String PASSWORD   = "yzajrfiiubvirpzq";
+    private static final String FROM_EMAIL = "2k22cse163@kiot.ac.in";
+    private static final String PASSWORD   = "uygu rsyv xvtx uvod";
 
     private static Session createSession() {
 
@@ -28,6 +28,9 @@ public class EmailUtil {
         props.put("mail.smtp.host","smtp.gmail.com");
         props.put("mail.smtp.port","587");
         props.put("mail.smtp.ssl.trust","smtp.gmail.com");
+        props.put("mail.smtp.connectiontimeout", "5000");  // 5s connect timeout
+        props.put("mail.smtp.timeout", "5000");            // 5s read timeout
+        props.put("mail.smtp.writetimeout", "5000");       // 5s write timeout
 
         return Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -135,11 +138,14 @@ public class EmailUtil {
         }
     }
 
-    public static void sendOTPEmail(String toEmail, String userName, String otp) {
+    public static boolean sendOTPEmail(String toEmail, String userName, String otp) {
         try {
         	
             String html = loadTemplate("otp_email.html", userName);
-            if (html == null) return;
+            if (html == null) {
+                System.out.println("  OTP email template not found.");
+                return false;
+            }
 
             html = html.replace("{{otp}}", otp);
 
@@ -150,12 +156,12 @@ public class EmailUtil {
             message.setContent(html, "text/html; charset=utf-8");
 
             Transport.send(message);
-            //System.out.println("OTP email sent to " + toEmail);
+            return true;
 
         }
         catch (Exception e) {
-            System.out.println("OTP EMAIL FAILED: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("  OTP EMAIL FAILED: " + e.getMessage());
+            return false;
         }
     }
     

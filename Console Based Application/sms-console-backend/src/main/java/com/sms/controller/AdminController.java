@@ -1,14 +1,16 @@
 package com.sms.controller;
 
-import java.util.Scanner;
+import com.sms.util.AppScanner;
 
 public class AdminController {
 
-    Scanner sc = new Scanner(System.in);
+    private final java.util.Scanner sc = AppScanner.get();
     
     MembersController membersController = new MembersController();
     ResourceController resourceController = new ResourceController();
     FeeStructureController feeStructureController = new FeeStructureController();
+    EventController eventController = new EventController();
+    ExamController examController = new ExamController();
     
     public void adminMenu() {
 
@@ -17,18 +19,20 @@ public class AdminController {
             System.out.println("  1. Manage Members");
             System.out.println("  2. Manage Resources");
             System.out.println("  3. Manage Fee Structures");
-            System.out.println("  4. Log Out");
-           
+            System.out.println("  4. Manage Events");
+            System.out.println("  5. Manage Exams");
+            System.out.println("  6. Log Out");
 
             System.out.print("  Enter choice: ");
             int choice = Integer.parseInt(sc.nextLine());
 
             switch(choice) {
-                
                 case 1: membersMenu(); break;
                 case 2: resourcesMenu(); break;
                 case 3: feeStructureMenu(); break;
-                case 4:
+                case 4: eventsMenu(); break;
+                case 5: examController.adminExamMenu(); break;
+                case 6:
                     System.out.println("  Logging out...");
                     return;
                 default:
@@ -113,6 +117,29 @@ public class AdminController {
                 case 3: feeStructureController.deleteFeeStructure(); break;
                 case 4: feeStructureController.showFeeStructures(); break;
                 case 5: return;
+                default: System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private void eventsMenu() {
+        while(true) {
+            System.out.println("EVENTS MENU");
+            System.out.println("1. Add Event");
+            System.out.println("2. Edit Event");
+            System.out.println("3. Delete Event");
+            System.out.println("4. View All Events");
+            System.out.println("5. View Event Participants");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice : ");
+            int c = Integer.parseInt(sc.nextLine());
+            switch(c) {
+                case 1: eventController.addEvent(); break;
+                case 2: eventController.editEvent(); break;
+                case 3: eventController.deleteEvent(); break;
+                case 4: eventController.showAllEvents(); break;
+                case 5: eventController.showParticipants(); break;
+                case 6: return;
                 default: System.out.println("Invalid choice.");
             }
         }

@@ -5,10 +5,11 @@ import java.util.Scanner;
 
 import com.sms.entities.FeeStructure;
 import com.sms.service.FeeStructureService;
+import com.sms.util.AppScanner;
 
 public class FeeStructureController {
 
-    private final Scanner sc = new Scanner(System.in);
+    private final java.util.Scanner sc = AppScanner.get();
     private final FeeStructureService feeStructureService = new FeeStructureService();
 
     public void addFeeStructure() {
@@ -96,13 +97,13 @@ public class FeeStructureController {
         }
     }
     
-    public void getFeeStructure(long userId) {
+    public void getFeeStructure(long userId, boolean allowPay) {
         System.out.println("\n--- Your Fee Structures ---");
         com.sms.dao.StudentFeeDAO sfDao = new com.sms.dao.StudentFeeDAO();
-        List<com.sms.entities.StudentFee> fees = sfDao.getFeesForStudent(userId);
+        java.util.List<com.sms.entities.StudentFee> fees = sfDao.getFeesForStudent(userId);
         
         if (fees.isEmpty()) {
-            System.out.println("No fees allocated to you yet.");
+            System.out.println("No fees allocated yet.");
             return;
         }
 
@@ -119,10 +120,11 @@ public class FeeStructureController {
             }
         }
 
+        if (!allowPay) return;
+
         System.out.print("\nEnter StudentFee ID to pay (or 0 to exit): ");
         try {
-            Scanner in = new Scanner(System.in);
-            long feeId = Long.parseLong(in.nextLine());
+            long feeId = Long.parseLong(sc.nextLine());
             if(feeId == 0) return;
 
             com.sms.entities.StudentFee selectedFee = fees.stream().filter(f -> f.getId() == feeId).findFirst().orElse(null);
