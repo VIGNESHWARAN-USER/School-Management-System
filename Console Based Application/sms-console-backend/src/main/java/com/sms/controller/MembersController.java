@@ -9,11 +9,12 @@ import com.sms.entities.Student;
 import com.sms.entities.Teacher;
 import com.sms.entities.User;
 import com.sms.service.MembersService;
+import com.sms.util.AppScanner;
 import com.sms.util.InputValidator;
 
 public class MembersController {
 	
-    private final Scanner sc = new Scanner(System.in);
+    private final java.util.Scanner sc = AppScanner.get();
     private final MembersService membersService = new MembersService();
     private final String DEFAULT_PASSWORD = "1234";
 
@@ -285,6 +286,35 @@ public class MembersController {
 	}
 
     public void getUser(long userId) {
-        System.out.println("  Profile for user " + userId + " coming soon...");
+        User user = membersService.getAllMembers().stream().filter(u -> u.getId() == userId).findFirst().orElse(null);
+        if (user == null) {
+            System.out.println("User not found.");
+            return;
+        }
+        System.out.println("\n--- User Profile ---");
+        System.out.println("ID: " + user.getId());
+        System.out.println("Name: " + user.getName());
+        System.out.println("Email: " + user.getEmail());
+        System.out.println("Role: " + user.getRole());
+        
+        if (user instanceof Student) {
+            Student s = (Student) user;
+            System.out.println("Age: " + s.getAge());
+            System.out.println("Address: " + s.getAddress());
+            System.out.println("Parent Email: " + s.getParentEmail());
+            System.out.println("Class ID: " + s.getClassId());
+        } else if (user instanceof Parent) {
+            Parent p = (Parent) user;
+            System.out.println("Age: " + p.getAge());
+            System.out.println("Mobile: " + p.getMobileNumber());
+            System.out.println("Address: " + p.getAddress());
+            System.out.println("Linked Children IDs: " + p.getChildIds());
+        } else if (user instanceof Teacher) {
+            Teacher t = (Teacher) user;
+            System.out.println("Phone Number: " + t.getPhoneNumber());
+            System.out.println("Subject ID: " + t.getSubjectId());
+            System.out.println("Class ID: " + t.getClassId());
+        }
+        System.out.println("--------------------");
     }
 }
