@@ -32,13 +32,17 @@ public class MembersController {
     // Add new member
 	public void addMember()
 	{
+		// Display role selection menu
 		System.out.println("\n--- Add New Member ---");
         System.out.println("Select Role:");
         System.out.println("1. Student");
         System.out.println("2. Teacher");
         System.out.println("3. Parent");
         System.out.print("Enter choice: ");
+        
         int choice;
+        
+        // Convert input string to integer with exception handling
         try {
             // Conversion method
             choice = Integer.parseInt(sc.nextLine());
@@ -47,11 +51,13 @@ public class MembersController {
             return;
         }
         
+        // Validate selected choice
         if(choice < 1 || choice > 3) {
             System.out.println("Invalid choice!");
             return;
         }
 
+        // Common input fields
         System.out.print("Enter Name: ");
         String name = sc.nextLine(); // String handling
         
@@ -86,6 +92,7 @@ public class MembersController {
                 // Conversion method
                 long classId = Long.parseLong(sc.nextLine());
 
+                // Create Student object
                 Student s = new Student(0L, name, email, DEFAULT_PASSWORD, "STUDENT", age, address, parentEmail, classId);
                 newUser = s;
 
@@ -106,6 +113,7 @@ public class MembersController {
                 // Conversion method
                 long classId = Long.parseLong(sc.nextLine());
 
+                // Create Teacher object
                 Teacher t = new Teacher(0L, name, email, DEFAULT_PASSWORD, "TEACHER", phone, subjectId, classId);
                 newUser = t;
 
@@ -136,14 +144,17 @@ public class MembersController {
                     }
                 }
 
+                // Create Parent object
                 Parent p = new Parent(0L, name, email, DEFAULT_PASSWORD, "PARENT", mobile, address, age, childIds);
                 newUser = p;
             }
         } catch (NumberFormatException e) {
+            // Handle invalid numeric input
             System.out.println("Invalid numeric input!");
             return;
         }
 
+        // Save new user using service layer
         if (newUser != null) {
             String result = membersService.addMember(newUser);
             System.out.println(result);
@@ -153,14 +164,17 @@ public class MembersController {
     // Delete member
 	public void deleteMember()
 	{
+		// Show all members before deletion
 		showMembers();
         System.out.print("Enter User ID to delete: ");
+        
         try {
             // Conversion method
             long userId = Long.parseLong(sc.nextLine());
             String res = membersService.deleteMember(userId);
             System.out.println(res);
         } catch(NumberFormatException e) {
+            // Handle invalid ID format
             System.out.println("Invalid ID format.");
         }
 	}
@@ -168,8 +182,10 @@ public class MembersController {
     // Edit member
 	public void editMember()
 	{
+		// Show all members before editing
 		showMembers();
         System.out.print("Enter User ID to edit: ");
+        
         try {
             // Conversion method
             long userId = Long.parseLong(sc.nextLine());
@@ -187,6 +203,7 @@ public class MembersController {
 
             System.out.println("Leave blank to keep existing value.");
             
+            // Update common fields
             System.out.print("Enter New Name [" + toEdit.getName() + "]: ");
             String name = sc.nextLine();
             if (!name.trim().isEmpty()) toEdit.setName(name);
@@ -224,6 +241,7 @@ public class MembersController {
                 if (!mobile.trim().isEmpty()) p.setMobileNumber(mobile);
             }
 
+            // Update member in service
             String result = membersService.updateMember(toEdit);
             System.out.println(result);
 
@@ -259,6 +277,7 @@ public class MembersController {
             }
         }
 
+        // Print teachers
         if (!teachers.isEmpty()) {
             System.out.println("\n[ TEACHERS ]");
             for (User u : teachers) {
@@ -267,6 +286,7 @@ public class MembersController {
             }
         }
 
+        // Print parents
         if (!parents.isEmpty()) {
             System.out.println("\n[ PARENTS ]");
             for (User u : parents) {
@@ -274,7 +294,6 @@ public class MembersController {
                 System.out.printf("%d %s %s\n", p.getId(), p.getName(), p.getEmail());
             }
         }
-        System.out.println("\n");
 	}
 
     // Show only students
@@ -300,8 +319,6 @@ public class MembersController {
                 System.out.printf("%d %s %s\n", s.getId(), s.getName(), s.getEmail());
             }
         }
-
-        System.out.println("\n");
 	}
 
     // Get single user details
