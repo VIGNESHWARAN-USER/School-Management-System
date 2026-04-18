@@ -1,5 +1,11 @@
 package com.sms.controller;
 
+// Author : Vigneshwaran M
+/*
+ * This Controller handles all Member related functionalities
+ * It includes adding, updating, deleting and viewing members
+ */
+
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -14,15 +20,16 @@ import com.sms.util.InputValidator;
 
 public class MembersController {
 	
-    // Scanner instance used to take input from user
+    // Getting scanner object
     private final java.util.Scanner sc = AppScanner.get();
     
-    // Service layer object for handling member operations
+    // Creating Service object
     private final MembersService membersService = new MembersService();
     
-    // Default password for newly created users
+    // Default password for new users
     private final String DEFAULT_PASSWORD = "1234";
 
+    // Add new member
 	public void addMember()
 	{
 		// Display role selection menu
@@ -37,6 +44,7 @@ public class MembersController {
         
         // Convert input string to integer with exception handling
         try {
+            // Conversion method
             choice = Integer.parseInt(sc.nextLine());
         } catch(NumberFormatException e) {
             System.out.println("Invalid input!");
@@ -51,12 +59,12 @@ public class MembersController {
 
         // Common input fields
         System.out.print("Enter Name: ");
-        String name = sc.nextLine();
+        String name = sc.nextLine(); // String handling
         
         System.out.print("Enter Email: ");
-        String email = sc.nextLine();
+        String email = sc.nextLine(); // String handling
         
-        // Validate email format
+        // Email validation
         if (!InputValidator.isValidEmail(email)) {
             System.out.println("Invalid email format!");
             return;
@@ -66,8 +74,10 @@ public class MembersController {
 
         try {
             if (choice == 1) { 
-                // Student input details
+                // Student creation
                 System.out.print("Enter Age: ");
+                
+                // Conversion method
                 int age = Integer.parseInt(sc.nextLine());
                 
                 System.out.print("Enter Address: ");
@@ -76,9 +86,10 @@ public class MembersController {
                 System.out.print("Enter Parent's Email: ");
                 String parentEmail = sc.nextLine();
                 
-                // Show classrooms before selecting class ID
                 new ResourceController().showClassRooms();
                 System.out.print("Enter Class ID: ");
+                
+                // Conversion method
                 long classId = Long.parseLong(sc.nextLine());
 
                 // Create Student object
@@ -87,16 +98,19 @@ public class MembersController {
 
             } else if (choice == 2) { // Teacher
                 
-                // Teacher input details
                 System.out.print("Enter Phone Number: ");
                 String phone = sc.nextLine();
                 
                 new ResourceController().showSubjects();
                 System.out.print("Enter Subject ID: ");
+                
+                // Conversion method
                 long subjectId = Long.parseLong(sc.nextLine());
                 
                 new ResourceController().showClassRooms();
                 System.out.print("Enter Class ID: ");
+                
+                // Conversion method
                 long classId = Long.parseLong(sc.nextLine());
 
                 // Create Teacher object
@@ -105,7 +119,6 @@ public class MembersController {
 
             } else if (choice == 3) { // Parent
                 
-                // Parent input details
                 System.out.print("Enter Mobile Number: ");
                 String mobile = sc.nextLine();
                 
@@ -113,21 +126,21 @@ public class MembersController {
                 String address = sc.nextLine();
                 
                 System.out.print("Enter Age: ");
+                
+                // Conversion method
                 int age = Integer.parseInt(sc.nextLine());
                 
-                // Show students for linking children
                 showStudents();
                 
                 System.out.print("Enter child Student IDs (comma separated): ");
                 String idsStr = sc.nextLine();
-                
-                // List collection to store child IDs
+
+                // Collection used to store multiple child IDs
                 java.util.List<Long> childIds = new java.util.ArrayList<>();
                 
-                // Split and convert each ID
                 if (!idsStr.trim().isEmpty()) {
                     for (String idStr : idsStr.split(",")) {
-                        childIds.add(Long.parseLong(idStr.trim()));
+                        childIds.add(Long.parseLong(idStr.trim())); // Conversion method
                     }
                 }
 
@@ -148,6 +161,7 @@ public class MembersController {
         }
 	}
 	
+    // Delete member
 	public void deleteMember()
 	{
 		// Show all members before deletion
@@ -155,6 +169,7 @@ public class MembersController {
         System.out.print("Enter User ID to delete: ");
         
         try {
+            // Conversion method
             long userId = Long.parseLong(sc.nextLine());
             String res = membersService.deleteMember(userId);
             System.out.println(res);
@@ -164,6 +179,7 @@ public class MembersController {
         }
 	}
 	
+    // Edit member
 	public void editMember()
 	{
 		// Show all members before editing
@@ -171,12 +187,13 @@ public class MembersController {
         System.out.print("Enter User ID to edit: ");
         
         try {
+            // Conversion method
             long userId = Long.parseLong(sc.nextLine());
             
-            // Fetch all members
+            // Collection used
             List<User> members = membersService.getAllMembers();
             
-            // Use stream to find selected user
+            // Stream used to find user
             User toEdit = members.stream().filter(u -> u.getId() == userId).findFirst().orElse(null);
             
             if (toEdit == null) {
@@ -201,25 +218,13 @@ public class MembersController {
                 }
             }
 
-            // Type checking and updating specific fields
+            // Type checking using instanceof
             if (toEdit instanceof Student) {
                 Student s = (Student) toEdit;
 
                 System.out.print("Enter New Age [" + s.getAge() + "]: ");
                 String age = sc.nextLine();
                 if (!age.trim().isEmpty()) s.setAge(Integer.parseInt(age));
-
-                System.out.print("Enter New Address [" + s.getAddress() + "]: ");
-                String address = sc.nextLine();
-                if (!address.trim().isEmpty()) s.setAddress(address);
-
-                System.out.print("Enter New Parent's Email [" + s.getParentEmail() + "]: ");
-                String pEmail = sc.nextLine();
-                if (!pEmail.trim().isEmpty()) s.setParentEmail(pEmail);
-
-                System.out.print("Enter New Class ID [" + s.getClassId() + "]: ");
-                String cId = sc.nextLine();
-                if (!cId.trim().isEmpty()) s.setClassId(Long.parseLong(cId));
 
             } else if (toEdit instanceof Teacher) {
                 Teacher t = (Teacher) toEdit;
@@ -228,28 +233,12 @@ public class MembersController {
                 String phone = sc.nextLine();
                 if (!phone.trim().isEmpty()) t.setPhoneNumber(phone);
 
-                System.out.print("Enter New Subject ID [" + t.getSubjectId() + "]: ");
-                String subId = sc.nextLine();
-                if (!subId.trim().isEmpty()) t.setSubjectId(Long.parseLong(subId));
-
-                System.out.print("Enter New Class ID [" + t.getClassId() + "]: ");
-                String cId = sc.nextLine();
-                if (!cId.trim().isEmpty()) t.setClassId(Long.parseLong(cId));
-
             } else if (toEdit instanceof Parent) {
                 Parent p = (Parent) toEdit;
 
                 System.out.print("Enter New Mobile Number [" + p.getMobileNumber() + "]: ");
                 String mobile = sc.nextLine();
                 if (!mobile.trim().isEmpty()) p.setMobileNumber(mobile);
-
-                System.out.print("Enter New Address [" + p.getAddress() + "]: ");
-                String address = sc.nextLine();
-                if (!address.trim().isEmpty()) p.setAddress(address);
-
-                System.out.print("Enter New Age [" + p.getAge() + "]: ");
-                String age = sc.nextLine();
-                if (!age.trim().isEmpty()) p.setAge(Integer.parseInt(age));
             }
 
             // Update member in service
@@ -261,9 +250,10 @@ public class MembersController {
         }
 	}
 	
+    // Show all members
 	public void showMembers()
 	{
-		// Fetch all members
+        // Collection used
 		List<User> members = membersService.getAllMembers();
         
         if (members.isEmpty()) {
@@ -271,19 +261,19 @@ public class MembersController {
             return;
         }
 
-        // Separate by role using streams
+        // Stream filtering into separate collections
         List<User> students = members.stream().filter(u -> u instanceof Student).collect(Collectors.toList());
         List<User> teachers = members.stream().filter(u -> u instanceof Teacher).collect(Collectors.toList());
         List<User> parents = members.stream().filter(u -> u instanceof Parent).collect(Collectors.toList());
 
         System.out.println("\n--- Members List ---");
         
-        // Print students
+        // Formatting output
         if (!students.isEmpty()) {
             System.out.println("\n[ STUDENTS ]");
             for (User u : students) {
                 Student s = (Student) u;
-                System.out.println(s.getId() + " " + s.getName());
+                System.out.printf("%d %s %s\n", s.getId(), s.getName(), s.getEmail());
             }
         }
 
@@ -292,7 +282,7 @@ public class MembersController {
             System.out.println("\n[ TEACHERS ]");
             for (User u : teachers) {
                 Teacher t = (Teacher) u;
-                System.out.println(t.getId() + " " + t.getName());
+                System.out.printf("%d %s %s\n", t.getId(), t.getName(), t.getEmail());
             }
         }
 
@@ -301,14 +291,15 @@ public class MembersController {
             System.out.println("\n[ PARENTS ]");
             for (User u : parents) {
                 Parent p = (Parent) u;
-                System.out.println(p.getId() + " " + p.getName());
+                System.out.printf("%d %s %s\n", p.getId(), p.getName(), p.getEmail());
             }
         }
 	}
 
+    // Show only students
     public void showStudents()
 	{
-		// Fetch all members
+        // Collection used
 		List<User> members = membersService.getAllMembers();
         
         if (members.isEmpty()) {
@@ -316,50 +307,47 @@ public class MembersController {
             return;
         }
 
-        // Filter only students
+        // Stream filtering
         List<User> students = members.stream().filter(u -> u instanceof Student).collect(Collectors.toList());
 
         System.out.println("\n--- Students List ---");
         
-        for (User u : students) {
-            Student s = (Student) u;
-            System.out.println(s.getId() + " " + s.getName());
+        if (!students.isEmpty()) {
+            System.out.println("\n[ STUDENTS ]");
+            for (User u : students) {
+                Student s = (Student) u;
+                System.out.printf("%d %s %s\n", s.getId(), s.getName(), s.getEmail());
+            }
         }
 	}
 
+    // Get single user details
     public void getUser(long userId) {
-        // Find user by ID using stream
+        
+        // Stream used to find user
         User user = membersService.getAllMembers().stream().filter(u -> u.getId() == userId).findFirst().orElse(null);
         
         if (user == null) {
             System.out.println("User not found.");
             return;
         }
-
-        // Display user details
+        
         System.out.println("\n--- User Profile ---");
         System.out.println("ID: " + user.getId());
         System.out.println("Name: " + user.getName());
         System.out.println("Email: " + user.getEmail());
         System.out.println("Role: " + user.getRole());
         
+        // Type checking
         if (user instanceof Student) {
             Student s = (Student) user;
             System.out.println("Age: " + s.getAge());
-            System.out.println("Address: " + s.getAddress());
-            System.out.println("Parent Email: " + s.getParentEmail());
-            System.out.println("Class ID: " + s.getClassId());
         } else if (user instanceof Parent) {
             Parent p = (Parent) user;
-            System.out.println("Age: " + p.getAge());
             System.out.println("Mobile: " + p.getMobileNumber());
-            System.out.println("Address: " + p.getAddress());
-            System.out.println("Linked Children IDs: " + p.getChildIds());
         } else if (user instanceof Teacher) {
             Teacher t = (Teacher) user;
             System.out.println("Phone Number: " + t.getPhoneNumber());
-            System.out.println("Subject ID: " + t.getSubjectId());
-            System.out.println("Class ID: " + t.getClassId());
         }
         System.out.println("--------------------");
     }
