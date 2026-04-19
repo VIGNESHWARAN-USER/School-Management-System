@@ -1,11 +1,11 @@
 package com.sms;
-//Author: Vigneshwaran M 
+
 import com.sms.controller.LoginController;
 import com.sms.util.AppScanner;
 
-/*This class is for the main method of the application
+//Author: Vigneshwaran M 
+/* This class is for the main method of the application
  * Here we have login prompt for user
- * 
  */
 
 public class SMSApp {
