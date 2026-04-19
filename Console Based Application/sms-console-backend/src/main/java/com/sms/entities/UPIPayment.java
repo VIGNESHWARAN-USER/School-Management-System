@@ -8,8 +8,6 @@ package com.sms.entities;
  * Simulates processing via a mock gateway.
  */
 
-
-
 public class UPIPayment extends Payment {
 
     private String upiId;
