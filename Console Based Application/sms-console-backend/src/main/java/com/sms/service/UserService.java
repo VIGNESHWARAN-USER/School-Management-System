@@ -9,6 +9,7 @@ import java.util.Scanner;
 import com.sms.dao.UserDAO;
 import com.sms.entities.User;
 import com.sms.exception.InvalidCredentialsException;
+import com.sms.exception.UserNotFoundException;
 import com.sms.util.InputValidator;
 
 public class UserService {
@@ -18,6 +19,7 @@ public class UserService {
     
     //Getting email and password from controller,validating email and passing to the DAO
     public User login(String email, String password) throws InvalidCredentialsException//Declaring the domain based exception
+, UserNotFoundException
     {
         if(!InputValidator.isValidEmail(email)) {
             System.out.println("Invalid email format.");
@@ -27,7 +29,7 @@ public class UserService {
         User user = userDAO.login(email, password);
 
         if(user == null) {
-            System.out.println("Invalid email or password.");
+            throw new InvalidCredentialsException("Email or password is invalid");
         }
 
         return user;

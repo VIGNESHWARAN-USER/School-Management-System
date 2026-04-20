@@ -7,6 +7,7 @@ package com.sms.controller;
  */
 import com.sms.entities.User;
 import com.sms.exception.InvalidCredentialsException;
+import com.sms.exception.UserNotFoundException;
 import com.sms.service.UserService;
 import com.sms.util.AppScanner;
 
@@ -48,6 +49,9 @@ public class LoginController {
             }
             
         } catch (InvalidCredentialsException e)//Using domain based exception
+        {
+            System.out.println("\n  " + e.getMessage());
+        } catch (UserNotFoundException e)//Using domain based exception
         {
             System.out.println("\n  " + e.getMessage());
         }
