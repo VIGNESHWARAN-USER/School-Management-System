@@ -16,6 +16,7 @@ import com.sms.entities.Parent;
 import com.sms.entities.Student;
 import com.sms.entities.Teacher;
 import com.sms.entities.User;
+import com.sms.exception.UserNotFoundException;
 import com.sms.util.DatabaseConfig;
 import com.sms.util.PasswordUtil;
 
@@ -45,7 +46,7 @@ public class UserDAO {
 	
 	
     //Getting email and password from user and returning if the user is present in the user table
-    public User login(String email, String password) {
+    public User login(String email, String password) throws UserNotFoundException{
 
         User user = null;
 
