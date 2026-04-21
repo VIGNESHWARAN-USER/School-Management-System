@@ -1,24 +1,23 @@
 package com.sms.entities;
 //Author:Vigneshwaran M
+
 /*
 * This class is an inherited class from user 
-* OOPS:Inheritance
+* OOPS:Inheritance, Encapsulation
 */
 
 public class Student extends User {
-    private int age;
-    private String address;
-    private String parentEmail;
-    private long classId;
-    
-    //No arguments constructor
-    public Student() {
-    	this.setRole("STUDENT"); 	
-    }
-    
-    
+	private int age;
+	private String address;
+	private String parentEmail;
+	private long classId;
 
-    //All arguments constructor
+	// No arguments constructor
+	public Student() {
+		this.setRole("STUDENT");
+	}
+
+	// All arguments constructor
 	public Student(Long id, String name, String email, String password, String role, int age, String address,
 			String parentEmail, long classId) {
 		super(id, name, email, password, role);
@@ -27,7 +26,6 @@ public class Student extends User {
 		this.parentEmail = parentEmail;
 		this.classId = classId;
 	}
-
 
 //Getters and Setters
 	public int getAge() {
@@ -61,5 +59,5 @@ public class Student extends User {
 	public void setClassId(long classId) {
 		this.classId = classId;
 	}
-    
+
 }

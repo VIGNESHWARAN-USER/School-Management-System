@@ -1,4 +1,5 @@
 package com.sms.entities;
+
 //Author:Vigneshwaran M
 /*
  * This is an abstract class of an user 
@@ -6,13 +7,13 @@ package com.sms.entities;
  * OOPS:Encapsulation,Abstraction
  */
 public abstract class User {
-    private Long id;
-    private String name;
-    private String email;
-    private String password;
-    private String role;
-    
-    //All arguments constructor
+	private Long id;
+	private String name;
+	private String email;
+	private String password;
+	private String role;
+
+	// All arguments constructor
 	public User(Long id, String name, String email, String password, String role) {
 		this.id = id;
 		this.name = name;
@@ -21,11 +22,11 @@ public abstract class User {
 		this.role = role;
 	}
 
-	//No arguments constructor
+	// No arguments constructor
 	public User() {
 	}
 
-	//Getters and setter
+	// Getters and setter
 	public Long getId() {
 		return id;
 	}
@@ -64,6 +65,6 @@ public abstract class User {
 
 	public void setRole(String role) {
 		this.role = role;
-	} 
-    
+	}
+
 }
