@@ -1,5 +1,10 @@
 package com.sms.dao;
 
+//Author: Jothika R
+/*
+* This class for the query logic of grade based on create, update, select and delete grade
+*/
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,129 +16,111 @@ import com.sms.util.DatabaseConfig;
 
 public class GradeDAO {
 
-    // Insert new grade OR update existing grade (based on unique student_id + exam_id)
-    public boolean insertGrade(Grade grade) {
-        try {
-            Connection con = DatabaseConfig.getConnection(); //  DB connection
+	// Insert new grade OR update existing grade (based on unique student_id +
+	// exam_id)
+	public boolean insertGrade(Grade grade) {
+		try {
+			Connection con = DatabaseConfig.getConnection(); // DB connection
 
-            String query = "INSERT INTO grades (student_id, exam_id, marks_obtained, letter_grade, remarks) " +
-                           "VALUES (?, ?, ?, ?, ?) " +
-                           "ON DUPLICATE KEY UPDATE marks_obtained=?, letter_grade=?, remarks=?";
-            
-            PreparedStatement ps = con.prepareStatement(query);
+			String query = "INSERT INTO grades (student_id, exam_id, marks_obtained, letter_grade, remarks) "
+					+ "VALUES (?, ?, ?, ?, ?) " + "ON DUPLICATE KEY UPDATE marks_obtained=?, letter_grade=?, remarks=?";
 
-            // set values for insert
-            ps.setLong(1, grade.getStudentId());
-            ps.setLong(2, grade.getExamId());
-            ps.setDouble(3, grade.getMarksObtained());
-            ps.setString(4, grade.getLetterGrade());
-            ps.setString(5, grade.getRemarks());
+			PreparedStatement ps = con.prepareStatement(query);
 
-            // set values for update (if already exists)
-            ps.setDouble(6, grade.getMarksObtained());
-            ps.setString(7, grade.getLetterGrade());
-            ps.setString(8, grade.getRemarks());
+			// set values for insert
+			ps.setLong(1, grade.getStudentId());
+			ps.setLong(2, grade.getExamId());
+			ps.setDouble(3, grade.getMarksObtained());
+			ps.setString(4, grade.getLetterGrade());
+			ps.setString(5, grade.getRemarks());
 
-            return ps.executeUpdate() > 0; // execute query
+			// set values for update (if already exists)
+			ps.setDouble(6, grade.getMarksObtained());
+			ps.setString(7, grade.getLetterGrade());
+			ps.setString(8, grade.getRemarks());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+			return ps.executeUpdate() > 0; // execute query
 
-    // Get all grades for a specific student
-    public List<Grade> getGradesByStudent(long studentId) {
-        List<Grade> grades = new ArrayList<>();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
-        try {
-            Connection con = DatabaseConfig.getConnection();
+	// Get all grades for a specific student
+	public List<Grade> getGradesByStudent(long studentId) {
+		List<Grade> grades = new ArrayList<>();
 
-            String query = "SELECT * FROM grades WHERE student_id=?";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setLong(1, studentId);
+		try {
+			Connection con = DatabaseConfig.getConnection();
 
-            ResultSet rs = ps.executeQuery();
+			String query = "SELECT * FROM grades WHERE student_id=?";
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setLong(1, studentId);
 
-            // convert each row into Grade object
-            while (rs.next()) {
-                grades.add(new Grade(
-                    rs.getLong("id"),
-                    rs.getLong("student_id"),
-                    rs.getLong("exam_id"),
-                    rs.getDouble("marks_obtained"),
-                    rs.getString("letter_grade"),
-                    rs.getString("remarks")
-                ));
-            }
+			ResultSet rs = ps.executeQuery();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			// convert each row into Grade object
+			while (rs.next()) {
+				grades.add(new Grade(rs.getLong("id"), rs.getLong("student_id"), rs.getLong("exam_id"),
+						rs.getDouble("marks_obtained"), rs.getString("letter_grade"), rs.getString("remarks")));
+			}
 
-        return grades;
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-    // Get all grades for a specific exam
-    public List<Grade> getGradesByExam(long examId) {
-        List<Grade> grades = new ArrayList<>();
+		return grades;
+	}
 
-        try {
-            Connection con = DatabaseConfig.getConnection();
+	// Get all grades for a specific exam
+	public List<Grade> getGradesByExam(long examId) {
+		List<Grade> grades = new ArrayList<>();
 
-            String query = "SELECT * FROM grades WHERE exam_id=?";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setLong(1, examId);
+		try {
+			Connection con = DatabaseConfig.getConnection();
 
-            ResultSet rs = ps.executeQuery();
+			String query = "SELECT * FROM grades WHERE exam_id=?";
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setLong(1, examId);
 
-            // convert each row into Grade object
-            while (rs.next()) {
-                grades.add(new Grade(
-                    rs.getLong("id"),
-                    rs.getLong("student_id"),
-                    rs.getLong("exam_id"),
-                    rs.getDouble("marks_obtained"),
-                    rs.getString("letter_grade"),
-                    rs.getString("remarks")
-                ));
-            }
+			ResultSet rs = ps.executeQuery();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			// convert each row into Grade object
+			while (rs.next()) {
+				grades.add(new Grade(rs.getLong("id"), rs.getLong("student_id"), rs.getLong("exam_id"),
+						rs.getDouble("marks_obtained"), rs.getString("letter_grade"), rs.getString("remarks")));
+			}
 
-        return grades;
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-    // Get grade of a specific student for a specific exam
-    public Grade getGradeForStudent(long studentId, long examId) {
-        try {
-            Connection con = DatabaseConfig.getConnection();
+		return grades;
+	}
 
-            String query = "SELECT * FROM grades WHERE student_id=? AND exam_id=?";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setLong(1, studentId);
-            ps.setLong(2, examId);
+	// Get grade of a specific student for a specific exam
+	public Grade getGradeForStudent(long studentId, long examId) {
+		try {
+			Connection con = DatabaseConfig.getConnection();
 
-            ResultSet rs = ps.executeQuery();
+			String query = "SELECT * FROM grades WHERE student_id=? AND exam_id=?";
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setLong(1, studentId);
+			ps.setLong(2, examId);
 
-            //  return Grade object
-            if (rs.next()) {
-                return new Grade(
-                    rs.getLong("id"),
-                    rs.getLong("student_id"),
-                    rs.getLong("exam_id"),
-                    rs.getDouble("marks_obtained"),
-                    rs.getString("letter_grade"),
-                    rs.getString("remarks")
-                );
-            }
+			ResultSet rs = ps.executeQuery();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			// return Grade object
+			if (rs.next()) {
+				return new Grade(rs.getLong("id"), rs.getLong("student_id"), rs.getLong("exam_id"),
+						rs.getDouble("marks_obtained"), rs.getString("letter_grade"), rs.getString("remarks"));
+			}
 
-        return null; // no grade found
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null; // no grade found
+	}
 }

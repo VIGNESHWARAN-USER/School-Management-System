@@ -1,5 +1,10 @@
 package com.sms.dao;
 
+//Author: Jothika R
+/*
+* This class for the query logic of fee structure based on create, update, select and delete fee structure.
+*/
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
