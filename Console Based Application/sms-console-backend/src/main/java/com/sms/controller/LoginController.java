@@ -1,4 +1,7 @@
 package com.sms.controller;
+import java.io.BufferedReader;
+import java.io.IOException;
+
 //Author: Vigneshwaran M 
 /*
  * This controller is for the user login
@@ -10,20 +13,23 @@ import com.sms.exception.InvalidCredentialsException;
 import com.sms.exception.UserNotFoundException;
 import com.sms.service.UserService;
 import com.sms.util.AppScanner;
+import com.sms.util.InputReader;
 
 public class LoginController {
     //Declaring the Scanner
-    private final java.util.Scanner sc = AppScanner.get();
+    private final InputReader sc = InputReader.get();
     //Creating the service object
     UserService userService = new UserService();
     
     //We are collecting the user email and password by prompting and pass to the service method
-    public void login() {
+    public void login() throws IOException {
         System.out.print("Enter your email    : ");
-        String email = sc.nextLine().trim();//String handling
-
+        String email = sc.readLine().trim();//String handling
+        System.out.println(email);
+        
         System.out.print("Enter your password : ");
-        String password = sc.nextLine().trim();//String handling
+        String password = sc.readLine().trim();//String handling
+        System.out.println(password);
 
         try {
             User user = userService.login(email, password);
@@ -61,9 +67,9 @@ public class LoginController {
      *and sending email to the user
      */
     
-    public void forgotPassword() {
+    public void forgotPassword() throws IOException {
         System.out.print("\nEnter your registered email: ");
-        String email = sc.nextLine().trim();
+        String email = sc.readLine().trim();
   
         //Checking the email is present in the database or not
         if (!new com.sms.dao.UserDAO().isEmailExists(email)) {
@@ -85,7 +91,7 @@ public class LoginController {
         boolean verified = false;
         for (int attempt = 1; attempt <= 3; attempt++) {
             System.out.print("  Enter OTP (attempt " + attempt + "/3): ");
-            String entered = sc.nextLine().trim();
+            String entered = sc.readLine().trim();
             if (otp.equals(entered)) {
                 verified = true;
                 break;
@@ -100,7 +106,7 @@ public class LoginController {
 
         // Reset password
         System.out.print("  Enter new password (min 4 characters): ");
-        String newPassword = sc.nextLine().trim();
+        String newPassword = sc.readLine().trim();
         if (newPassword.length() < 4) {
             System.out.println("  Weak password. Minimum 4 characters required.");
             return;
@@ -108,7 +114,7 @@ public class LoginController {
 
         //Confirm new password
         System.out.print("  Confirm new password: ");
-        String confirm = sc.nextLine().trim();
+        String confirm = sc.readLine().trim();
         if (!newPassword.equals(confirm)) {
             System.out.println("  Passwords do not match. Please try again.");
             return;
