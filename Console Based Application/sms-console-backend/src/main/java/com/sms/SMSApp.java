@@ -1,7 +1,10 @@
 package com.sms;
 
+import java.io.IOException;
+
 import com.sms.controller.LoginController;
 import com.sms.util.AppScanner;
+import com.sms.util.InputReader;
 
 //Author: Vigneshwaran M 
 /* This class is for the main method of the application
@@ -10,7 +13,7 @@ import com.sms.util.AppScanner;
 
 public class SMSApp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
    
     	//Object for login controller
         LoginController loginController = new LoginController();
@@ -25,7 +28,8 @@ public class SMSApp {
 
             int choice;
             try {
-                choice = Integer.parseInt(AppScanner.get().nextLine().trim());
+                choice = Integer.parseInt(InputReader.get().readLine().trim());
+                System.out.println(choice);
             } catch(Exception e) {
                 System.out.println("\nInvalid choice. Please enter 1, 2 or 3.");
                 continue;
