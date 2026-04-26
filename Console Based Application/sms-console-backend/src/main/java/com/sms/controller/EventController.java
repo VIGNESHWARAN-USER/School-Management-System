@@ -11,11 +11,12 @@ import com.sms.dao.EventDAO;
 import com.sms.entities.Event;
 import com.sms.entities.User;
 import com.sms.util.AppScanner;
+import com.sms.util.InputReader;
 
 public class EventController {
 
 	// Getting scanner object
-    private final Scanner sc = AppScanner.get();
+    private final InputReader sc = InputReader.get();
     
     // Creating DAO object
     private final EventDAO eventDAO = new EventDAO();
@@ -52,7 +53,8 @@ public class EventController {
         try {
         	
         	// Conversion method
-            long eventId = Long.parseLong(sc.nextLine().trim());
+            long eventId = Long.parseLong(sc.readLine().trim());
+            System.out.println(eventId);
             Event event = eventDAO.getEventById(eventId);
             if (event == null) {
                 System.out.println("Event not found.");
@@ -90,22 +92,30 @@ public class EventController {
         System.out.println("\n--- Add New Event ---");
         try {
             System.out.print("Event Name: ");
-            String name = sc.nextLine().trim();
+            String name = sc.readLine().trim();
+            System.out.println(name);
             System.out.print("Description: ");
-            String desc = sc.nextLine().trim();
+            String desc = sc.readLine().trim();
+            System.out.println(desc);
             System.out.print("Date (YYYY-MM-DD): ");
-            String date = sc.nextLine().trim();
+            String date = sc.readLine().trim();
+            System.out.println(date);
             System.out.print("Time (HH:MM): ");
-            String time = sc.nextLine().trim();
-            System.out.print("Location: ");
-            String loc = sc.nextLine().trim();
-            System.out.print("Organizer: ");
-            String org = sc.nextLine().trim();
-            System.out.print("Max Participants: ");
-            int max = Integer.parseInt(sc.nextLine().trim());
-            System.out.print("Status (UPCOMING/ONGOING/COMPLETED): ");
-            String status = sc.nextLine().trim().toUpperCase();
+            String time = sc.readLine().trim();
+            System.out.println(time);
 
+            System.out.print("Location: ");
+            String loc = sc.readLine().trim();
+            System.out.println(loc);
+            System.out.print("Organizer: ");
+            String org = sc.readLine().trim();
+            System.out.println(org);
+            System.out.print("Max Participants: ");
+            int max = Integer.parseInt(sc.readLine().trim());
+            System.out.println(max);
+            System.out.print("Status (UPCOMING/ONGOING/COMPLETED): ");
+            String status = sc.readLine().trim().toUpperCase();
+            System.out.println(status);
             Event event = new Event(0L, name, desc, date, time, loc, org, max, 0, status);
             if (eventDAO.addEvent(event)) {
                 System.out.println("Event added successfully!");
@@ -123,7 +133,8 @@ public class EventController {
         System.out.print("Enter Event ID to edit: ");
         try {
         	// Conversion method
-            long id = Long.parseLong(sc.nextLine().trim());
+            long id = Long.parseLong(sc.readLine().trim());
+            System.out.println(id);
             Event event = eventDAO.getEventById(id);
             if (event == null) {
                 System.out.println("Event not found.");
@@ -133,28 +144,43 @@ public class EventController {
 
             // String handling
             System.out.print("Event Name [" + event.getEventName() + "]: ");
-            String v = sc.nextLine(); if (!v.trim().isEmpty()) event.setEventName(v.trim());
-
+            String v = sc.readLine();
+            System.out.println(v);
+            if (!v.trim().isEmpty()) event.setEventName(v.trim());
             System.out.print("Description [" + event.getEventDescription() + "]: ");
-            v = sc.nextLine(); if (!v.trim().isEmpty()) event.setEventDescription(v.trim());
+            v = sc.readLine(); 
+            System.out.println(v);
+            if (!v.trim().isEmpty()) event.setEventDescription(v.trim());
 
             System.out.print("Date [" + event.getEventDate() + "]: ");
-            v = sc.nextLine(); if (!v.trim().isEmpty()) event.setEventDate(v.trim());
+            v = sc.readLine(); 
+            System.out.println(v);
+            if (!v.trim().isEmpty()) event.setEventDate(v.trim());
 
             System.out.print("Time [" + event.getEventTime() + "]: ");
-            v = sc.nextLine(); if (!v.trim().isEmpty()) event.setEventTime(v.trim());
+            v = sc.readLine();
+            System.out.println(v);
+            if (!v.trim().isEmpty()) event.setEventTime(v.trim());
 
             System.out.print("Location [" + event.getEventLocation() + "]: ");
-            v = sc.nextLine(); if (!v.trim().isEmpty()) event.setEventLocation(v.trim());
+            v = sc.readLine(); 
+            System.out.println(v);
+            if (!v.trim().isEmpty()) event.setEventLocation(v.trim());
 
             System.out.print("Organizer [" + event.getOrganizer() + "]: ");
-            v = sc.nextLine(); if (!v.trim().isEmpty()) event.setOrganizer(v.trim());
+            v = sc.readLine();
+            System.out.println(v);
+            if (!v.trim().isEmpty()) event.setOrganizer(v.trim());
 
             System.out.print("Max Participants [" + event.getMaxParticipants() + "]: ");
-            v = sc.nextLine(); if (!v.trim().isEmpty()) event.setMaxParticipants(Integer.parseInt(v.trim()));
+            v = sc.readLine(); 
+            System.out.println(v);
+            if (!v.trim().isEmpty()) event.setMaxParticipants(Integer.parseInt(v.trim()));
 
             System.out.print("Status [" + event.getEventStatus() + "]: ");
-            v = sc.nextLine(); if (!v.trim().isEmpty()) event.setEventStatus(v.trim().toUpperCase());
+            v = sc.readLine(); 
+            System.out.println(v);
+            if (!v.trim().isEmpty()) event.setEventStatus(v.trim().toUpperCase());
 
             System.out.println(eventDAO.updateEvent(event) ? "Event updated!" : "Update failed.");
         } catch (NumberFormatException e) {
@@ -167,7 +193,8 @@ public class EventController {
         showAllEvents();
         System.out.print("Enter Event ID to delete: ");
         try {
-            long id = Long.parseLong(sc.nextLine().trim());
+            long id = Long.parseLong(sc.readLine().trim());
+            System.out.println(id);
             System.out.println(eventDAO.deleteEvent(id) ? "Event deleted!" : "Deletion failed.");
         } catch (NumberFormatException e) {
             System.out.println("Invalid input.");
@@ -189,7 +216,8 @@ public class EventController {
             try { 
             	
             	// Conversion method
-            	c = Integer.parseInt(sc.nextLine().trim()); 
+            	c = Integer.parseInt(sc.readLine().trim()); 
+            	System.out.println(c);
             	}
             catch (Exception e) { System.out.println("Invalid."); continue; }
 
@@ -201,7 +229,8 @@ public class EventController {
                 try {
                 	
                 	// Conversion method
-                    long eventId = Long.parseLong(sc.nextLine().trim());
+                    long eventId = Long.parseLong(sc.readLine().trim());
+                    System.out.println(eventId);
                     if (eventDAO.isRegistered(eventId, studentId)) {
                         System.out.println("You are already registered for this event.");
                     } else {
@@ -250,7 +279,9 @@ public class EventController {
             int c;
             
             // Exception handling
-            try { c = Integer.parseInt(sc.nextLine().trim()); }
+            try { c = Integer.parseInt(sc.readLine().trim());
+            System.out.println(c);
+            }
             catch (Exception e) { System.out.println("Invalid."); continue; }
 
             if (c == 1) {

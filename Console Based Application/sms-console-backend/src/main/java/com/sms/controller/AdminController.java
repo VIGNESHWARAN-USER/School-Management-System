@@ -1,6 +1,7 @@
 package com.sms.controller;
 
 import com.sms.util.AppScanner;
+import com.sms.util.InputReader;
 // Author : Reshma K
 /*
  * This Controller is to prompt the admin menu
@@ -9,7 +10,7 @@ import com.sms.util.AppScanner;
 public class AdminController {
 	
 	// Getting scanner object
-    private final java.util.Scanner sc = AppScanner.get();
+    private final InputReader sc = InputReader.get();
     
     // Creating objects for controllers
     MembersController membersController = new MembersController();
@@ -31,8 +32,8 @@ public class AdminController {
             System.out.println("  6. Log Out");
 
             System.out.print("  Enter choice: ");
-            int choice = Integer.parseInt(sc.nextLine());
-            
+            int choice = Integer.parseInt(sc.readLine());
+            System.out.println(choice);
             //Calling other menu's from main menu
             switch(choice) {
                 case 1: membersMenu(); break;
@@ -63,8 +64,8 @@ public class AdminController {
             
 
             System.out.print("Enter your choice : ");
-            int c = Integer.parseInt(sc.nextLine());
-
+            int c = Integer.parseInt(sc.readLine());
+            System.out.println(c);
             // Calling the corresponding controller method
             switch(c) {
                 case 1: membersController.addMember(); break;
@@ -92,8 +93,8 @@ public class AdminController {
             
 
             System.out.print("Enter your choice : ");
-            int c = Integer.parseInt(sc.nextLine());
-
+            int c = Integer.parseInt(sc.readLine());
+            System.out.println(c);
          // Calling the corresponding controller method
             switch(c) {
                 case 1: resourceController.addClassRoom(); break;
@@ -121,8 +122,8 @@ public class AdminController {
             
 
             System.out.print("Enter your choice : ");
-            int c = Integer.parseInt(sc.nextLine());
-
+            int c = Integer.parseInt(sc.readLine());
+           System.out.println(c);
          // Calling the corresponding controller method
             switch(c) {
                 case 1: feeStructureController.addFeeStructure(); break;
@@ -146,8 +147,8 @@ public class AdminController {
             System.out.println("5. View Event Participants");
             System.out.println("6. Exit");
             System.out.print("Enter your choice : ");
-            int c = Integer.parseInt(sc.nextLine());
-            
+            int c = Integer.parseInt(sc.readLine());
+            System.out.println(c);
          // Calling the corresponding controller method
             switch(c) {
                 case 1: eventController.addEvent(); break;

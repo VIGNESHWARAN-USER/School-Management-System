@@ -8,11 +8,12 @@ package com.sms.controller;
 
 import com.sms.entities.User;
 import com.sms.util.AppScanner;
+import com.sms.util.InputReader;
 
 public class StudentController {
 
     // Getting scanner object
-    private final java.util.Scanner sc = AppScanner.get();
+    private final InputReader sc = InputReader.get();
     
     // Student dashboard menu
     public void studentMenu(User user) {
@@ -32,7 +33,8 @@ public class StudentController {
             int choice;
             try {
                 // Conversion method
-                choice = Integer.parseInt(sc.nextLine());
+                choice = Integer.parseInt(sc.readLine());
+                System.out.println(choice);
             }
             catch(Exception e) {
                 System.out.println("Invalid.");

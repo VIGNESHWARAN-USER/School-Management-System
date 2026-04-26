@@ -12,11 +12,12 @@ import java.util.Scanner;
 import com.sms.entities.FeeStructure;
 import com.sms.service.FeeStructureService;
 import com.sms.util.AppScanner;
+import com.sms.util.InputReader;
 
 public class FeeStructureController {
 
     // Getting scanner object
-    private final Scanner sc = AppScanner.get();
+    private final  InputReader sc = InputReader.get();
 
     // Creating Service object
     private final FeeStructureService feeStructureService = new FeeStructureService();
@@ -31,23 +32,23 @@ public class FeeStructureController {
             System.out.print("Enter Target ClassRoom ID: ");
             
             // Conversion method
-            long classRoomId = Long.parseLong(sc.nextLine());
-
+            long classRoomId = Long.parseLong(sc.readLine());
+            System.out.println(classRoomId);
             System.out.print("Enter Total Amount: ");
             
             // Conversion method
-            double totalAmount = Double.parseDouble(sc.nextLine());
-
+            double totalAmount = Double.parseDouble(sc.readLine());
+            System.out.println(totalAmount);
             System.out.print("Enter Description (e.g. Tuition + Library): ");
             
             // String handling
-            String description = sc.nextLine();
-
+            String description = sc.readLine();
+            System.out.println(description);
             System.out.print("Enter Term (e.g. Initial/Annual): ");
             
             // String handling
-            String term = sc.nextLine();
-
+            String term = sc.readLine();
+            System.out.println(term);
             // Creating FeeStructure object
             FeeStructure fs = new FeeStructure(0L, classRoomId, totalAmount, description, term);
 
@@ -66,8 +67,8 @@ public class FeeStructureController {
 
         try {
             // Conversion method
-            long id = Long.parseLong(sc.nextLine());
-
+            long id = Long.parseLong(sc.readLine());
+            System.out.println(id);
             // Collection used
             List<FeeStructure> all = feeStructureService.getAllFeeStructures();
 
@@ -86,22 +87,26 @@ public class FeeStructureController {
 
             // String handling with conditional update
             System.out.print("Enter new ClassRoom ID [" + toEdit.getClassRoomId() + "]: ");
-            String classIdStr = sc.nextLine();
+            String classIdStr = sc.readLine();
+            System.out.println(classIdStr);
             if (!classIdStr.trim().isEmpty())
                 toEdit.setClassRoomId(Long.parseLong(classIdStr));
 
             System.out.print("Enter new Total Amount [" + toEdit.getTotalAmount() + "]: ");
-            String amtStr = sc.nextLine();
+            String amtStr = sc.readLine();
+            System.out.println(amtStr);
             if (!amtStr.trim().isEmpty())
                 toEdit.setTotalAmount(Double.parseDouble(amtStr));
 
             System.out.print("Enter new Description [" + toEdit.getDescription() + "]: ");
-            String desc = sc.nextLine();
+            String desc = sc.readLine();
+            System.out.println(desc);
             if (!desc.trim().isEmpty())
                 toEdit.setDescription(desc);
 
             System.out.print("Enter new Term [" + toEdit.getTerm() + "]: ");
-            String term = sc.nextLine();
+            String term = sc.readLine();
+            System.out.println(term);
             if (!term.trim().isEmpty())
                 toEdit.setTerm(term);
 
@@ -120,8 +125,8 @@ public class FeeStructureController {
 
         try {
             // Conversion method
-            long id = Long.parseLong(sc.nextLine());
-
+            long id = Long.parseLong(sc.readLine());
+            System.out.println(id);
             System.out.println(feeStructureService.deleteFeeStructure(id));
 
         } catch (NumberFormatException e) {
@@ -209,8 +214,8 @@ public class FeeStructureController {
 
         try {
             // Conversion method
-            long feeId = Long.parseLong(sc.nextLine());
-
+            long feeId = Long.parseLong(sc.readLine());
+            System.out.println(feeId);
             if (feeId == 0) return;
 
             // Finding selected fee using stream
